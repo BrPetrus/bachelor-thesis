@@ -1,5 +1,6 @@
-*.log
-*.aux
-*.pdf
-*.fls
-*.fdb_latexmk
+# build files
+out/
+_markdown_fi-pdflatex/
+fithesis/logo/
+*.out
+
