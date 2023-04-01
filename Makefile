@@ -1,7 +1,10 @@
-all: example thesis
+all: thesis
 
 example: fi-pdflatex.tex
-	pdflatex -output-directory out --shell-escape fi-pdflatex.tex
+	pdflatex -output-directory out --shell-escape fi-pdflatex.tex 
 
-thesis:
-	echo TODO
+thesis: main.tex
+	pdflatex -output-directory out --shell-escape main.tex
+
+clean:
+	$(RM) -r out/
