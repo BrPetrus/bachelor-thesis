@@ -94,6 +94,10 @@
 \usepackage{floatrow} %% Putting captions above tables
 \floatsetup[table]{capposition=top}
 \usepackage[babel]{csquotes} %% Context-sensitive quotation marks
+
+%% Specify new commands
+\newcommand*{\R}{\ensuremath{\mathbb{R}}}
+
 \begin{document}
 %% The \chapter* command can be used to produce unnumbered chapters:
 \chapter*{Introduction}
@@ -119,6 +123,48 @@ a tak som sa rozhodol jednu tiež napísať. Ak všetko pôjde podľa
 plánu, odnesiem si na konci semestra diplom. Držte mi palce!
 \end{otherlanguage}
 
-\cite{gonzalez2002}
+\parencite{gonzalez2002}
+
+\chapter{Theory}
+
+\section{Digital Image}
+
+Our eyesight is arguably one of our most useful sense through which we look at
+the world. We begin by formalising the concept of an image, so that we can use
+mathematics and computer science to analyze how one can vyuzit images.
+Essentially we can think of an image as an n-dimensional function $f(x_1, x_2,
+..., x_n)$, where $x_1, x_2, .. x_n$ are coordinates inside a spatial plane,
+while the function value at those coordinates specify the magnitude or intensity
+of the signal at that point. In most general term, we can think about images as
+a functions  $f:\R^n \rightarrow \R^m$, where $n$ indicates the number of
+spatial dimensions and $m$ specifies the number of channels. For example when
+talking about two-dimensional grayscale images, $m$ is equal to 1 and $n$ is
+equal to 2. 
+
+In real life, we do not necessarily work with real valued spatial dimensions and
+intensities, but only have a finite number of bits to work with. The process of
+acquiring images in a finite grid and assigning a intensities from a finite
+range is called sampling and quantization. In essence, we create a discretized
+version of the original signal, which can be represented as an array of values.
+This is what we call a digital image.
+
+
+\subsection{Acquiring}
+
+\subsection{Sampling}
+
+\subsection{Noise}
+
+
+
+\section{Edge finding}
+
+\section{Thresholding}
+
+\section{Mathematical morphology}
+
+\section{Segmentation}
+
+
 
 \end{document}
