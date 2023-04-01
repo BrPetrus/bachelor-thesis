@@ -1,0 +1,56 @@
+BP
+	Results
+		Evaluation
+		Complexity
+			Time
+			Space
+	Introduction
+		Purpose
+	Abstract
+	Implementation
+		Various implementation details
+			Optimizations etc.
+		Libraries
+			Numpy
+			Skimage
+			Qt
+		GUI
+			Documentation
+	Theory
+		Digital Image
+			Acquiring Image
+			Definition
+				A function of ...
+			Noise
+				SNR
+				Types of noise
+		Edge finding
+			Gradient
+			Laplace operator
+		Thresholding
+			Otsu
+			Triangle method
+		Mathematical morphology
+			Definition
+			Basic operators
+		Segmentation
+			Definition
+			Watershed
+				How it works
+				Pseudocode
+	Our data
+		Problems with the data
+			Noise
+			Size
+		Format
+		How it was captured
+	Segmentation method
+		Steps in membrane channel
+			Thresholding
+			Denoising
+				gaussian pyramid
+			Edge finding
+				Zero-crossing algorithm
+			Watershed
+		Steps in protein channel
+			Local threshold
