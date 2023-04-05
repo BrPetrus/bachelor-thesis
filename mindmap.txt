@@ -1,9 +1,9 @@
 BP
 	Results
 		Evaluation
-		Complexity
-			Time
-			Space
+		Efficiency
+			Time in sec
+			Space (RAM, disk etc)
 	Introduction
 		Purpose
 	Abstract
@@ -17,16 +17,16 @@ BP
 		GUI
 			Documentation
 	Theory
+		Multiscale Image Analysis
+			Pyramid representation of the image
+			Gaussian Pyramid with maximum projection
 		Digital Image
-			Acquiring Image
 			Definition
 				A function of ...
-			Noise
-				SNR
-				Types of noise
-		Edge finding
+		Edge detection
 			Gradient
 			Laplace operator
+				Zero-crossing algorithm
 		Thresholding
 			Otsu
 			Triangle method
@@ -38,9 +38,10 @@ BP
 			Watershed
 				How it works
 				Pseudocode
-	Our data
+	Image data
 		Problems with the data
 			Noise
+				Dominant type of noise
 			Size
 		Format
 		How it was captured
@@ -48,9 +49,7 @@ BP
 		Steps in membrane channel
 			Thresholding
 			Denoising
-				gaussian pyramid
 			Edge finding
-				Zero-crossing algorithm
 			Watershed
 		Steps in protein channel
 			Local threshold
