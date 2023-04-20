@@ -119,7 +119,7 @@ have a diploma under my belt. Wish me luck!
 Our eyesight is arguably one of our most useful sense for observing the world.
 Researchers have developed many tools which help us study the world. I will
 begin by formalizing the concept of images so that we can use mathematics
-and computer science to talk about them.
+and computer science to describe them.
 
 Essentially we can think of an image as an n-dimensional function $f(x_1, x_2,
 ..., x_n)$, where $x_1, x_2, .. x_n$ are coordinates inside a spatial plane,
@@ -131,7 +131,7 @@ we are talking about two-dimensional greyscale images, $m$ is equal to 1 and $n$
 equal to 2, while a typical coloured photograph can have more than 3 channels.
 
 In real life, we do not necessarily work with real-valued spatial dimensions and
-intensities but only have a finite number of bits to work with. The process of
+intensities but only have a finite number of bits. The process of
 acquiring images in a finite grid and assigning intensities from a finite
 range is called sampling and quantization. In essence, we create a discretized
 version of the original signal, which can be represented as an array of values.
@@ -170,11 +170,104 @@ image in any meaningful way. According to \parencite{hamamatsu_ccd}, there are t
 
 TODO
 
+\section{Image smoothing}
+
 \section{Edge finding}
-TODO
+
+In digital image processing, edges typically separate different regions of
+interested from each other. They are very important in digital image processing
+as they can be used in many workflows --- such as image segmentation and
+classification --- to extract various interesting features and regions
+from the image.
+
+There is not authoritative definition of an edge, but it can be thought of as a
+set of connected pixels that lie on the boundary between two regions
+\parencite{gonzalez2002}. Usually there is a gradient of intensities between two
+regions as can be seen on the Figure \ref{fig:edge_intensities}. To better
+describe the edge, we usually use edge finding operators based on first or second
+partial derivative.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=8.3cm]{resources/inkscape/gradient.png}
+    \end{center}
+    \caption{Image intensities} % todo: replace
+    \label{fig:edge_intensities}
+\end{figure}
+
+% todo: shape? image?
+
+
+% TODO: Gradient operator, Laplace operator and Zero-crossing algorithms 
+
+% todo some sort of beginning with motivation
+
+\subsection{Gradient operators}
+
+\subsection{Laplacian operator}
+
+The second common way of finding edges is using the second derivate, or more precisely
+using the Laplacian. For a 2D function $f(x, y)$ the Laplacian is defines as
+\parencite{gonzalez2002}:
+
+$$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}$$
+
+But in the context of digital image processing our signal is discrete, therefore
+an approximation in discrete form is needed. A fairly standard way is to use the
+following approximation for the partial second derivates in x direction: 
+$$\frac{\partial^2 f}{\partial x^2} = f(x + 1, y) + f(x - 1, y) - 2*f(x, y)$$
+and similar in the y direction:
+$$\frac{\partial^2 f}{\partial y^2} = f(x, y + 1) + f(x, y - 1) - 2*f(x, y)$$
+Substituting into the prior definition we get the following approximation:
+$$\nabla^2 f = f(x+1, y) + f(x-1, y) + f(x, y+1) + f(x, y-1) - 4*f(x,y)$$
+
+TODO insert an image and description
+TODO insert and examplorary image
+
+One of the disatvatages of this approach is the sensitivity to noise. For the
+demonstration purposes the effects will be shown in 1D. On the
+Figure TODO the effect of noise is demonstrated. While the original signal does
+not look too destroyed it is impossible to find the correct zero-crossings.
+Therefore we have to help the operator by first smoothing the image. Common
+approach is to first use gaussian smoothing, this is sometimes called a
+Laplacian of Gaussian operator or a Mexican hat filer. The idea is that by
+averaging we reduce some of the effect of the noise. The Figure TODO
+demonstrates this effect.
+
+As can be seen on the image TODO the Laplacian operator calculates 
+
+The property of the laplacian in crossing the zero can be used to calculate the
+edges inside the image. A simple possible algorithm is to go through the whole
+image and check if a particular pixel at given position is positive while their
+neighbours are negative. If this condition is true, we set this position to
+white in the resulting image and black otherwise. This creates an TODO. Here
+another useful properties of the zero-crossing algorithm can be seen. The edges
+produced are thin and form closed contours.
 
 \section{Thresholding}
-TODO
+
+\subsection{Otsu method}
+
+TODO \parencite{otsu1979}
+
+The Otsu thresholding method is a popular technique to determine a threshold
+value betweeen two classes (ususally the foreground and the background) as such
+it works well if the image has a clear bimodal distribution. The main idea of
+this approach is to see the problem of finding the threshold as an
+optimalization problem, where the inter-class variance of the two classes is to
+be minimized. For some threshold $t$ we can define the variance as
+\parencite{otsu1979}:
+$$\sigma^2_W = \sigma^2_0 * \omega_0 + \sigma^2_1 * \omega_1$$  %todo: whats w?
+where the weight $\omega_1$ and $\omega_2$ are the probabilities of the two classes. It
+can be shown that minimizing the intra-class variance is the same as maximizing
+inter-class variance \parencite{otsu1979}. This idea leads to an efficient
+algorithm employed by many image processing libraries such as scikit-image.
+
+TODO image and histogram
+
+\subsection{Gradient threshold}
+
+ TODO if used in local threshold
 
 \section{Mathematical morphology}
 
@@ -182,9 +275,9 @@ Mathematical morphology is a tool used to extract various interesting features
 from images. The tasks include edge-detecting algorithms, finding convex hulls, and filtering 
 , just to name a few. In the simplest terms,
 mathematical morphology looks at images as sets of numbers and modifies them using structural elements. Those can take many forms, but their shape varies based on the task we are trying
-to achieve. This thesis will mainly focus on using mathematical morphology
+to achieve. The main use of mathematical morphology in this thesis is
 to pre- and post-process image data generated by other image processing methods.
-We will start by looking at some basic operations on binary images. Note that
+First, some basic operations on binary images are described. Note that
 this area is vast and still being actively researched, and I will cover only parts which are helpful later in my
 prototype.
 
@@ -197,13 +290,13 @@ as an array of rectangular shape, then each foreground pixel's coordinates will
 be included in the set representation.
 
 \subsection{Preliminary}
-Before we look at the two main operations - erosion and dilation, we have to
+Before we look at the two main operations --- erosion and dilation --- we have to
 define two not-so-common operations on sets which are heavily used in
 mathematical morphology.
 
 During the following sections, we need to be able to talk about how to create a
 reflection of the image around its origin, as is shown in the figure
-\ref{fig:morp_refl}. Reflection is formally defined as: 
+\ref{fig:morp_refl}. Reflection is formally defined as \parencite{gonzalez2002}: 
 $$\hat{B} = \{w | w=-b \text{ , for } b \in B\}$$
 \begin{figure}
     \begin{center}
@@ -214,10 +307,10 @@ $$\hat{B} = \{w | w=-b \text{ , for } b \in B\}$$
 \end{figure}
 
 While manipulating images we commonly have to move parts of the image around. We
-define a similar operation on sets, called translation. The formal definition of
-moving a set $A$ by some translation vector $z$ is:
+define a similar operation on sets, called the translation of set by a point. The formal definition of
+moving a set $A$ by some translation vector $z$ is \parencite{gonzalez2002}:
 $$(A)_z = \{c | c = a + z\text{ , for } a \in A\}$$
-The operation is illustrated in figure \ref{fig:morph_translation} where the set
+The operation is illustrated in Figure \ref{fig:morph_translation} where the set
 $B$ is moved downwards by a vector $z$.
 \begin{figure}
     \begin{center}
@@ -236,7 +329,8 @@ set, but it can be used to describe how far and in which way the operation will 
 
 \subsubsection{Dilation}
 First, let's look at the dilation operation. Intuitively we can think about this
-operator as a way to dilate the set into a bigger space. Formally it is defined as
+operator as a way to dilate the set into a bigger space. Formally it is defined
+as \parencite{gonzalez2002}
 $$A \oplus B = \{z | (\hat{B}_z) \cap A \neq \emptyset\}$$
 where $A$ and $B$ are both sets in $\Z^2$. 
 
@@ -269,7 +363,8 @@ particular example and does not necessarily have to be of regular size.
 
 The next essential operation is erosion. As the name suggests, we use it to erode
 parts of the image which we consider unnecessary. An erosion $A \ominus B$ of
-two sets $A$ and $B$, both part of $\Z^2$ space, is defined as: 
+two sets $A$ and $B$, both part of $\Z^2$ space, is defined as
+\parencite{gonzalez2002}: 
 $$A \ominus B = \{z | (B)_z \subseteq A\}$$
 
 Again $A$ can be thought of as an image while $B$ can be looked at as a structural
@@ -296,6 +391,8 @@ them in my thesis.
 \end{figure}
 
 \section{Segmentation}
+
+
 
 
 
