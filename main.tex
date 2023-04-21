@@ -204,6 +204,61 @@ partial derivative.
 
 \subsection{Gradient operators}
 
+First way of calculating the edge is looking at the gradient of the image. The
+gradient of an image $f(x,y)$ at position $(x, y)$ is defined as vector
+\parencite{gonzalez2002}:
+$$\nabla \textbf{f} = 
+\begin{bmatrix}
+    G_x \\
+    G_y
+\end{bmatrix} = 
+\begin{bmatrix}
+    \dfrac{\partial f}{\partial x}\\[2ex]
+    \dfrac{\partial f}{\partial y}
+\end{bmatrix}$$
+The vector gradient represents the rate of change in the image, and it
+points in the direction of the maximum rate of change. It can also be though of
+as the partial derivate in the two axis. But what is often of interest is not
+the bare vector, but the magnitude of the gradient, denoted as $\nabla f$.
+Confusing enough this is also usually called the gradient in the literature, but
+here I will differentiate it using the bold text. Formally it is defined as:
+$$\nabla f = \text{mag}(\nabla \textbf{f}) = \sqrt{G_x^2 + G_y^2}$$
+
+Now the question is how to calculate the $G_x$ and $G_y$ of some digital image.
+It is not possible to calculate the partial derivates using the standard
+definition from mathematical analysis, because digital images are discrete, thus
+we commonly use an approximation. Even though it is very common to use something
+like the Sobel filter, here a more basic Prewitt filter will suffice. The
+horizontal Prewitt filter for 3x3 region looks like this:
+\begin{figure}[H]
+    \begin{center}
+        \begin{tabular}{ |c|c|c| }
+            \hline
+            -1 & 0 & 1 \\
+            \hline
+            -1 & \underline{0} & 1 \\
+            \hline
+            -1 & 0 & 1 \\
+            \hline
+        \end{tabular}
+        \begin{tabular}{ |c|c|c| }
+            \hline
+            -1 & -1 & -1 \\
+            \hline
+            0 & \underline{0} & 0 \\
+            \hline
+            1 & 1 & 1 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \caption{Prewitt horizontal and vertical mask.}
+\end{figure}
+The underline 0 indicates the centre and the numbers specify weights in the the
+neighbour of the pixel. Summing all together we arrive at the horizontal or
+vertical approximation of gradient.
+
+TODO image
+
 \subsection{Laplacian operator}
 
 The second common way of finding edges is using the second derivate, or more precisely
