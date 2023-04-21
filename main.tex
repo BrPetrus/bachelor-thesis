@@ -116,7 +116,7 @@ have a diploma under my belt. Wish me luck!
 
 \section{Digital Image}
 
-Our eyesight is arguably one of our most useful sense for observing the world.
+Our eyesight is arguably one of our most helpful sense for observing the world.
 Researchers have developed many tools which help us study the world. I will
 begin by formalizing the concept of images so that we can use mathematics
 and computer science to describe them.
@@ -124,7 +124,7 @@ and computer science to describe them.
 Essentially we can think of an image as an n-dimensional function $f(x_1, x_2,
 ..., x_n)$, where $x_1, x_2, .. x_n$ are coordinates inside a spatial plane,
 while the function value at those coordinates specifies the magnitude or intensity
-of the signal at that point. In most general term, we can think about images as
+of the signal at that point. In most general terms, we can think about images as
 functions of type $f:\R^n \rightarrow \R^m$, where $n$ indicates the number of
 spatial dimensions and $m$ specifies the number of channels. For example, when
 we are talking about two-dimensional greyscale images, $m$ is equal to 1 and $n$ is
@@ -147,7 +147,7 @@ we can think of them as a digital image.
 Unfortunately, we rarely acquire a perfect image without any noise. Noise
 can be thought of as unwanted variations in image intensities which are not
 present in the original signal. Noise in the signal may arise during multiple
-steps of the process, for example, it might be a fault of an imperfect sensor,
+steps of the process; for example, it might be a fault of an imperfect sensor,
 such as when we deal with charged-coupled device cameras. There a light input is
 converted into an electric signal, but such sensors only have a limited quantum
 efficiency and are greatly affected by environmental factors such as 
@@ -361,8 +361,7 @@ $$\hat{B} = \{w | w=-b \text{ , for } b \in B\}$$
     \label{fig:morp_refl}
 \end{figure}
 
-While manipulating images we commonly have to move parts of the image around. We
-define a similar operation on sets, called the translation of set by a point. The formal definition of
+While manipulating images we commonly have to move parts of the image around.  In principle, a similar operation, called translation, is defined on sets. The formal definition of
 moving a set $A$ by some translation vector $z$ is \parencite{gonzalez2002}:
 $$(A)_z = \{c | c = a + z\text{ , for } a \in A\}$$
 The operation is illustrated in Figure \ref{fig:morph_translation} where the set
@@ -376,31 +375,27 @@ $B$ is moved downwards by a vector $z$.
 \end{figure}
 
 \subsection{Dilation and Erosion}
-Now we are ready to properly define two fundamental operations in the field of
-mathematical morphology, upon which many other operations are built. Both of
+Now it is possible to properly define two fundamental operations in the field of mathematical morphology, upon which many other operations are built. Both of
 these operations include a structural element. A structural element is again a
 set, but it can be used to describe how far and in which way the operation will influence the result.
 
 
 \subsubsection{Dilation}
-First, let's look at the dilation operation. Intuitively we can think about this
-operator as a way to dilate the set into a bigger space. Formally it is defined
+Intuitively we can think about the dilation
+operator as a way to dilate spots inside an image into a bigger space. Formally it is defined
 as \parencite{gonzalez2002}
 $$A \oplus B = \{z | (\hat{B}_z) \cap A \neq \emptyset\}$$
 where $A$ and $B$ are both sets in $\Z^2$. 
 
 An example of dilation can be seen in the figure
-\ref{fig:morph_dilation}. There we have two examples. In the first row, we have
+\ref{fig:morph_dilation}, where two examples are shown. In the first row, we have
 a square image with a side length of $d$ and a structuring element whose side length
 is a fourth of the original. If we apply the dilation operation on these two
 images, we get the one on the right. You can imagine taking the smaller square and
 gliding it over the bigger one. If there is an overlap, we can add the centre of
 the structural element to the result. 
 
-Closer to the mathematical definition, we
-are translating the structural element $B$ using all possible translation
-vectors $z$ and if there is an overlap, we add the centre of the element to the
-result.
+Closer to the mathematical definition, all possible translations are applied to the structural element and if there is an overlap, we add the centre of the structural element to the resulting set.
 
 For example, this operation can be used to join disconnected segments in an
 image by choosing a large enough structural element. Its size will depend on the
