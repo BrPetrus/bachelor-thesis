@@ -442,6 +442,47 @@ them in my thesis.
 
 \section{Segmentation}
 
+\chapter{Image data}
+
+My thesis utilized image data acquired by a fluorescence microscope of organoids
+of mammary glands in mice. The original data was captured in 2011 by a group of
+researchers at (\textbf{TODO}) faculty. The captured specimen is around 500
+microns by 500 microns by 80 microns big with resolution around 4.3 microns per
+pixel.
+
+In fluorescence microscopy researchers are able to stain certain strucutures in
+their speciment so that specific structures reemit light when the right
+wavelenght is shined upon them. This allows them to create an image with density
+of particular strucutres inside the specimen. In my case, the reearchers
+captured the density of 6 different proteins, two of them are part of membranes
+while the other 4 are mostly located inside the cell's nuclei.
+
+Totalling at arund 576 GB, the data consists of 12 different time steps, where
+each step has a size of 1920x1920x388 pixels, and 6 different channels. The data
+is stored in numerous TIFF files. Every channel contains grayscale data with
+16 bits per pixel. Following images in these thesis were preprocesed to enhance
+the visualisation for demonstration pruposes.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=6.3cm]{resources/C3-t006-200-scaled.jpg}
+        \includegraphics[width=6.3cm]{resources/C2-t006-200-scaled.jpg}
+    \end{center}
+    \caption{Membraine stained channel and nucleus stained channel}
+    \label{fig:data_example}
+\end{figure}
+In the Figure \ref{fig:data_example} a single slice of the data was taken from
+two channels. They are from the same moment of time and at the same place. On
+the left one of the membrane proteins is showcased while on the right a
+different protein mostly from nuclei is shown.
+
+\section{Problems with the dataset}
+
+The size of the data and the inherent problems of fluorescence microscopy
+provide the main issues in analyzing the data. Only small part of the data is
+usable
+
+
 
 
 

@@ -4,3 +4,7 @@ _markdown_fi-pdflatex/
 fithesis/logo/
 *.out
 
+# Raw images
+*.tif
+*.tiff
+
