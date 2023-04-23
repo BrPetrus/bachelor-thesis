@@ -150,7 +150,7 @@ present in the original signal. Noise in the signal may arise during multiple
 steps of the process; for example, it might be a fault of an imperfect sensor,
 such as when we deal with charged-coupled device cameras. There a light input is
 converted into an electric signal, but such sensors only have a limited quantum
-efficiency and are greatly affected by environmental factors such as 
+efficiency and are greatly affected by environmental factors such as
 temperature and light intensity. After the sensor, a common source of noise is
 the signal's transmission. It is greatly affected by disturbances in the used
 channel, such as low energy due to distance during wireless transmission or
@@ -160,7 +160,7 @@ issues, wired alternatives come with their own limitations and liabilities such 
 \subsubsection{Typical noise in fluorescence microscopy.}
 
 Generally, each source of noise can behave differently and in the process of restoring
-images, knowing the distribution and nature of the noise is essential if we are to restore the 
+images, knowing the distribution and nature of the noise is essential if we are to restore the
 image in any meaningful way. According to \parencite{hamamatsu_ccd}, there are three main sources of noise when using CCD sensors, and those are:
 \begin{compactenum}
 \item Photon noise
@@ -198,7 +198,7 @@ partial derivative.
 % todo: shape? image?
 
 
-% TODO: Gradient operator, Laplace operator and Zero-crossing algorithms 
+% TODO: Gradient operator, Laplace operator and Zero-crossing algorithms
 
 % todo some sort of beginning with motivation
 
@@ -207,11 +207,11 @@ partial derivative.
 First way of calculating the edge is looking at the gradient of the image. The
 gradient of an image $f(x,y)$ at position $(x, y)$ is defined as vector
 \parencite{gonzalez2002}:
-$$\nabla \textbf{f} = 
+$$\nabla \textbf{f} =
 \begin{bmatrix}
     G_x \\
     G_y
-\end{bmatrix} = 
+\end{bmatrix} =
 \begin{bmatrix}
     \dfrac{\partial f}{\partial x}\\[2ex]
     \dfrac{\partial f}{\partial y}
@@ -269,7 +269,7 @@ $$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial 
 
 But in the context of digital image processing our signal is discrete, therefore
 an approximation in discrete form is needed. A fairly standard way is to use the
-following approximation for the partial second derivates in x direction: 
+following approximation for the partial second derivates in x direction:
 $$\frac{\partial^2 f}{\partial x^2} = f(x + 1, y) + f(x - 1, y) - 2*f(x, y)$$
 and similar in the y direction:
 $$\frac{\partial^2 f}{\partial y^2} = f(x, y + 1) + f(x, y - 1) - 2*f(x, y)$$
@@ -289,7 +289,7 @@ Laplacian of Gaussian operator or a Mexican hat filer. The idea is that by
 averaging we reduce some of the effect of the noise. The Figure TODO
 demonstrates this effect.
 
-As can be seen on the image TODO the Laplacian operator calculates 
+As can be seen on the image TODO the Laplacian operator calculates
 
 The property of the laplacian in crossing the zero can be used to calculate the
 edges inside the image. A simple possible algorithm is to go through the whole
@@ -327,7 +327,7 @@ TODO image and histogram
 \section{Mathematical morphology}
 
 Mathematical morphology is a tool used to extract various interesting features
-from images. The tasks include edge-detecting algorithms, finding convex hulls, and filtering 
+from images. The tasks include edge-detecting algorithms, finding convex hulls, and filtering
 , just to name a few. In the simplest terms,
 mathematical morphology looks at images as sets of numbers and modifies them using structural elements. Those can take many forms, but their shape varies based on the task we are trying
 to achieve. The main use of mathematical morphology in this thesis is
@@ -351,7 +351,7 @@ mathematical morphology.
 
 During the following sections, we need to be able to talk about how to create a
 reflection of the image around its origin, as is shown in the figure
-\ref{fig:morp_refl}. Reflection is formally defined as \parencite{gonzalez2002}: 
+\ref{fig:morp_refl}. Reflection is formally defined as \parencite{gonzalez2002}:
 $$\hat{B} = \{w | w=-b \text{ , for } b \in B\}$$
 \begin{figure}
     \begin{center}
@@ -385,7 +385,7 @@ Intuitively we can think about the dilation
 operator as a way to dilate spots inside an image into a bigger space. Formally it is defined
 as \parencite{gonzalez2002}
 $$A \oplus B = \{z | (\hat{B}_z) \cap A \neq \emptyset\}$$
-where $A$ and $B$ are both sets in $\Z^2$. 
+where $A$ and $B$ are both sets in $\Z^2$.
 
 An example of dilation can be seen in the figure
 \ref{fig:morph_dilation}, where two examples are shown. In the first row, we have
@@ -393,7 +393,7 @@ a square image with a side length of $d$ and a structuring element whose side le
 is a fourth of the original. If we apply the dilation operation on these two
 images, we get the one on the right. You can imagine taking the smaller square and
 gliding it over the bigger one. If there is an overlap, we can add the centre of
-the structural element to the result. 
+the structural element to the result.
 
 Closer to the mathematical definition, all possible translations are applied to the structural element and if there is an overlap, we add the centre of the structural element to the resulting set.
 
@@ -414,7 +414,7 @@ particular example and does not necessarily have to be of regular size.
 The next essential operation is erosion. As the name suggests, we use it to erode
 parts of the image which we consider unnecessary. An erosion $A \ominus B$ of
 two sets $A$ and $B$, both part of $\Z^2$ space, is defined as
-\parencite{gonzalez2002}: 
+\parencite{gonzalez2002}:
 $$A \ominus B = \{z | (B)_z \subseteq A\}$$
 
 Again $A$ can be thought of as an image while $B$ can be looked at as a structural
