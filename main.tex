@@ -175,17 +175,18 @@ TODO
 \section{Edge finding}
 
 In digital image processing, edges typically separate different regions of
-interested from each other. They are very important in digital image processing
+interest from each other. They are essential in digital image processing
 as they can be used in many workflows --- such as image segmentation and
 classification --- to extract various interesting features and regions
 from the image.
 
-There is not authoritative definition of an edge, but it can be thought of as a
+There is no authoritative definition of an edge, but it can be thought of as a
 set of connected pixels that lie on the boundary between two regions
-\parencite{gonzalez2002}. Usually there is a gradient of intensities between two
-regions as can be seen on the Figure \ref{fig:edge_intensities}. It is hard to
+\parencite{gonzalez2002}. Usually, there is a gradient of intensities between two
+regions, as can be seen in the Figure \ref{fig:edge_intensities}. It is hard to
 define precisely where an edge begins and ends, so the first and the second
 derivative of the image is usually calculated and analysed.
+
 
 \begin{figure}
     \begin{center}
@@ -197,9 +198,9 @@ derivative of the image is usually calculated and analysed.
 
 \subsection{Gradient operators}
 
-First common way of working out where the edge is by looking at the gradient of
-the image. The gradient of an image $f(x,y)$ at position $(x, y)$ is defined as
-vector
+The first common way of working out where the edge is located is by looking at
+the gradient of the image. The gradient of an image $f(x,y)$ at position $(x,
+y)$ is defined as vector
 \parencite{gonzalez2002}:
 $$\nabla \textbf{f} =
 \begin{bmatrix}
@@ -212,18 +213,18 @@ $$\nabla \textbf{f} =
 \end{bmatrix}$$
 The vector gradient represents the rate of change in the image, and it points in
 the direction of the maximum rate of change of intensity. Often just the bare
-vector is not of interest, instead the magnitude of the gradient, denoted as
-$\nabla f$, is calculated too. Confusingly enough usually this is also called
+vector is not of interest; instead, the magnitude of the gradient, denoted as
+$\nabla f$, is calculated too. Confusingly enough, sometimes this is also called
 the gradient in the literature, but here I will differentiate it using the bold
 text. Formally it is defined as:
 $$\nabla f = \text{mag}(\nabla \textbf{f}) = \sqrt{G_x^2 + G_y^2}$$
 where $G_i$ symbolises the gradient in the $i$ axis.
 
 Now the question is how to calculate the $G_x$ and $G_y$ of some digital image.
-It is not possible to calculate the partial derivatives using the standard
-definition from mathematical analysis, because digital images are discrete, thus
-we must use an approximation. Even though it is very common to use something
-like the Sobel filter, in my protoype a more basic Prewitt filter will suffice.
+It is impossible to calculate the partial derivatives using the standard
+definition from mathematical analysis because digital images are discrete; thus,
+we must use an approximation. Even though using something like the Sobel filter
+is very common, in my prototype, a more basic Prewitt filter will suffice.
 \begin{figure}
     \begin{center}
         \begin{tabular}{ |c|c|c| }
@@ -250,7 +251,7 @@ like the Sobel filter, in my protoype a more basic Prewitt filter will suffice.
 \end{figure}
 The horizontal Prewitt filter for 3x3 region looks like in the Figure
 \ref{table:prewitt}.
-The underlined 0 indicates the centre and the numbers specify weights in the the
+The underlined 0 indicates the centre and the numbers specify weights in the
 neighbourhood of a pixel. Summing them all together we arrive at the horizontal or
 vertical approximation of the gradient.
 
@@ -264,9 +265,10 @@ defines as \parencite{gonzalez2002}:
 
 $$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}$$
 
-But in the context of digital image processing our signal is discrete, therefore
-a discrete approximation is needed. A fairly standard way is to use the
-following approach to calculate the partial second derivative in the $x$ axis:
+However, in the context of digital image processing our signal is discrete;
+therefore, a discrete approximation is needed. A fairly standard way is to use
+the following approach to calculate the partial second derivative in the $x$
+axis:
 $$\frac{\partial^2 f}{\partial x^2} = f(x + 1, y) + f(x - 1, y) - 2*f(x, y)$$
 and similar in the y axis:
 $$\frac{\partial^2 f}{\partial y^2} = f(x, y + 1) + f(x, y - 1) - 2*f(x, y)$$
@@ -285,41 +287,41 @@ To calculate the Laplacian of an image, this formula is applied on each pixel.
     \label{fig:edges_noise}
 \end{figure}
 
-One of the disadvantages of this approach is the sensitivity to noise. For the
-demonstration purposes the effects will be shown in 1D. On the Figure
-\ref{fig:edges_noise} the effect of noise is demonstrated. While the original
-signal does not look too destroyed it is impossible to find the correct
+One of the disadvantages of this approach is the sensitivity to noise. For 
+demonstration purposes, the effects will be shown in 1D. In Figure
+\ref{fig:edges_noise}, the effect of noise is demonstrated. While the original
+signal does not look too destroyed, it is impossible to find the correct
 zero-crossings. Therefore we have to help the operator by first smoothing the
-image. Common approach is to first use gaussian smoothing, this is sometimes
+image. A common approach is to first use Gaussian smoothing; this is sometimes
 called a Laplacian of Gaussian operator or a Mexican hat filer. The idea is that
-by averaging we reduce some of the effect of the noise. The Figure \textbf{TODO}
+by averaging, we reduce some of the effects of the noise. The Figure \textbf{TODO}
 demonstrates this effect.
 
 Since the Laplacian is based on second derivatives, it has the property that
-each edge produces a zero crossing. This can be easily utlised to find edges
-inside an image. A simple such algorithm is to go through the whole image and
-check if a particular pixel at given position is positive while their neighbours
-are negative. If this condition is true, we set this position to white in the
-resulting image and black otherwise. This creates an TODO. Here another useful
-properties of the zero-crossing algorithm can be seen. The produced edges are
-thin and form closed contours.
+each edge produces a zero crossing. This can be readily utilised to find edges
+inside an image. A simple algorithm is to go through the whole image and check
+if a particular pixel at a given position is positive while its neighbours are
+negative. If this condition is true, we set this position to white in the
+resulting image and black otherwise. This creates an TODO. Here another valuable
+property of the zero-crossing algorithm can be seen. The produced edges are
+thin, and form closed contours.
 
 \section{Thresholding}
 
 \subsection{Otsu method}
 
 The Otsu thresholding method is a popular technique to determine a threshold
-value betweeen two classes (ususally the foreground and the background) as such
+value between two classes (usually the foreground and the background). As such,
 it works well if the image has a clear bimodal distribution. The main idea of
-this approach is to see the problem of finding the threshold as an
-optimalization problem, where the inter-class variance of the two classes is to
-be minimized. For some threshold $t$ we can define the variance as
-\parencite{otsu1979}:
+this approach is to see the problem of finding the threshold as an optimization
+problem, where the inter-class variance of the two classes is to be minimized.
+For some threshold $t$ we can define the variance as \parencite{otsu1979}:
 $$\sigma^2_W = \sigma^2_0 \omega_0 + \sigma^2_1 \omega_1$$  %todo: whats w?
-where the weight $\omega_1$ and $\omega_2$ are the probabilities of the two classes. It
-can be shown that minimizing the intra-class variance is the same as maximizing
-inter-class variance \parencite{otsu1979}. This idea leads to an efficient
-algorithm employed by many image processing libraries such as scikit-image.
+where the weight $\omega_1$ and $\omega_2$ are the probabilities of the two
+classes. It can be shown that minimizing the intra-class variance is the same as
+maximizing inter-class variance \parencite{otsu1979}. This idea leads to an
+efficient algorithm employed by many image processing libraries, such as
+scikit-image.
 
 TODO image and histogram
 
@@ -447,25 +449,25 @@ them in my thesis.
 
 \chapter{Image data}
 
-The used image data --- of organoids of mammary glands in mice --- was acquired
-using a fluorescence microscope. The original data was captured in 2011 by a
-group of researchers at (\textbf{TODO}) faculty. The captured specimen is around
-500 microns by 500 microns by 80 microns big with resolution around 4.3 microns
+The image data --- of organoids of mammary glands in mice --- was acquired using
+a fluorescence microscope. The original data was captured in 2011 by a group of
+researchers at (\textbf{TODO}) faculty. The captured specimen is around 500
+microns by 500 microns by 80 microns big with a resolution of around 4.3 microns
 per pixel.
 
-In fluorescence microscopy researchers are able to stain certain structures in
-their speciment so that wanted structures reemit light when the right
-wavelenght is shined upon them. This allows them to capture the density of
-studied proteins inside the specimen. In this particular case, the researchers
-captured the density of 6 different proteins, two of them are part of membranes
-while the other 4 are mostly located inside the cell's nuclei.
+In fluorescence microscopy, researchers are able to stain specific structures in
+their specimen so that wanted structures reemit light when the proper wavelength
+is shined upon them. This allows them to capture the density of studied proteins
+inside the specimen. In this particular case, the researchers captured the
+density of six different proteins, of which two are part of membranes, while the
+other four are primarily located inside the cell's nuclei.
 
-Totalling at arund 576 GB, the data consists of 12 different time steps, where
-each step has a size of 1920x1920x388 pixels, and 6 different channels. The data
-is stored in numerous TIFF files, and every channel contains grayscale data with
-16 bits per pixel. All visualisations of the data had to be manually
-preprocessed before including them inside this thesis, otherwise it would be
-hard to see anything.
+The data, totalling around 576 GB, consists of 12 different time steps, where
+each step has a size of 1920x1920x388 pixels and six different channels. The
+data is stored in numerous TIFF files, and every channel contains grayscale data
+with 16 bits per pixel. All visualisations of the data had to be manually
+preprocessed before including them in this thesis. Otherwise, it would be hard
+to see anything.
 
 \begin{figure}
     \begin{center}
