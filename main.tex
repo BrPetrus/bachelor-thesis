@@ -183,29 +183,23 @@ from the image.
 There is not authoritative definition of an edge, but it can be thought of as a
 set of connected pixels that lie on the boundary between two regions
 \parencite{gonzalez2002}. Usually there is a gradient of intensities between two
-regions as can be seen on the Figure \ref{fig:edge_intensities}. To better
-describe the edge, we usually use edge finding operators based on first or second
-partial derivative.
+regions as can be seen on the Figure \ref{fig:edge_intensities}. It is hard to
+define precisely where an edge begins and ends, so the first and the second
+derivative of the image is usually calculated and analysed.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=8.3cm]{resources/inkscape/gradient.png}
+        \includegraphics[width=6cm]{resources/inkscape/gradient.png}
     \end{center}
-    \caption{Image intensities} % todo: replace
+    \caption{Intesity of an image.}
     \label{fig:edge_intensities}
 \end{figure}
 
-% todo: shape? image?
-
-
-% TODO: Gradient operator, Laplace operator and Zero-crossing algorithms
-
-% todo some sort of beginning with motivation
-
 \subsection{Gradient operators}
 
-First way of calculating the edge is looking at the gradient of the image. The
-gradient of an image $f(x,y)$ at position $(x, y)$ is defined as vector
+First common way of working out where the edge is by looking at the gradient of
+the image. The gradient of an image $f(x,y)$ at position $(x, y)$ is defined as
+vector
 \parencite{gonzalez2002}:
 $$\nabla \textbf{f} =
 \begin{bmatrix}
@@ -216,21 +210,21 @@ $$\nabla \textbf{f} =
     \dfrac{\partial f}{\partial x}\\[2ex]
     \dfrac{\partial f}{\partial y}
 \end{bmatrix}$$
-The vector gradient represents the rate of change in the image, and it
-points in the direction of the maximum rate of change. It can also be though of
-as the partial derivate in the two axis. But what is often of interest is not
-the bare vector, but the magnitude of the gradient, denoted as $\nabla f$.
-Confusing enough this is also usually called the gradient in the literature, but
-here I will differentiate it using the bold text. Formally it is defined as:
+The vector gradient represents the rate of change in the image, and it points in
+the direction of the maximum rate of change of intensity. Often just the bare
+vector is not of interest, instead the magnitude of the gradient, denoted as
+$\nabla f$, is calculated too. Confusingly enough usually this is also called
+the gradient in the literature, but here I will differentiate it using the bold
+text. Formally it is defined as:
 $$\nabla f = \text{mag}(\nabla \textbf{f}) = \sqrt{G_x^2 + G_y^2}$$
+where $G_i$ symbolises the gradient in the $i$ axis.
 
 Now the question is how to calculate the $G_x$ and $G_y$ of some digital image.
-It is not possible to calculate the partial derivates using the standard
+It is not possible to calculate the partial derivatives using the standard
 definition from mathematical analysis, because digital images are discrete, thus
-we commonly use an approximation. Even though it is very common to use something
-like the Sobel filter, here a more basic Prewitt filter will suffice. The
-horizontal Prewitt filter for 3x3 region looks like this:
-\begin{figure}[H]
+we must use an approximation. Even though it is very common to use something
+like the Sobel filter, in my protoype a more basic Prewitt filter will suffice.
+\begin{figure}
     \begin{center}
         \begin{tabular}{ |c|c|c| }
             \hline
@@ -252,58 +246,67 @@ horizontal Prewitt filter for 3x3 region looks like this:
         \end{tabular}
     \end{center}
     \caption{Prewitt horizontal and vertical mask.}
+    \label{table:prewitt}
 \end{figure}
-The underline 0 indicates the centre and the numbers specify weights in the the
-neighbour of the pixel. Summing all together we arrive at the horizontal or
-vertical approximation of gradient.
+The horizontal Prewitt filter for 3x3 region looks like in the Figure
+\ref{table:prewitt}.
+The underlined 0 indicates the centre and the numbers specify weights in the the
+neighbourhood of a pixel. Summing them all together we arrive at the horizontal or
+vertical approximation of the gradient.
 
 TODO image
 
 \subsection{Laplacian operator}
 
-The second common way of finding edges is using the second derivate, or more precisely
-using the Laplacian. For a 2D function $f(x, y)$ the Laplacian is defines as
-\parencite{gonzalez2002}:
+The second common way of finding edges is using the second derivative, or more
+precisely using the Laplacian. For a 2D function $f(x, y)$ the Laplacian is
+defines as \parencite{gonzalez2002}:
 
 $$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}$$
 
 But in the context of digital image processing our signal is discrete, therefore
-an approximation in discrete form is needed. A fairly standard way is to use the
-following approximation for the partial second derivates in x direction:
+a discrete approximation is needed. A fairly standard way is to use the
+following approach to calculate the partial second derivative in the $x$ axis:
 $$\frac{\partial^2 f}{\partial x^2} = f(x + 1, y) + f(x - 1, y) - 2*f(x, y)$$
-and similar in the y direction:
+and similar in the y axis:
 $$\frac{\partial^2 f}{\partial y^2} = f(x, y + 1) + f(x, y - 1) - 2*f(x, y)$$
 Substituting into the prior definition we get the following approximation:
 $$\nabla^2 f = f(x+1, y) + f(x-1, y) + f(x, y+1) + f(x, y-1) - 4*f(x,y)$$
+To calculate the Laplacian of an image, this formula is applied on each pixel.
 
-TODO insert an image and description
-TODO insert and examplorary image
+% todo insert an image and description
+% todo insert and examplorary image
 
-One of the disatvatages of this approach is the sensitivity to noise. For the
-demonstration purposes the effects will be shown in 1D. On the
-Figure TODO the effect of noise is demonstrated. While the original signal does
-not look too destroyed it is impossible to find the correct zero-crossings.
-Therefore we have to help the operator by first smoothing the image. Common
-approach is to first use gaussian smoothing, this is sometimes called a
-Laplacian of Gaussian operator or a Mexican hat filer. The idea is that by
-averaging we reduce some of the effect of the noise. The Figure TODO
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=6cm]{"resources/gonzalez_edges_and_noise.jpg"}
+    \end{center}
+    \caption{Effect of noise on signal \parencite{gonzalez2002}}
+    \label{fig:edges_noise}
+\end{figure}
+
+One of the disadvantages of this approach is the sensitivity to noise. For the
+demonstration purposes the effects will be shown in 1D. On the Figure
+\ref{fig:edges_noise} the effect of noise is demonstrated. While the original
+signal does not look too destroyed it is impossible to find the correct
+zero-crossings. Therefore we have to help the operator by first smoothing the
+image. Common approach is to first use gaussian smoothing, this is sometimes
+called a Laplacian of Gaussian operator or a Mexican hat filer. The idea is that
+by averaging we reduce some of the effect of the noise. The Figure \textbf{TODO}
 demonstrates this effect.
 
-As can be seen on the image TODO the Laplacian operator calculates
-
-The property of the laplacian in crossing the zero can be used to calculate the
-edges inside the image. A simple possible algorithm is to go through the whole
-image and check if a particular pixel at given position is positive while their
-neighbours are negative. If this condition is true, we set this position to
-white in the resulting image and black otherwise. This creates an TODO. Here
-another useful properties of the zero-crossing algorithm can be seen. The edges
-produced are thin and form closed contours.
+Since the Laplacian is based on second derivatives, it has the property that
+each edge produces a zero crossing. This can be easily utlised to find edges
+inside an image. A simple such algorithm is to go through the whole image and
+check if a particular pixel at given position is positive while their neighbours
+are negative. If this condition is true, we set this position to white in the
+resulting image and black otherwise. This creates an TODO. Here another useful
+properties of the zero-crossing algorithm can be seen. The produced edges are
+thin and form closed contours.
 
 \section{Thresholding}
 
 \subsection{Otsu method}
-
-TODO \parencite{otsu1979}
 
 The Otsu thresholding method is a popular technique to determine a threshold
 value betweeen two classes (ususally the foreground and the background) as such
@@ -312,7 +315,7 @@ this approach is to see the problem of finding the threshold as an
 optimalization problem, where the inter-class variance of the two classes is to
 be minimized. For some threshold $t$ we can define the variance as
 \parencite{otsu1979}:
-$$\sigma^2_W = \sigma^2_0 * \omega_0 + \sigma^2_1 * \omega_1$$  %todo: whats w?
+$$\sigma^2_W = \sigma^2_0 \omega_0 + \sigma^2_1 \omega_1$$  %todo: whats w?
 where the weight $\omega_1$ and $\omega_2$ are the probabilities of the two classes. It
 can be shown that minimizing the intra-class variance is the same as maximizing
 inter-class variance \parencite{otsu1979}. This idea leads to an efficient
@@ -444,24 +447,25 @@ them in my thesis.
 
 \chapter{Image data}
 
-My thesis utilized image data acquired by a fluorescence microscope of organoids
-of mammary glands in mice. The original data was captured in 2011 by a group of
-researchers at (\textbf{TODO}) faculty. The captured specimen is around 500
-microns by 500 microns by 80 microns big with resolution around 4.3 microns per
-pixel.
+The used image data --- of organoids of mammary glands in mice --- was acquired
+using a fluorescence microscope. The original data was captured in 2011 by a
+group of researchers at (\textbf{TODO}) faculty. The captured specimen is around
+500 microns by 500 microns by 80 microns big with resolution around 4.3 microns
+per pixel.
 
-In fluorescence microscopy researchers are able to stain certain strucutures in
-their speciment so that specific structures reemit light when the right
-wavelenght is shined upon them. This allows them to create an image with density
-of particular strucutres inside the specimen. In my case, the reearchers
+In fluorescence microscopy researchers are able to stain certain structures in
+their speciment so that wanted structures reemit light when the right
+wavelenght is shined upon them. This allows them to capture the density of
+studied proteins inside the specimen. In this particular case, the researchers
 captured the density of 6 different proteins, two of them are part of membranes
 while the other 4 are mostly located inside the cell's nuclei.
 
 Totalling at arund 576 GB, the data consists of 12 different time steps, where
 each step has a size of 1920x1920x388 pixels, and 6 different channels. The data
-is stored in numerous TIFF files. Every channel contains grayscale data with
-16 bits per pixel. Following images in these thesis were preprocesed to enhance
-the visualisation for demonstration pruposes.
+is stored in numerous TIFF files, and every channel contains grayscale data with
+16 bits per pixel. All visualisations of the data had to be manually
+preprocessed before including them inside this thesis, otherwise it would be
+hard to see anything.
 
 \begin{figure}
     \begin{center}
@@ -472,9 +476,9 @@ the visualisation for demonstration pruposes.
     \label{fig:data_example}
 \end{figure}
 In the Figure \ref{fig:data_example} a single slice of the data was taken from
-two channels. They are from the same moment of time and at the same place. On
-the left one of the membrane proteins is showcased while on the right a
-different protein mostly from nuclei is shown.
+two channels. They are from the same moment of time and from the same place. On
+the left one of the proteins forming the membrane is showcased while on the right a
+different protein mostly located in nuclei is shown.
 
 \section{Problems with the dataset}
 
