@@ -8,3 +8,6 @@ fithesis/logo/
 *.tif
 *.tiff
 
+# Python interactive notebook
+*.ipynb_checkpoints
+

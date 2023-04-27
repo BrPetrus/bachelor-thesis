@@ -485,12 +485,48 @@ different protein mostly located in nuclei is shown.
 \section{Problems with the dataset}
 
 The size of the data and the inherent problems of fluorescence microscopy
-provide the main issues in analyzing the data. Only small part of the data is
-usable
+provide the main issues in analyzing the data. It is very time consuming to
+analyse the whole data set; therefore, all work was done on much smaller slices
+of the data. Interesting regions with well lit 
 
+\subsection{Noise}
 
+The first problem with the data set is the quality. In most places, the noise is
+too strong to try to use it in any analysis.
 
+In the membrane channel, two main problems can be seen seen. To begin, most
+membranes do not form connected segments, instead, a part the cell's membrane is
+usually missing or it is joined with the neighbouring cell's membrane as can be
+seen on the Figure \textbf{TODO}. This complicates the analysis, as different
+regions may require different filters to be properly preprocessed. Moreover,
+this makes the edge detection much harder, since it relies on the magnitude of
+gradient of the image.
 
+Another issue is that the light gets scattred inside the organoid as can be seen
+on Figure \textbf{TODO}. That means that it is possible to analyze only the
+outer most layers of cells of the organoid.
 
+The protein channel comes with its own set of problems, some of them different.
+It is still true, that the sharpest data comes, again, from the outermost layer
+of the organoid, limiting the amount of usable data. Another issue is that the
+individual cells are sometimes quite fuzzy, which makes it hard to decide, where
+exactly the cells ends, or if they are multiple cells.
+% todo: reword 
+
+\subsection{Size}
+
+The size of the dataset poses the second problem, as it would be computationaly
+expensive to try to process the whole data set at once; however a lot of the
+data is either unusable or of no interest. In most instances, the data is
+predominantly composed of the background, and at several moments in time, no
+specimen can be seen; therefore, to reduce the computational demands further,
+only specific regions of interest were manually selected to create the final
+data set. In the end, the reduced data set is only a few dozen megabytes large.
+
+\chapter{The developed segmentation method}
+
+Here the algorithm will be included.
+
+Hopefuly with many images.
 
 \end{document}
