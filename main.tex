@@ -287,7 +287,7 @@ To calculate the Laplacian of an image, this formula is applied on each pixel.
     \label{fig:edges_noise}
 \end{figure}
 
-One of the disadvantages of this approach is the sensitivity to noise. For 
+One of the disadvantages of this approach is the sensitivity to noise. For
 demonstration purposes, the effects will be shown in 1D. In Figure
 \ref{fig:edges_noise}, the effect of noise is demonstrated. While the original
 signal does not look too destroyed, it is impossible to find the correct
@@ -327,7 +327,36 @@ TODO image and histogram
 
 \subsection{Gradient threshold}
 
- TODO if used in local threshold
+Another useful thresholding method is the gradient threshold algorithm. Unlike
+many other thresholding algorithms, it does not purely rely on the analysis of
+the image's histogram; instead, the threshold is calculated as a weighted sum of
+the image's intensities, where the weights are dictated by the magnitude of the
+gradient \cite{pb130}.
+
+The idea is that the background tends to be rather uniform compared to the
+object in the foreground; hence, the magnitude of the gradient is the greatest
+in the foreground, and the edge separating it from the background. That can be
+utilized by using the magnitude as the weight in the summing of intensities.
+This way the background's intensities play lesser role.
+
+Formally the threshold $a$ is defined as:
+$$a = \sum_{u, v} I(u, v) \frac{|\nabla I(u, v)|}{\sum_{i, j} |\nabla(i,j)|}$$
+where $I(i, j)$ stands for the image intensity at the $(i, j)$ position.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=8cm]{"resources/demo-gradient-threshold.png"}
+    \end{center}
+    \caption{Demo of gradient threshold.}
+    \label{fig:demo_grad_thresh}
+\end{figure}
+
+In Figure \ref{fig:demo_grad_thresh} an example image is shown. There, the
+gradient thresholding algorithm was used to segment the cell from the
+background. As can be seen, the magnitude of the gradient is biggest in the
+cell; hence, it contributes more to the value of the threshold. 
+
+\textbf{TODO: Why this threshold method is useful}
 
 \section{Mathematical morphology}
 
@@ -487,7 +516,7 @@ different protein mostly located in nuclei is shown.
 The size of the data and the inherent problems of fluorescence microscopy
 provide the main issues in analyzing the data. It is very time consuming to
 analyse the whole data set; therefore, all work was done on much smaller slices
-of the data. Interesting regions with well lit 
+of the data. Interesting regions with well lit
 
 \subsection{Noise}
 
@@ -511,7 +540,7 @@ It is still true, that the sharpest data comes, again, from the outermost layer
 of the organoid, limiting the amount of usable data. Another issue is that the
 individual cells are sometimes quite fuzzy, which makes it hard to decide, where
 exactly the cells ends, or if they are multiple cells.
-% todo: reword 
+% todo: reword
 
 \subsection{Size}
 
@@ -525,8 +554,19 @@ data set. In the end, the reduced data set is only a few dozen megabytes large.
 
 \chapter{The developed segmentation method}
 
-Here the algorithm will be included.
+TODO: introductory paragraph
 
-Hopefuly with many images.
+\section{Overview/Goals}
+
+High level overview of the process.
+
+\section{Membrane channel}
+
+Steps inside the membrane channel: watershed, thresholding, denoising, edge
+detection
+
+\section{Protein channel}
+
+Steps inside the protein channel: thresholding, denoising
 
 \end{document}
