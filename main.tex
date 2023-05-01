@@ -138,38 +138,6 @@ version of the original signal, which can be represented as an array of values.
 If both the coordinates and the intensity are subsets of some discrete and finite set,
 we can think of them as a digital image.
 
-\subsection{Acquiring}
-
-\subsection{Sampling}
-
-\subsection{Noise}
-
-Unfortunately, we rarely acquire a perfect image without any noise. Noise
-can be thought of as unwanted variations in image intensities which are not
-present in the original signal. Noise in the signal may arise during multiple
-steps of the process; for example, it might be a fault of an imperfect sensor,
-such as when we deal with charged-coupled device cameras. There a light input is
-converted into an electric signal, but such sensors only have a limited quantum
-efficiency and are greatly affected by environmental factors such as
-temperature and light intensity. After the sensor, a common source of noise is
-the signal's transmission. It is greatly affected by disturbances in the used
-channel, such as low energy due to distance during wireless transmission or
-limited baud rate of Wi-Fi and Bluetooth. While wireless interfaces have many
-issues, wired alternatives come with their own limitations and liabilities such as physical damage.
-
-\subsubsection{Typical noise in fluorescence microscopy.}
-
-Generally, each source of noise can behave differently and in the process of restoring
-images, knowing the distribution and nature of the noise is essential if we are to restore the
-image in any meaningful way. According to \parencite{hamamatsu_ccd}, there are three main sources of noise when using CCD sensors, and those are:
-\begin{compactenum}
-\item Photon noise
-\item Dark noise
-\item Read noise
-\end{compactenum}
-
-TODO
-
 \section{Image smoothing}
 
 \section{Edge finding}
