@@ -112,59 +112,68 @@ Theses are rumoured to be \enquote{the capstones of education}, so
 I decided to write one of my own. If all goes well, I will soon
 have a diploma under my belt. Wish me luck!
 
-\chapter{Theory}
+\chapter{Basic terms}
+Image processing involves the use of many manthematical techniques and
+algorithms to extract useful information or somehow alter the image. The purpose
+of this section is to provide a comprehensive and shallow overview of the
+fundamental concepts used in my image processing pipeline.
 
 \section{Digital Image}
-
-Our eyesight is arguably one of our most helpful sense for observing the world.
-Researchers have developed many tools which help us study the world. I will
-begin by formalizing the concept of images so that we can use mathematics
-and computer science to describe them.
+Our eyesight is undoubtedly one of our most helpful senses, allowing us to
+observe, study and comprehend the world around us. However, the way a computer
+processes visual information is quite different. To enable us to study the world
+using computer, numerous tools and algorithms have been developed. In this
+section, I will begind by defining the concept of images in a formalized manner,
+so that mathematics and computer science knowledge can be utilized to analyze
+images.
 
 Essentially we can think of an image as an n-dimensional function $f(x_1, x_2,
-..., x_n)$, where $x_1, x_2, .. x_n$ are coordinates inside a spatial plane,
-while the function value at those coordinates specifies the magnitude or intensity
-of the signal at that point. In most general terms, we can think about images as
-functions of type $f:\R^n \rightarrow \R^m$, where $n$ indicates the number of
-spatial dimensions and $m$ specifies the number of channels. For example, when
-we are talking about two-dimensional greyscale images, $m$ is equal to 1 and $n$ is
-equal to 2, while a typical coloured photograph can have more than 3 channels.
+..., x_n)$, where $x_1, x_2, ..., x_n$ are coordinates inside a spatial domain,
+while the function value at those coordinates specifies the magnitude or
+intensity of the signal at that point. We can think about images as functions of
+type $f:\R^n \rightarrow \R^m$ where $n$ indicates the number of spatial
+dimensions and $m$ specifies the number of channels. For example, when we are
+talking about two-dimensional greyscale images, $m$ is equal to 1 and $n$ is
+equal to 2, while a typical coloured photograph has 3 colour channels. Another
+important image type is the binary image, where the function's range is just two
+values.
 
-In real life, we do not necessarily work with real-valued spatial dimensions and
-intensities but only have a finite number of bits. The process of
-acquiring images in a finite grid and assigning intensities from a finite
-range is called sampling and quantization. In essence, we create a discretized
-version of the original signal, which can be represented as an array of values.
-If both the coordinates and the intensity are subsets of some discrete and finite set,
-we can think of them as a digital image.
+Once we start using computers to work with images, we no longer can work with
+real-valued spatial dimensions and intensities, because we only have a finite
+number of bits. The process of acquiring images in a finite grid and assigning
+intensities from a finite range is called sampling and quantization. In essence,
+we create a discretized version of the original signal, which can be represented
+as an one- or multi-dimensional array of values. If the coordinates and the
+intensity are subsets of some discrete set, then the function represents a
+digital image.
 
-\section{Image smoothing}
+\section{Image denoising}
 
-\section{Edge finding}
+\section{Edge detection}
 
 In digital image processing, edges typically separate different regions of
-interest from each other. They are essential in digital image processing
+interest from one another. They are essential in digital image processing
 as they can be used in many workflows --- such as image segmentation and
 classification --- to extract various interesting features and regions
 from the image.
 
 There is no authoritative definition of an edge, but it can be thought of as a
 set of connected pixels that lie on the boundary between two regions
-\parencite{gonzalez2002}. Usually, there is a gradient of intensities between two
-regions, as can be seen in the Figure \ref{fig:edge_intensities}. It is hard to
-define precisely where an edge begins and ends, so the first and the second
-derivative of the image is usually calculated and analysed.
+\cite{gonzalez2002}. Usually, there is a gradual difference in intensities
+between two regions, as is shown in Figure \ref{fig:edge_intensities}. It is
+hard to define precisely where an edge begins and ends, so the first and the
+second derivative of the image is usually calculated and analysed.
 
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=6cm]{resources/inkscape/gradient.png}
     \end{center}
-    \caption{Intesity of an image.}
+    \caption{Intesity of a signal with an edge.}
     \label{fig:edge_intensities}
 \end{figure}
 
-\subsection{Gradient operators}
+\subsection{Calculating gradient}
 
 The first common way of working out where the edge is located is by looking at
 the gradient of the image. The gradient of an image $f(x,y)$ at position $(x,
@@ -328,15 +337,17 @@ cell; hence, it contributes more to the value of the threshold.
 
 \section{Mathematical morphology}
 
-Mathematical morphology is a tool used to extract various interesting features
-from images. The tasks include edge-detecting algorithms, finding convex hulls, and filtering
-, just to name a few. In the simplest terms,
-mathematical morphology looks at images as sets of numbers and modifies them using structural elements. Those can take many forms, but their shape varies based on the task we are trying
-to achieve. The main use of mathematical morphology in this thesis is
-to pre- and post-process image data generated by other image processing methods.
-First, some basic operations on binary images are described. Note that
-this area is vast and still being actively researched, and I will cover only parts which are helpful later in my
-prototype.
+Mathematical morphology is an area of research studying how to extract valuable
+information and how to filter images. Few examples of what mathematical
+morphology study are edge-detecting algorithms, finding convex hulls, and image
+filtering. In the simplest terms, mathematical morphology looks at images as
+sets of numbers and modifies them using structural elements. Those can take many
+forms, but their shape varies based on the task we are trying to achieve. The
+main use of mathematical morphology in this thesis is to pre- and post-process
+image data generated by other image processing methods. First, some basic
+operations on binary images are described. Note that this area is vast and still
+being actively researched, and I will cover only parts which are helpful later
+in my prototype.
 
 In this branch of image processing, we look at the images through set theory
 instead of looking at images as discrete-valued functions. In this context, an
@@ -363,8 +374,10 @@ $$\hat{B} = \{w | w=-b \text{ , for } b \in B\}$$
     \label{fig:morp_refl}
 \end{figure}
 
-While manipulating images we commonly have to move parts of the image around.  In principle, a similar operation, called translation, is defined on sets. The formal definition of
-moving a set $A$ by some translation vector $z$ is \parencite{gonzalez2002}:
+While manipulating images we commonly have to move parts of the image around.
+In principle, a similar operation, called translation, is defined on sets. The
+formal definition of moving a set $A$ by some translation vector $z$ is
+\parencite{gonzalez2002}:
 $$(A)_z = \{c | c = a + z\text{ , for } a \in A\}$$
 The operation is illustrated in Figure \ref{fig:morph_translation} where the set
 $B$ is moved downwards by a vector $z$.
@@ -377,27 +390,31 @@ $B$ is moved downwards by a vector $z$.
 \end{figure}
 
 \subsection{Dilation and Erosion}
-Now it is possible to properly define two fundamental operations in the field of mathematical morphology, upon which many other operations are built. Both of
+Now it is possible to properly define two fundamental operations in the field of
+mathematical morphology, upon which many other operations are built. Both of
 these operations include a structural element. A structural element is again a
-set, but it can be used to describe how far and in which way the operation will influence the result.
+set, but it can be used to describe how far and in which way the operation will
+influence the result.
 
 
 \subsubsection{Dilation}
-Intuitively we can think about the dilation
-operator as a way to dilate spots inside an image into a bigger space. Formally it is defined
-as \parencite{gonzalez2002}
+Intuitively we can think about the dilation operator as a way to dilate spots
+inside an image into a bigger space. Formally it is defined as
+\parencite{gonzalez2002}
 $$A \oplus B = \{z | (\hat{B}_z) \cap A \neq \emptyset\}$$
 where $A$ and $B$ are both sets in $\Z^2$.
 
-An example of dilation can be seen in the figure
-\ref{fig:morph_dilation}, where two examples are shown. In the first row, we have
-a square image with a side length of $d$ and a structuring element whose side length
-is a fourth of the original. If we apply the dilation operation on these two
-images, we get the one on the right. You can imagine taking the smaller square and
-gliding it over the bigger one. If there is an overlap, we can add the centre of
-the structural element to the result.
+An example of dilation can be seen in the figure \ref{fig:morph_dilation}, where
+two examples are shown. In the first row, we have a square image with a side
+length of $d$ and a structuring element whose side length is a fourth of the
+original. If we apply the dilation operation on these two images, we get the one
+on the right. You can imagine taking the smaller square and gliding it over the
+bigger one. If there is an overlap, we can add the centre of the structural
+element to the result.
 
-Closer to the mathematical definition, all possible translations are applied to the structural element and if there is an overlap, we add the centre of the structural element to the resulting set.
+Closer to the mathematical definition, all possible translations are applied to
+the structural element and if there is an overlap, we add the centre of the
+structural element to the resulting set.
 
 For example, this operation can be used to join disconnected segments in an
 image by choosing a large enough structural element. Its size will depend on the
@@ -413,15 +430,14 @@ particular example and does not necessarily have to be of regular size.
 
 \subsubsection{Erosion}
 
-The next essential operation is erosion. As the name suggests, we use it to erode
-parts of the image which we consider unnecessary. An erosion $A \ominus B$ of
-two sets $A$ and $B$, both part of $\Z^2$ space, is defined as
-\parencite{gonzalez2002}:
-$$A \ominus B = \{z | (B)_z \subseteq A\}$$
+The next essential operation is erosion. As the name suggests, we use it to
+erode parts of the image which we consider unnecessary. An erosion $A \ominus B$
+of two sets $A$ and $B$, both part of $\Z^2$ space, is defined as
+\parencite{gonzalez2002}: $$A \ominus B = \{z | (B)_z \subseteq A\}$$
 
-Again $A$ can be thought of as an image while $B$ can be looked at as a structural
-element. In contrast to the dilation operation, we are now looking if the whole
-structural element fits inside $A$ as can be seen in the figure
+Again $A$ can be thought of as an image while $B$ can be looked at as a
+structural element. In contrast to the dilation operation, we are now looking if
+the whole structural element fits inside $A$ as can be seen in the figure
 \ref{fig:morph_erosion}. There a smaller structural element is used to cut away
 parts of the bigger square.
 
@@ -431,8 +447,8 @@ segments, and to erase noise and other unwanted disturbances in an image.
 While mathematical morphology is a massive topic of interest to many
 researchers, here I will only use the aforementioned operations. They can be
 further used to define more operations such as binary opening and binary closing
-and can be expanded to include grayscale images; however, I will not be using or covering
-them in my thesis.
+and can be expanded to include grayscale images; however, I will not be using or
+covering them in my thesis.
 
 \begin{figure}
     \begin{center}
