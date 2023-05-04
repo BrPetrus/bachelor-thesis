@@ -149,6 +149,19 @@ digital image.
 
 \section{Image denoising}
 
+In a perfect world, every image would be sharp and ev
+%todo: write some introductiory paragraph
+
+%todo: reword draft
+Quite counter-intuitively, to reduce the effect of noise while reading details,
+some sort of averaging of the image is performed. How and why a noise ends up in
+an image is a vast topic, which is not going to be discussed here in depth.
+(\textbf{Consider adding the link to membrane noise analysis.}) 
+
+~~A simple noise
+model is as follows:~
+
+
 \section{Edge detection}
 
 In digital image processing, edges typically separate different regions of
@@ -538,19 +551,71 @@ data set. In the end, the reduced data set is only a few dozen megabytes large.
 
 \chapter{The developed segmentation method}
 
-TODO: introductory paragraph
+%todo: inkorporovat fakt, ze hlavne v jadrovom kanale to robime
+%note: Overview/Goals;High level overview of the process.
 
-\section{Overview/Goals}
+The goal of the algorithm is to segment individual cells and uniquely label each
+cell; however, as previously discussed, they are often not clearly separated
+from each other. A naive otsu thresholding leads to NEUSPOKOJIVE results as is
+seen on Figure \textbf{TODO}. Thus, a more sophisticated algorithm had to be
+developed to segment the cells' nuclei finer.
 
-High level overview of the process.
+We settled on two step algorithm. In the first step, the membraine-stained
+channel is used, while in the second step the nuclei-stained channel is used.
+Every cell has a membrane and a nuclei in our specimen; hence, we should be able
+to use the information provided by the first channel to improve the thresholding
+in the second channel.
+
+In the first step quite DRSNA segmentation is performed to roughly find the
+membranes separating the individual cells. The segmentation is then utilized in
+the second step; the algorithm overlays the previous segmentation on top of the
+protein-stained channel and looks at every label. Each one represents a single
+cell, and some of it's surroundings. Finally, a local version of the gradient 
+threshold is performed on each region.
+
+
+
 
 \section{Membrane channel}
-
 Steps inside the membrane channel: watershed, thresholding, denoising, edge
 detection
+
+The goal is to provide a rough segmentation of the cells using the
+membrane-stained channel. First, a pre-process of the data is performed to deal
+with some of the noise in the data. As can be seen on Figure \textbf{TODO} we
+need to deal with the fact, that the intensity inside the cell is quite uneven.
+To even out the lighting inside cells a maximum projection from gaussian pyramid
+is performed. The idea behind this step is, that edge have higher intenisties
+than insides of the cells; therefore they should not be very influenced by this
+step. At the same time the uneven lighting inside cells will be smoothen out,
+since the highest intensity areas will \textbf{bleed} out to the surrounding
+area. This effect is demonstrated on the Figure \textbf{TODO}. That concludes
+the denoising part.
+
+%todo: Cell mask generation
+
+After dealing with the uneven lighting the edge detection is performed. To help
+with the residual noise, anisotropic gaussian smoothing is applied. The voxel
+dimensions in our data is not the same as in the z-axis the voxel is about 2.5
+times as large; hence, using an anisotropic filter is more correct. T
+
+Now the edges need to be detected using zero-crossing algorithm.
+
 
 \section{Protein channel}
 
 Steps inside the protein channel: thresholding, denoising
+
+\chapter{Implementation}
+Various details regarding the algorithms, and how they were implemented. What
+libraries were used. Documentation on how to use the program.
+
+\chapter{Evaluation}
+Segmentation quality using Jaccard score, and detection quality using F1Score.
+Typical issues with the segmetation (in chapt. about developed seg. method I
+said, that every region from first step corresponds to a signel cell in the
+second step - obvious issue). Performance and memory requirements on some
+dataset. How does jaccard score changes, when we change the thresholding value
+from 0.5?
 
 \end{document}
