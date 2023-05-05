@@ -113,6 +113,15 @@ I decided to write one of my own. If all goes well, I will soon
 have a diploma under my belt. Wish me luck!
 
 \chapter{Basic terms}
+
+TODO:
+\begin{itemize}
+    \item{Define distance map}
+    \item{Gaussian pyramid}
+    \item{Watershed}
+    \item{Incorporate feedback}
+\end{itemize}
+
 Image processing involves the use of many manthematical techniques and
 algorithms to extract useful information or somehow alter the image. The purpose
 of this section is to provide a comprehensive and shallow overview of the
@@ -473,6 +482,10 @@ covering them in my thesis.
 
 \section{Segmentation}
 
+\subsection{Watershed algorithm}
+
+
+
 \chapter{Image data}
 
 The image data --- of organoids of mammary glands in mice --- was acquired using
@@ -573,9 +586,6 @@ protein-stained channel and looks at every label. Each one represents a single
 cell, and some of it's surroundings. Finally, a local version of the gradient 
 threshold is performed on each region.
 
-
-
-
 \section{Membrane channel}
 Steps inside the membrane channel: watershed, thresholding, denoising, edge
 detection
@@ -592,15 +602,55 @@ since the highest intensity areas will \textbf{bleed} out to the surrounding
 area. This effect is demonstrated on the Figure \textbf{TODO}. That concludes
 the denoising part.
 
-%todo: Cell mask generation
+% TODO: rephrase this
+Naivelly applying the zero-crossing algorithm results in other artifacts, such
+as noise causing the algorithm to find contours in the background; therefore,
+a cell mask must be created to differentiate between the foreground (the
+specimen) and the background. For this task, the Otsu thresholding method was
+used, due to a bimodal distribution of the data \textbf{TODO}. On the Figure
+\textbf{TODO} the thresholded data along with the histogram is shown. However,
+some of the useful data is incorrectly labeled as background, to combat this, in
+a general form a binary erosion with a circular structural element with radius
+equal to user-defined cell radius. The final version is show in the second row
+in Figure \textbf{TODO}.
 
 After dealing with the uneven lighting the edge detection is performed. To help
 with the residual noise, anisotropic gaussian smoothing is applied. The voxel
 dimensions in our data is not the same as in the z-axis the voxel is about 2.5
-times as large; hence, using an anisotropic filter is more correct. T
+times as large; hence, using an anisotropic filter is more correct. 
 
-Now the edges need to be detected using zero-crossing algorithm.
+Now the pre-processing is finished and the zero-crossing algorithm is applied.
+The zero-crossing algorithm provides a reasonable outline of the cells as is
+shown in Figure \textbf{TODO}. The user sometimes has to play around with
+various sigmas to improve the quality of the edge detection. When the sigma is
+too low the algorithm tends to find a large amount of small regions, while too
+large sigma causes the algorithm to join individual cells together. This step
+is further complicated by the fact, that some of the cells are missing parts of
+their membranes. \textbf{TODO}; hence, the is one of the limiting factors of
+the segmentation pipeline.
 
+Next step is to utilize the outlines to segment individual cells. For this task
+the watershed algorithm is used. To improve the quality of the segmentation,
+markers indicating the sources of water need to be created. Ideally, every cell
+has one marker. These markers are then fed to the watershed algorithm as places
+from which water stems from. To find these markers, the insides of the cells
+need to be filled. This is done in two steps using a flood fill algorithm. At
+this points, we have a binary image, one value represents edge and the second
+everything else. We assume, that the border of the image belongs to the
+backgroudn and start a flood fill from the border filling it with a new colour. In
+the second step, all areas, which are not edges and were not filled in the first
+step are said to be inside of the cells. In Figure \textbf{TODO} all insides of
+cells are filled, and everything else is considered to be the background. This
+is used to calculate the distance map, from which, finally, the markers are
+obtained. The markers are chosen as local extremes from the distance map.
+Additionaly, only a subset of the markers are chosen, the constraint being,
+that they have to be at least one cell radius apart. The cell radius is
+tweakable option. The distance map and the markers are then passed to the
+watershed algorithm. It labels each cell with a unique label.
+
+A great advantage of creating the markers from the distance map is that, even if
+the edge detections joins several cells together, the two cells can still be
+labeled individualy.
 
 \section{Protein channel}
 
