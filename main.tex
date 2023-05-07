@@ -652,13 +652,56 @@ A great advantage of creating the markers from the distance map is that, even if
 the edge detections joins several cells together, the two cells can still be
 labeled individualy.
 
-\section{Protein channel}
+\section{Nuclei-stained channel}
 
 Steps inside the protein channel: thresholding, denoising
 
+In Figure \textbf{TODO} a common example of the nuclei-stained channel is shown.
+In this channel the preprocessing consists of just a simple gaussian smoothing
+to help with the thresholding.
+
+Applying the Otsu thresholding method in the nuclei-stained channel leads to
+poor results as is seen in Figue \textbf{TODO}. The problem is that the lighting
+is quite uneven. Some cells are significanlty brighter than others; thus, global
+thresholding is not a viable option.
+
+However, we can use the previously obtained segmentation from membraine-stained
+channel to improve the quality of the thresholding. By looking at just specific
+areas denoted by the labels, the thresholding yields more suitable results. In
+essence, a local version of some thresholding algorithm can be used.
+
+In our testing, Otsu thresholding method was not suitable as in many cases the
+proximity of cells shrinks the background area, causing the algorithm to
+categorise some of the foreground as the background. After some experimentation,
+we concluded that the gradient thresholdolding algorithm provides better result.
+In Figure \textbf{TODO} a comparison is made between these two algorithms. Also
+others easily accessed thresholding methods in the scikit library were
+experimented with, but the gradient thresholding method provided reasonable
+results in many cases.
+
+% todo: tu asi neni jasne, ze sa to robi postupne
+Even tough the data was smoothed before applying the threshold, many edges in
+the binary thresholded image appear quite jagged, to combat this a final round
+of post-processing is applied. It consists of appyling binary morphological
+closing on each label to fill in dark spots; thus, rounding of the jagged edges.
+
+An example of the final segmentation and the ground truth --- created by a
+biologist --- is shown in Figure \textbf{TODO}. This concludes the section about
+how the algorithm works. In Figure \textbf{TODO} several other examples of
+segmentations are given.
+
 \chapter{Implementation}
+
 Various details regarding the algorithms, and how they were implemented. What
 libraries were used. Documentation on how to use the program.
+
+\section{Used libraries}
+
+\section{Application}
+
+\subsection{Structure of the code}
+
+\subsection{How to use it}
 
 \chapter{Evaluation}
 Segmentation quality using Jaccard score, and detection quality using F1Score.
