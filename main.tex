@@ -94,6 +94,7 @@
 \usepackage{floatrow} %% Putting captions above tables
 \floatsetup[table]{capposition=top}
 \usepackage[babel]{csquotes} %% Context-sensitive quotation marks
+\usepackage{svg}
 
 %% Specify new commands
 \newcommand*{\R}{\ensuremath{\mathbb{R}}}
@@ -586,6 +587,14 @@ protein-stained channel and looks at every label. Each one represents a single
 cell, and some of it's surroundings. Finally, a local version of the gradient 
 threshold is performed on each region.
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=10cm]{./resources/inkscape/segmentation-steps.png}
+    \end{center}
+    \caption{All steps in the segmentation algorithm.}
+    \label{fig:segmentation_steps}
+\end{figure}
+
 \section{Membrane channel}
 Steps inside the membrane channel: watershed, thresholding, denoising, edge
 detection
@@ -690,18 +699,87 @@ biologist --- is shown in Figure \textbf{TODO}. This concludes the section about
 how the algorithm works. In Figure \textbf{TODO} several other examples of
 segmentations are given.
 
+%todo: Revise all the parameters which can be tweaked by the user.
+
 \chapter{Implementation}
 
 Various details regarding the algorithms, and how they were implemented. What
 libraries were used. Documentation on how to use the program.
 
-\section{Used libraries}
+As part of the bachelor thesis, I developed a terminal based program to run the
+aforementioned algorithm on new data and it is available as an attachment to the
+thesis. It is written in Python 3.11 and can be run after installing the
+required packages. Those are specified specified inside the included
+`requirements.txt` file. After those are installed, the environment is ready to
+execute the program.
 
-\section{Application}
+\section{Running the program}
 
-\subsection{Structure of the code}
+The program has two main modes of operations, and those are segmentation and
+evaluation. The first mode deals with loading the data and running the
+segmentation algorithm, while the latter is used to score the predicted
+segmentation using ground truth data. The user is able to choose the prefered
+mode by running the program with the \texttt{-s} flag for segmentation and the
+\texttt{-e} flag for the second mode. Additionaly, a helpful overview is
+provided, when the help flag \texttt{-h} is passed to the program.
 
-\subsection{How to use it}
+The program starts by loading the configuration file \texttt{config.py}, inside which is a
+dictionary called \texttt{config}. This dictionary stores the relevant settings to the
+segmentation algorithm, such as the strenght of the gaussian smoothing, which
+slices of the gaussian pyramid ought to be used in the maximum projection, a
+size estimate for a single cell, and if various in between steps should be
+visualised as the program runs. It also allows the user to specify some extra
+parameters such as the minimum distance between markers in the watershed step,
+but those should generaly be used only to fine tune an already well performing
+segmentation. Lastly, all paths to relevant folders are specified there.
+
+When the user selects the segmentation option, the program looks at all TIFF
+files inside folders \texttt{membrane\_data} and \texttt{nuclei\_data}, if two files have the
+same name, then the program pairs them together. Then it starts going over all
+the pairs and running the segmentation algorithm, storing the resulting
+segmentations inside the \texttt{segmentation\_output} folder.
+
+If the user selects the evaluation option, the program looks into two different
+folders --- \texttt{ground\_truth} and \texttt{prediction}, pairs files with the
+same name and runs the evaluation algorithms, which are described in more
+details in \textbf{TODO} chapter.
+% todo: add info about parsing the config.
+
+%todo: This can prob. become part of the previous section
+\section{Structure of the code}
+
+\section{Why Python and used libraries}
+I decided to use Python as my main language. Since it is an interpreted language
+with dynamic typing, it allows for rapid development of new prototypes and easy
+experimentation. It also has a very minimal and expressive syntax, which makes
+it easy to read and write code \cite{python-docs-tutorial}. Finally, it has a
+vast ecosystem of tools and libraries, which accelerates the development even
+further. 
+
+A significant disadvantage of the fact, that Python is an interpreted language,
+is its, in general, poor performance. This can be mitigated to a certain degree
+by using libraries instead of the default Python's data structures. Many of
+these libraries use some compiled language --- such as C, C++ or Fortran --- in
+the background to provide near comparable performance, while not breaking
+the expressivity and simplicity of Python's syntax.
+
+The implementation heavily relies on the following packages:
+\begin{itemize}
+    \item{NumPy  is an indispensable package, allowing
+        Python to be utilized as a tool in scientific computing, and a
+        significant part of the whole scienfitic computing environment in Python
+        is based around this package. In its center is the ndarray object
+        representing a multi-dimensional matrix with uniform data type.
+        \cite{harris2020array}. }
+    \item{SciPy \cite{2020SciPy-NMeth}}
+    \item{scikit-image \cite{scikit-image}}
+    \item{Python Imaging Library (Pillow) is a python package for reading image
+        data in various formats, efficient representation of the data, and even
+        some manipulating of the image data \cite{clarkc20102023}. The sole
+        purpose of this packages for us, was for loading TIFF files into memory
+        and storing them in a format supported by the other libraries.}
+\end{itemize}
+
 
 \chapter{Evaluation}
 Segmentation quality using Jaccard score, and detection quality using F1Score.
