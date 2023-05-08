@@ -713,6 +713,62 @@ required packages. Those are specified specified inside the included
 `requirements.txt` file. After those are installed, the environment is ready to
 execute the program.
 
+
+%todo: This can prob. become part of the previous section
+\section{Structure of the code}
+
+\section{Justification for Python and used libraries}
+I decided to use Python as my main language. Since it is an interpreted language
+with dynamic typing, it allows for rapid development of new prototypes and easy
+experimentation. It also has a very minimal and expressive syntax, which makes
+it easy to read and write code \cite{python-docs-tutorial}. Finally, it has a
+vast ecosystem of tools and libraries, which accelerates the development even
+further. 
+
+A significant disadvantage of the fact, that Python is an interpreted language,
+is its, in general, poor performance. This can be mitigated to a certain degree
+by using libraries instead of the default Python's data structures. Many of
+these libraries use some compiled language --- such as C, C++ or Fortran --- in
+the background to provide near comparable performance, while not breaking
+the expressivity and simplicity of Python's syntax.
+
+For these reasons the scientific stack based on Python was chosen instead of
+other alternatives, such as the ImageJ/Fiji or OpenCV ecosystem.
+
+The implementation heavily relies on the following packages:
+\begin{itemize}
+    \item{NumPy \cite{harris2020array} is an indispensable package, allowing
+        Python to be utilized as a tool in scientific computing, and a
+        significant part of the whole scienfitic computing environment in Python
+        is based around this package. In its center is the ndarray object
+        representing a multi-dimensional matrix with uniform data type. The
+        NumPy team has managed to utilize vectorization to greatly improve the
+        performace of many common operation on matrices. This is achieved by
+        writing a lot of the code in a low-level language such as C, which is
+        pre-compiled and optimized, and taking advantage of the well optimized
+        Intel MKL or OpenBLAS linear algebra library. This is all done in the
+        background, mostly invisible to the programmer \cite{numpyManual2022}.}
+    \item{SciPy \cite{2020SciPy-NMeth} provides vast set of functions and
+        implemented algorithm for scientific computing. It has a wide variaty of
+        uses such as signal analysis, linear algebra solving, or calculating the
+        Fourier transform of image. In the application this library was not used
+        directly, but it is required by scikit-image.}
+    \item{scikit-image \cite{scikit-image}, building on the SciPy's
+        multidimmensional image processing, provides numerous functions to
+        process image data. The application relies on its implementation of
+        Laplacian and gradient operators, mathematical morphology, and the watershed
+        algorithm. As it is an extension of SciPy, it fits nicely into the
+        technology stack.}
+    \item{Python Imaging Library (Pillow) is a python package for reading image
+        data in various formats, efficient representation of the data, and even
+        some manipulating of the image data \cite{clarkc20102023}. The sole
+        purpose of this packages for us, was for loading TIFF files into memory
+        and storing them in a format supported by the other libraries.}
+\end{itemize}
+These libraries provide a great environment for writing well performing image
+processing pipelines fast. All of these libraries have large communities
+behind them, are continuesly developed, and are open-sourced.
+
 \section{Running the program}
 
 The program has two main modes of operations, and those are segmentation and
@@ -744,41 +800,17 @@ folders --- \texttt{ground\_truth} and \texttt{prediction}, pairs files with the
 same name and runs the evaluation algorithms, which are described in more
 details in \textbf{TODO} chapter.
 % todo: add info about parsing the config.
+\section{Non-trivial parts of the implementation}
+Most of the steps inside the algorithm map nicely to available functions in the
+libraries, for example the scikit-image library provides a function for
+calculating the gradient of the image; hence, this section provides overview of
+the non-trivial steps, which had to be implemented manually.
 
-%todo: This can prob. become part of the previous section
-\section{Structure of the code}
+\subsection{Zero-crossing algorithm}
 
-\section{Why Python and used libraries}
-I decided to use Python as my main language. Since it is an interpreted language
-with dynamic typing, it allows for rapid development of new prototypes and easy
-experimentation. It also has a very minimal and expressive syntax, which makes
-it easy to read and write code \cite{python-docs-tutorial}. Finally, it has a
-vast ecosystem of tools and libraries, which accelerates the development even
-further. 
+\subsection{Markers for watershed algorithm}
 
-A significant disadvantage of the fact, that Python is an interpreted language,
-is its, in general, poor performance. This can be mitigated to a certain degree
-by using libraries instead of the default Python's data structures. Many of
-these libraries use some compiled language --- such as C, C++ or Fortran --- in
-the background to provide near comparable performance, while not breaking
-the expressivity and simplicity of Python's syntax.
-
-The implementation heavily relies on the following packages:
-\begin{itemize}
-    \item{NumPy  is an indispensable package, allowing
-        Python to be utilized as a tool in scientific computing, and a
-        significant part of the whole scienfitic computing environment in Python
-        is based around this package. In its center is the ndarray object
-        representing a multi-dimensional matrix with uniform data type.
-        \cite{harris2020array}. }
-    \item{SciPy \cite{2020SciPy-NMeth}}
-    \item{scikit-image \cite{scikit-image}}
-    \item{Python Imaging Library (Pillow) is a python package for reading image
-        data in various formats, efficient representation of the data, and even
-        some manipulating of the image data \cite{clarkc20102023}. The sole
-        purpose of this packages for us, was for loading TIFF files into memory
-        and storing them in a format supported by the other libraries.}
-\end{itemize}
+\subsection{Maximum projection}
 
 
 \chapter{Evaluation}
