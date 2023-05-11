@@ -982,29 +982,53 @@ denominator would be much larger than the numerator.
 
 In the final evaluation, after the pairing, the Jaccard index of each pair of
 cells will be calculated and averaged, leading to a metric of how well did the
-program segment the data. Sometimes, the program's segmentation 
+program segment the data. Sometimes, the program's segmentation completely
+misses few cells the found areas fail the pairing condition, so some cells found
+by the expert do not belong to any pair. We decided to score these cells as
+having 0 Jaccard index. If these cases are counted in average, the average is
+denoted using the symbol $\overline{J}$. If these cases are ignored in the
+average, the symbol $\overline{J_S}$ is used.
 
-
-Moreover, cells found by the expert and missed by the
-program will have 
-
-
-Jaccard score equal to 0. Lastly, we will define a special
-version of 
+% TODO results of testing
 
 \subsection{Detection quality}
-
 \begin{figure}
     \begin{center}
         \includegraphics{resources/inkscape/evaluation_with_TP.png}
     \end{center}
-    \caption{Simplified model of cells. The blue ones are
-    outlines of predicted areas, while the black ones are outlines of correct
-    areas.}
-    \label{fig:evaluation_basic}
+    \caption{TODO}
+    \label{fig:evaluation_with_TP}
 \end{figure}
 
+%todo: mozno citacia na confusion matrix
+Apart from the quality of the segmentation, a useful metric is how many cells
+the program was able to find compared to how many were found by the expert. The
+concept of pairs from the previous section is also used here to pair up the
+predictions with the real cells. If a pair is found, then it is considered as a
+true positive. If a cell found by an expert does not have a partner, then it is
+considered to be a false negative, and if a cell found by the program does have
+a corresponding cell found by an expert, it is considered to be a false
+positive. In Figure \ref{fig:evaluation_with_TP} this idea is visualised.
+%todo: missing TN
+
+Now that the notion of true positives, false positives, and false negatives have
+been mapped to our results, a standard F1 score can be applied. It is defined as
+the harmonic mean between recall and precision \cite{sklearn-f1score}, formally:
+$$\text{recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}$$
+$$\text{precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}$$
+$$F_1 = \frac{2 * \text{recall} * \text{precision}}{\text{recall} +
+\text{precision}}$$
+Generally speaking, recall is a useful measure to see how many of the predicted
+cells are actual cells. If our system has low recall, that means that a
+significant number of cells found by the expert were missed by our program. On
+the hand, precision talks about how many of the program's predictions are actual
+cells. Then the F1 score is just a useful overall measure, taking into account
+undersegmenting and oversegmenting in our data.
+
+
 \subsection{Changing the threshold}
+
+%todo: Precision-Recall curve
 
 
 This chapter deals with how the results where evaluated to score the
@@ -1019,5 +1043,9 @@ from 0.5?
 
 \section{Common problems}
 %todo: odsekavanie napr.
+%todo: nejasne okraje sposobuju blbosti
+%todo: sprajanie buniek dokopy
+
+\chapter{Conclusion}
 
 \end{document}
