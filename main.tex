@@ -827,7 +827,7 @@ a flood filling algorithm is used.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=10cm]{resources/flood_fill.png}
+        \includegraphics[width=\linewidth]{resources/flood_fill.png}
     \end{center}
     \caption{segmenting cells after zero-crossing algorithm.}
     \label{fig:flood_fill}
@@ -850,7 +850,7 @@ Figure.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=10cm]{resources/distance_map.png}
+        \includegraphics[width=\linewidth]{resources/distance_map.png}
     \end{center}
     \caption{Distance map.}
     \label{fig:distance_map}
@@ -894,11 +894,117 @@ application of functions in the aforementioned libraries.
 
 \chapter{Evaluation}
 This chapter deals with the evaluation of the results, common problems, and the
-performance of the pipeline.
+performance of the pipeline. Two metric will be defined and analyzed on part of
+the data set.
 
-\section{Segmentation quality}
+For reasons specified in the section \textbf{TODO} it would not be reasonable
+to run the evaluation algorithm on the whole dataset. Moreover, it is not clear,
+how prediction on the whole dataset would be scored, not to mention the large
+computing and storage requirements; thus, we decided to create a set of images
+on which the algorithm will be evaluated. The set contains %todo: FINISH
 
-\section{}
+\section{Scoring of the algorithm}
+
+We created two key measures to evaluate the results. To test how many cells were
+detected, we devised a detection quality score using F1 measure, and to test the
+quality of the segmentation, a test based on the Jaccard score was created.
+\begin{figure}
+    \begin{center}
+        \includegraphics{resources/inkscape/evaluation.png}
+    \end{center}
+    \caption{Simplified model of cells. The blue ones are
+    outlines of predicted areas, while the black ones are outlines of correct
+    areas.}
+    \label{fig:evaluation_basic}
+\end{figure}
+To talk about the scoring, we need to define a way how to pair the real cell
+with the predicted segmentation. A simplified model of the problem is in Figure
+\ref{fig:evaluation_basic}. The blue cells in the figure are the program's
+prediction, while the black cells are real, created by an expert. As can be seen
+the prediction on left are quite good as they cover the majority of the real
+cell, while in the top right part, the program did not manage to properly
+segment the cell, and in the bottom right the program missed completely,
+creating a new imaginary cell, which was not found by the expert.
+
+To take the analysis further, we need a way how to pair the relevant predictions
+with the real segmentations. In the simplified diagram I only used two colours
+to denote the predicted and real cells; however, in the real segmentation, each
+cell has a unique label. To complicate things further, the similar cells do not
+have to have the same label in the predicted and real segmentation.
+
+Solving this problem was done using a simple metric based on set operations.
+Looking at each cell as a set of its pixels, we can talk about the intersection
+of two cells. To illustrate, take a look at the cells in the top left corner of
+the aforementrioned figure. If we consider the two cells are sets of their
+pixels, their intersection is equal to the whole blue set, and the union is
+equal to the black set.
+
+In general, picking a single real cell and one predicted cell, we can construct
+two sets containing their pixels. Set containing the pixels of the real cell is
+denoted as $R_i$, while the second set containing the pixels of the predicted
+cell is denoted as $P_i$. If the intersection is large enough, these are two
+cells are considered to be a pair. These pairs are later used in the quality
+metrics. In full, the condition is
+$$|R_i \cap S_i| > \alpha * |R_i| \Leftrightarrow R_i \text{ and } S_i \text{ form a pair}$$
+for some threshold $\alpha$. By default this threshold is set to 0.5, ensuring
+that every $R_i$ can have just one pairing member $S_i$. Towards the end of this
+chapter, this threshold is changed, to analyze how does the scoring change based
+in this threshold.
+
+
+\subsection{Segmentation quality}
+\begin{figure}
+    \begin{center}
+        \includegraphics{resources/inkscape/evaluation_imprecise_segmentation.png}
+    \end{center}
+    \caption{\textbf{TODO}}
+    \label{fig:evaluation_imprecise}
+\end{figure}
+First metric tries to evaluate how well does the predicted segmentation overlap
+with the expert's segmentation. Just checking the size of the intersection is
+not good enough, as if the program just created large blobs as in Figure
+\ref{fig:evaluation_imprecise}, they would technically contain the whole cell;
+however, such a result is not satisfactory, because the segmentation contains a
+lot of area around the cell.
+
+To take this into account, the segmentation quality is evaluated using the
+Jaccard index. Jaccard index of two sets $A$ and $B$ is defined
+as\cite{2020eelbode}:
+$$J(A, B) = \frac{|A \cap B|}{|A \cup B|}$$
+The range of the Jaccard index is from 0 to 1 (included). If the two sets are
+identical, then the Jaccard index is equal to 1, while if the two sets do not
+have any identical elements, the index is equal to 0.
+
+The benefit of this index is that unlike plain intersection, the size of the two
+sets are taken into account; therefore, the improper segmentation in
+\ref{fig:evaluation_imprecise} would cause the index to be quite low, since the
+denominator would be much larger than the numerator.
+
+In the final evaluation, after the pairing, the Jaccard index of each pair of
+cells will be calculated and averaged, leading to a metric of how well did the
+program segment the data. Sometimes, the program's segmentation 
+
+
+Moreover, cells found by the expert and missed by the
+program will have 
+
+
+Jaccard score equal to 0. Lastly, we will define a special
+version of 
+
+\subsection{Detection quality}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics{resources/inkscape/evaluation_with_TP.png}
+    \end{center}
+    \caption{Simplified model of cells. The blue ones are
+    outlines of predicted areas, while the black ones are outlines of correct
+    areas.}
+    \label{fig:evaluation_basic}
+\end{figure}
+
+\subsection{Changing the threshold}
 
 
 This chapter deals with how the results where evaluated to score the
@@ -910,5 +1016,8 @@ said, that every region from first step corresponds to a signel cell in the
 second step - obvious issue). Performance and memory requirements on some
 dataset. How does jaccard score changes, when we change the thresholding value
 from 0.5?
+
+\section{Common problems}
+%todo: odsekavanie napr.
 
 \end{document}
