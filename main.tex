@@ -563,6 +563,15 @@ specimen can be seen; therefore, to reduce the computational demands further,
 only specific regions of interest were manually selected to create the final
 data set. In the end, the reduced data set is only a few dozen megabytes large.
 
+\section{Dataset}
+
+For reasons specified in the section \textbf{TODO} it would not be reasonable
+to run the evaluation algorithm on the whole dataset. Moreover, it is not clear,
+how prediction on the whole dataset would be scored, not to mention the large
+computing and storage requirements; thus, we decided to create a set of images
+on which the algorithm will be evaluated. The set contains %todo: FINISH
+
+
 \chapter{The developed segmentation method}
 
 %todo: inkorporovat fakt, ze hlavne v jadrovom kanale to robime
@@ -897,12 +906,6 @@ This chapter deals with the evaluation of the results, common problems, and the
 performance of the pipeline. Two metric will be defined and analyzed on part of
 the data set.
 
-For reasons specified in the section \textbf{TODO} it would not be reasonable
-to run the evaluation algorithm on the whole dataset. Moreover, it is not clear,
-how prediction on the whole dataset would be scored, not to mention the large
-computing and storage requirements; thus, we decided to create a set of images
-on which the algorithm will be evaluated. The set contains %todo: FINISH
-
 \section{Scoring of the algorithm}
 
 We created two key measures to evaluate the results. To test how many cells were
@@ -1025,6 +1028,76 @@ the hand, precision talks about how many of the program's predictions are actual
 cells. Then the F1 score is just a useful overall measure, taking into account
 undersegmenting and oversegmenting in our data.
 
+\subsection{Results}
+When evaluating the dataset, I took each image and gave myself around 2--7
+minutes to find the best segmentation. First I visualy inspected the results,
+and tried to tweak the parameters to fix some of the common issues. After I was
+satisfied with the results I tried to tweak the parameters again, this time
+evaluating the $\overline{J_s}$ score. After that, I recorded the results, and
+proceded to the next image.
+
+The final results are recorded in Table \ref{tab:scores}. Every row begins
+with the filename and provides various scores I was able to achieve with the
+program. As can be seen from the table, certain images got better results than
+the other. 
+
+In general, the program has higher recall than precision, meaning that the
+program finds the majority of the cells marked by the expert; however, it also
+find many false positives. Those are cells, that the program predicted, but were
+not found by the expert.
+
+Looking at the $\overline{J_S}$ scores, it is clear, that if the program finds a
+real cell, it segments it reasonably well. To further investigate this, I listed
+the Jaccard scored for found pairs in the evaluation of the file
+\texttt{t004-roi-10} in Table \ref{tab:scores_roi10}. In this particular case,
+all of them were above 0.5, but in some cases the segmentation produces Jaccard
+scores bellow 0.5 (for example, when two real cells are marked as a single large
+blob).
+
+\begin{table}
+    \begin{tabular}{|| c|c|c|c|c|c ||}
+        \toprule
+        File name & $\overline{J}$ & $\overline{J_S}$ & $F\_1$ & Precision & Recall \\
+        \midrule
+        t002-roi-1&0.35&0.65&0.462&0.40&0.545\\
+        t002-roi-2&0.34&0.54&0.53&0.46&0.63\\
+        t004-roi-4&0.47&0.62&0.53&0.41&0.77\\
+        t004-roi-4&0.68&0.68&0.39&0.24&1.00\\
+        t004-roi-6&0.38&0.61&0.62&0.60&0.63\\
+        t004-roi-10&0.45&0.72&0.68&0.75&0.63\\
+        t004-roi-11&0.45&0.63&0.59&0.50&0.72\\
+        t006-roi-2&0.39&0.59&0.53&0.44&0.67\\
+        t006-roi-5&0.29&0.63&0.42&0.39&0.46\\
+        \bottomrule
+    \end{tabular}
+    \caption{TODO}
+    \label{tab:scores}
+\end{table}
+
+\begin{table}
+    \begin{tabular}{||c||}
+        \toprule
+        $J_i$\\
+        \midrule
+        0.913\\
+        0.783\\
+        0.836\\
+        0.727\\
+        0.587\\
+        0.867\\
+        0.810\\
+        0.670\\
+        0.564\\
+        0.693\\
+        0.750\\
+        0.535\\
+        0.791\\
+        0.795\\
+        \bottomrule
+    \end{tabular}
+    \caption{TODO}
+    \label{tab:scores_roi10}
+\end{table}
 
 \subsection{Changing the threshold}
 
