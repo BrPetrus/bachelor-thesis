@@ -52,7 +52,7 @@
     department  = Department of Visual Computing,
     author      = Bruno Petrus,
     gender      = m,
-    advisor     = {doc. RNDr. Martin Maška, Ph.D.},
+    advisor     = {Assoc. Prof. RNDr. Martin Maška, Ph.D.},
     title       = {Segmentation of Membrane-Stained Cells in Image Data of Organoids},
     TeXtitle    = {Segmentation of Membrane-Stained Cells in Image Data of Organoids},
     keywords    = {keyword1, keyword2, ...},
@@ -121,14 +121,14 @@ TODO:
 \begin{itemize}
     \item{Define distance map}
     \item{Gaussian pyramid}
-    \item{Watershed}
+    \item{Image denoising part}
     \item{Incorporate feedback}
 \end{itemize}
 
-Image processing involves the use of many manthematical techniques and
-algorithms to extract useful information or somehow alter the image. The purpose
-of this section is to provide a comprehensive and shallow overview of the
-fundamental concepts used in my image processing pipeline.
+Image processing involves the use of many mathematical techniques and algorithms
+to extract useful information or somehow alter the image. The purpose of this
+section is to provide a comprehensive and shallow overview of the fundamental
+concepts used in my image processing pipeline.
 
 \section{Digital Image}
 Our eyesight is undoubtedly one of our most helpful senses, allowing us to
@@ -257,7 +257,7 @@ To calculate the Laplacian of an image, this formula is applied to every pixel.
     \begin{center}
         \includegraphics[width=6cm]{"resources/gonzalez_edges_and_noise.jpg"}
     \end{center}
-    \caption{Effect of noise on signal \parencite{gonzalez2002}}
+    \caption{Effect of noise on signal \cite{gonzalez2002}}
     \label{fig:edges_noise}
 \end{figure}
 
@@ -313,9 +313,6 @@ minimized. More information is available in the paper \cite{otsu1979}.
     \caption{Demonstration of the otsu thresholding method.}
     \label{fig:opening}
 \end{figure}
-
-
-TODO image and histogram
 
 \subsection{Gradient threshold}
 
@@ -378,8 +375,8 @@ define two not-so-common operations on sets which are heavily used in
 mathematical morphology.
 
 During the following sections, we need to be able to talk about how to create a
-reflection of the image around its origin, as is shown in the figure
-\ref{fig:morp_refl}. Reflection is formally defined as \parencite{gonzalez2002}:
+reflection of the image around its origin, as shown in Figure
+\ref{fig:morp_refl}. Reflection  of a set $B$ is formally defined as \cite{gonzalez2002}:
 $$\hat{B} = \{w | w=-b \text{ , for } b \in B\}$$
 \begin{figure}
     \begin{center}
@@ -392,10 +389,10 @@ $$\hat{B} = \{w | w=-b \text{ , for } b \in B\}$$
 While manipulating images we commonly have to move parts of the image around.
 In principle, a similar operation, called translation, is defined on sets. The
 formal definition of moving a set $A$ by some translation vector $z$ is
-\parencite{gonzalez2002}:
+\cite{gonzalez2002}:
 $$(A)_z = \{c | c = a + z\text{ , for } a \in A\}$$
 The operation is illustrated in Figure \ref{fig:morph_translation} where the set
-$B$ is moved downwards by a vector $z$.
+$A$ is moved downwards by a vector $z$.
 \begin{figure}
     \begin{center}
         \includegraphics[width=6.3cm]{resources/morph_translation.jpg}
@@ -408,24 +405,23 @@ $B$ is moved downwards by a vector $z$.
 Now it is possible to properly define two fundamental operations in the field of
 mathematical morphology, upon which many other operations are built. Both of
 these operations include a structural element. A structural element is again a
-set, but it can be used to describe how far and in which way the operation will
-influence the result.
+set, but it can be used to describe how far and in which way a particular
+operation will influence the result.
 
 
 \subsubsection{Dilation}
 Intuitively we can think about the dilation operator as a way to dilate spots
 inside an image into a bigger space. Formally it is defined as
-\parencite{gonzalez2002}
+\cite{gonzalez2002}
 $$A \oplus B = \{z | (\hat{B}_z) \cap A \neq \emptyset\}$$
 where $A$ and $B$ are both sets in $\Z^2$.
 
-An example of dilation can be seen in the figure \ref{fig:morph_dilation}, where
-two examples are shown. In the first row, we have a square image with a side
-length of $d$ and a structuring element whose side length is a fourth of the
-original. If we apply the dilation operation on these two images, we get the one
-on the right. You can imagine taking the smaller square and gliding it over the
-bigger one. If there is an overlap, we can add the centre of the structural
-element to the result.
+An example of dilation can be seen in Figure \ref{fig:morph_dilation}. In the
+first row, we have a square image with a side length of $d$ and a structuring
+element whose side length is a fourth of the original. If we apply the dilation
+operation on these two images, we get the one on the right. You can imagine
+taking the smaller square and gliding it over the bigger one. If there is an
+overlap, we can add the centre of the structural element to the result.
 
 Closer to the mathematical definition, all possible translations are applied to
 the structural element and if there is an overlap, we add the centre of the
@@ -447,17 +443,17 @@ particular example and does not necessarily have to be of regular size.
 
 The next essential operation is erosion. As the name suggests, we use it to
 erode parts of the image which we consider unnecessary. An erosion $A \ominus B$
-of two sets $A$ and $B$, both part of $\Z^2$ space, is defined as
-\parencite{gonzalez2002}: $$A \ominus B = \{z | (B)_z \subseteq A\}$$
+of two sets $A$ and $B$, both being part of $\Z^2$ space, is defined as
+\cite{gonzalez2002}: $$A \ominus B = \{z | (B)_z \subseteq A\}$$
 
 Again $A$ can be thought of as an image while $B$ can be looked at as a
 structural element. In contrast to the dilation operation, we are now looking if
-the whole structural element fits inside $A$ as can be seen in the figure
+the whole structural element fits inside $A$ as can be seen in Figure
 \ref{fig:morph_erosion}. There a smaller structural element is used to cut away
 parts of the bigger square.
 
 As opposed to the dilation, we can use erosion to divide lightly connected
-segments, and to erase noise and other unwanted disturbances in an image.
+segments, and to suppress noise and other unwanted disturbances in an image.
 
 \begin{figure}
     \begin{center}
@@ -581,15 +577,34 @@ skeletonizing images, finding perimeters etc \cite{mathworks_morp_oper}.
 
 \section{Segmentation}
 
+\textbf{TODO}
+
 \subsection{Watershed algorithm}
+
+The watershed algorithm is a wide-spread technique for image segmentation. The
+fundamental principle of the watershed algorithm is to view the image as a
+topological map, where the intensities indicate the height of the ladscape, in
+other words, peaks in the image represent mountains or hills while low values
+represent valleys.
+
+The algorithm then creates water springs at these valleys, from which the water
+flows at a uniform rate. As the waters from different springs rises, they might
+start to mix. At these points we build dams to separate the various flooded
+areas. The water continues to flow until just the dams are visible above the
+water \cite{gonzalez2002}. At this point the image is segmented using the dams,
+and every catchment basins is uniquely labelled.
+
+\textbf{TODO: Copy image from textbook}
+\textbf{TODO: Consider explaining markers are water sources here or in later
+chapters.}
 
 \chapter{Image data}
 
 The image data --- of mouse mammary organoids --- was acquired using confocal
 laser scanning. The original data was captured in 2021 by a group of
 researchers at (\textbf{TODO}) faculty. The captured specimen is around 500
-microns by 500 microns by 80 microns big with a resolution of around 4.3 microns
-per voxel. %todo fix voxel size
+microns by 500 microns by 80 microns, and a single voxel's size is 0.233μm by
+0.233μm by 0.586μm.
 
 In confocal scanning, researchers are able to stain specific structures in
 their specimen so that wanted structures reemit light when the proper wavelength
