@@ -123,8 +123,6 @@ TODO:
     \item{Gaussian pyramid}
     \item{Watershed}
     \item{Incorporate feedback}
-    \item{Define neighbourhood}
-    \item{Define binary opening and closing}
 \end{itemize}
 
 Image processing involves the use of many manthematical techniques and
@@ -204,8 +202,7 @@ second derivative of the image is usually calculated and analysed.
 
 The first common way of working out where the edge is located is by looking at
 the gradient of the image. The gradient of an image $f(x,y)$ at position $(x,
-y)$ is defined as vector
-\parencite{gonzalez2002}:
+y)$ is defined as vector \cite{gonzalez2002}:
 $$\nabla \textbf{f} =
 \begin{bmatrix}
     G_x \\
@@ -471,12 +468,6 @@ parts of the bigger square.
 As opposed to the dilation, we can use erosion to divide lightly connected
 segments, and to erase noise and other unwanted disturbances in an image.
 
-While mathematical morphology is a massive topic of interest to many
-researchers, here I will only use the aforementioned operations. They can be
-further used to define more operations such as binary opening and binary closing
-and can be expanded to include grayscale images; however, I will not be using or
-covering them in my thesis.
-
 \begin{figure}
     \begin{center}
         \includegraphics[width=6.3cm]{resources/morph_erosion.jpg}
@@ -484,6 +475,118 @@ covering them in my thesis.
     \caption{Morphological erosion (Gonzalez 2002)} % todo: Replace
     \label{fig:morph_erosion}
 \end{figure}
+
+\subsection{Opening and closing}
+
+Now that the basic two operations have been defined, we can move on to two
+very useful operators, morphological opening and morphological closing.
+
+\subsubsection{Opening}
+
+The morphological opening is defined as erosion followed by a dilation with a
+reflected structural element, formally the opening $\circ$ of a set $A$ by a structuring
+element $B$ is defined as\cite{soile2004}: 
+
+$$A \circ B = (A \ominus B) \oplus \hat{B} $$
+
+This process in visualised in Figure \ref{fig:opening}, where the square
+structural element is applied on the binary image. Morphological opening
+preserves larger structural components, and removes small objects from the
+image. This means, it is a good canditate for removing noise, small objects or
+thin structures, which may interfere with later processing.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/opening_orig.png}
+        \caption{A binary image A.}
+        \label{fig:opening_orig}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/opening_erosion.png}
+        \caption{Erosion of image A.}
+        \label{fig:opening_erosion}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/opening_erosion_se.png}
+        \caption{Structrural element used in erosion.}
+        \label{fig:opening_erosion_se}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/opening_dilation.png}
+        \caption{Dilation after erosion of image A.}
+        \label{fig:opening_dilation}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/opening_dilation_se.png}
+        \caption{Structural element used in dilation.}
+        \label{fig:closing_dilation_se}
+    \end{subfigure}
+    \caption{Morphological opening of the image A. Centres of structural
+    elements are indicated by the circles. The gray pixels indicate which pixels
+    were lost (erosion) or added (dilation) after the transformation.}
+    \label{fig:opening}
+\end{figure}
+
+\subsubsection{Closing}
+
+The morphological closing is defined similarly to the opening, but the order of
+operations is reversed. The closing $\bullet$ of a set $A$ by a structuring
+element $B$ is defined as\cite{soile2004}: 
+
+$$A \bullet B = (A \oplus B) \ominus \hat{B} $$
+
+\begin{figure}
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/closing_orig.png}
+        \caption{A binary image A.}
+        \label{fig:closing_orig}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/closing_dilation.png}
+        \caption{Dilation of image A.}
+        \label{fig:opening_erosion}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/opening_erosion_se.png}
+        \caption{Structrural element used in dilation.}
+        \label{fig:opening_erosion_se}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/closing_erosion.png}
+        \caption{Erosion after dilation of image A.}
+        \label{fig:opening_dilation}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/inkscape/opening_dilation_se.png}
+        \caption{Structural element used in erosion.}
+        \label{fig:closing_dilation_se}
+    \end{subfigure}
+    \caption{Morphological closing of the image A. Centres of structural
+    elements are indicated by the circles. The gray pixels indicate which pixels
+    were lost (erosion) or added (dilation) after the transformation.}
+    \label{fig:closing}
+\end{figure}
+
+Like for the previous operator, this is visualised in Figure \ref{fig:closing},
+where the square structural element is applied on the binary image. 
+Morphological closing, like the opening, keeps the larger structural elements,
+but also fills in holes, which might have been created for example by noise.
+Also, it does not remove small objects.
+
+While mathematical morphology is a massive topic of interest to many
+researchers, here I will only use the aforementioned operations. They can be
+further used to define more operations such as performing top hat transforms,
+skeletonizing images, finding perimeters etc \cite{mathworks_morp_oper}.
 
 \section{Segmentation}
 
