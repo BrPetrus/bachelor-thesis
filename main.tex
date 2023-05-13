@@ -887,22 +887,17 @@ segmentations are given.
 %todo: Revise all the parameters which can be tweaked by the user.
 
 \chapter{Implementation}
+This chapter describes which libraries were used, how to run the program, and
+non-trivial parts of the implementation.
 
-Various details regarding the algorithms, and how they were implemented. What
-libraries were used. Documentation on how to use the program.
 
+\section{Justification for Python and used libraries}
 As part of the bachelor thesis, I developed a terminal based program to run the
 aforementioned algorithm on new data and it is available as an attachment to the
 thesis. It is written in Python 3.11 and can be run after installing the
 required packages. Those are specified specified inside the included
-`requirements.txt` file. After those are installed, the environment is ready to
-execute the program.
+`requirements.txt` file. The environment does not need any additional setup.
 
-
-%todo: This can prob. become part of the previous section
-\section{Structure of the code}
-
-\section{Justification for Python and used libraries}
 I decided to use Python as my main language. Since it is an interpreted language
 with dynamic typing, it allows for rapid development of new prototypes and easy
 experimentation. It also has a very minimal and expressive syntax, which makes
@@ -957,23 +952,62 @@ behind them, are continuously developed, and are open-sourced.
 
 \section{Running the program}
 
-The program has two main modes of operations, and those are segmentation and
+The program has two main modes of operations; those are segmentation and
 evaluation. The first mode deals with loading the data and running the
 segmentation algorithm, while the latter is used to score the predicted
 segmentation using ground truth data. The user is able to choose the preferred
 mode by running the program with the \texttt{-s} flag for segmentation and the
-\texttt{-e} flag for the second mode. Additionally, a helpful overview is
+\texttt{-e} flag for the latter. Additionally, a helpful overview is
 provided, when the help flag \texttt{-h} is passed to the program.
 
-The program starts by loading the configuration file \texttt{config.py}, inside which is a
-dictionary called \texttt{config}. This dictionary stores the relevant settings to the
-segmentation algorithm, such as the strength of the Gaussian smoothing, which
-slices of the Gaussian pyramid ought to be used in the maximum projection, a
-size estimate for a single cell, and if various in between steps should be
-visualised as the program runs. It also allows the user to specify some extra
-parameters such as the minimum distance between markers in the watershed step,
-but those should generaly be used only to fine tune an already well performing
-segmentation. Lastly, all paths to relevant folders are specified there.
+The program starts by loading the configuration file \texttt{config.py}, inside
+which is a dictionary called \texttt{config} and checks if all the types are
+correct. This dictionary stores the
+relevant settings to the segmentation algorithm. The main parameters, which the
+user might need to tweak to get better segmentation are:
+\begin{itemize}
+    \item \texttt{zc\_sigma} (float): This number indicates the strength of the
+        Gaussian smoothing before the zero-crossing algorithm is applied. 
+    \item \texttt{maximum\_projection\_from} (integer): From which layer should
+        the maximum projection be calculated.
+    \item \texttt{maximum\_projection\_to} (integer): Along with the previous
+        parameter specifies how many Gaussian smoothing are done and
+        incorporated in the maximum projection.
+    \item \texttt{cell\_radius} (float): This number should be equal to a rough
+        approximated radius of a single cell. This is mainly used during the
+        thresholding in the membrane channel. If part of the specimen is
+        classified as a background, try increasing the number.
+    \item \texttt{axis\_relative\_sizes} (list of three floats): Specifies the
+        ratios between dimensions of a single voxel.
+    \item \texttt{show\_steps} (boolean): If this is equal to \texttt{True},
+        the program will also plot partial results as the pipeline runs.
+    \item \texttt{verbose} (boolean): If this flag is equal to True, the program
+        will be more verbose.
+    \item \texttt{*\_folder} (string): These setting specify the relative paths
+        to folders, were data is loaded and stored.
+\end{itemize}
+The program also has a couple extra tweakable parameters, but in my experience,
+they did not change the results significantly; therefore, I do not recommend
+changing them in the first steps. Those parameters are:
+\begin{itemize}
+    \item \texttt{zc\_min\_distance} (float): This is passed to the
+        \texttt{peak\_local\_max} function from \texttt{scikit-image} package.
+        It changes how close can two markers in the watershed be. If you feel
+        that the program is oversegmenting, increasing this number might help;
+        however, changing the sigmas is a lot more significant.
+    \item \texttt{pairs\_threshold} (float): This is used in the evaluation for
+        determining if two sets can be considered pairs. 1 means, that the sets
+        have to be identical, while 0.5 means that they have to share half of
+        the pixels.
+    \item \texttt{nuclei\_sigma} (float): This parameter specifies the strength
+        of the Gaussian smoothing in nuclei-stained channel. Increasing this
+        parameter can help with noise, since the gradient threshold is based on the
+        derivative of the image, but overall is quite negligible.
+    \item \texttt{segmentation\_postprocess\_radius} (float): The radius of the
+        disk-like strucutral element used in the post-processing of the
+        segmentation. This can help to eliminate small regions, which were
+        incorrectly found due to noise.
+\end{itemize}
 
 When the user selects the segmentation option, the program looks at all TIFF
 files inside folders \texttt{membrane\_data} and \texttt{nuclei\_data}, if two files have the
@@ -984,11 +1018,34 @@ segmentations inside the \texttt{segmentation\_output} folder.
 If the user selects the evaluation option, the program looks into two different
 folders --- \texttt{ground\_truth} and \texttt{prediction}, pairs files with the
 same name and runs the evaluation algorithms, which are described in more
-details in \textbf{TODO} chapter.
-% todo: add info about parsing the config.
+details in \ref{chp:evaluation} chapter.
+
+The code is split into the following files: 
+\begin{itemize}
+    \item \texttt{main.py}: The main application is located in the
+        \texttt{main.py} file; it parses the flags passed by the user, and loads
+        up the configuration file. After that is done, the application starts
+        either the segmentation or evaluation pipeline.
+    \item \texttt{config.py}: This is the configuration file. It mainly includes
+        the \texttt{config} dictionary, containing all the settings. It also
+        checks the types of the values inside the dictionary.
+    \item \texttt{evaluation.py}: Here, all functions related to evaluating
+        lies, e.g, finding pairs or calculating Jaccard index.
+    \item \texttt{filters.py}: This file contains implementations of various
+        filters, that the already mentioned libraries do not have implemented,
+        or which we decided to implement ourselves.
+    \item \texttt{segmentation.py}: Code in this file is responsible for the
+        segmentation of the raw data. It contains all the steps that have to be
+        run, except for the few which are located in the \texttt{filters.py}
+        file.
+    \item \texttt{requirements.txt}: Inside this file all the required packages
+        are specified.
+    \item \textbf{TODO:} tiff\_utils and utils.py
+\end{itemize}
+
 \section{Non-trivial parts of the implementation}
 Most of the steps inside the algorithm map nicely to available functions in the
-libraries, for example the scikit-image library provides a function for
+libraries, for example the \texttt{scikit-image} library provides a function for
 calculating the gradient of the image; hence, this section provides overview of
 the non-trivial steps, which had to be implemented manually.
 
@@ -1089,6 +1146,7 @@ application of functions in the aforementioned libraries.
 \textbf{TODO: I dont know if this should be in here.}
 
 \chapter{Evaluation}
+\label{chp:evaluation}
 This chapter deals with the evaluation of the results, common problems, and the
 performance of the pipeline. Two metric will be defined and analysed on part of
 the data set.
@@ -1102,9 +1160,8 @@ quality of the segmentation, a test based on the Jaccard score was created.
     \begin{center}
         \includegraphics{resources/inkscape/evaluation.png}
     \end{center}
-    \caption{Simplified model of cells. The blue ones are
-    outlines of predicted areas, while the black ones are outlines of correct
-    areas.}
+    \caption{Simplified model of cells. Blue cells were predicted by the program
+    while the black ones are cells found by the expert.}
     \label{fig:evaluation_basic}
 \end{figure}
 To talk about the scoring, we need to define a way how to pair the real cell
@@ -1146,7 +1203,7 @@ in this threshold.
     \begin{center}
         \includegraphics{resources/inkscape/evaluation_imprecise_segmentation.png}
     \end{center}
-    \caption{\textbf{TODO}}
+    \caption{Segmentation where the program labelled a lot of extra area.}
     \label{fig:evaluation_imprecise}
 \end{figure}
 First metric tries to evaluate how well does the predicted segmentation overlap
@@ -1178,14 +1235,13 @@ having 0 Jaccard index. If these cases are counted in average, the average is
 denoted using the symbol $\overline{J}$. If these cases are ignored in the
 average, the symbol $\overline{J_S}$ is used.
 
-% TODO results of testing
-
 \subsection{Detection quality}
 \begin{figure}
     \begin{center}
         \includegraphics{resources/inkscape/evaluation_with_TP.png}
     \end{center}
-    \caption{TODO}
+    \caption{A simplified model of the cells, including which are considered to
+    be true positives, false negatives, and false positives.}
     \label{fig:evaluation_with_TP}
 \end{figure}
 
