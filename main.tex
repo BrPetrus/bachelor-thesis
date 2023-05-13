@@ -201,60 +201,33 @@ second derivative of the image is usually calculated and analysed.
 \subsection{Calculating gradient}
 
 The first common way of working out where the edge is located is by looking at
-the gradient of the image. The gradient of an image $f(x,y)$ at position $(x,
-y)$ is defined as vector \cite{gonzalez2002}:
-$$\nabla \textbf{f} =
-\begin{bmatrix}
-    G_x \\
-    G_y
-\end{bmatrix} =
+the gradient of the image. The gradient of an image $\nabla f(x,y)$ is defined
+as a vector \cite{gonzalez2002}:
+$$\nabla f =
 \begin{bmatrix}
     \dfrac{\partial f}{\partial x}\\[2ex]
     \dfrac{\partial f}{\partial y}
 \end{bmatrix}$$
-The vector gradient represents the rate of change in the image, and it points in
+This vector represents the rate of change in the image intensities, and it points in
 the direction of the maximum rate of change of intensity. Often just the bare
 vector is not of interest; instead, the magnitude of the gradient, denoted as
 $\nabla f$, is calculated too. Confusingly enough, sometimes this is also called
 the gradient in the literature, but here I will differentiate it using the bold
 text. Formally it is defined as:
-$$\nabla f = \text{mag}(\nabla \textbf{f}) = \sqrt{G_x^2 + G_y^2}$$
-where $G_i$ symbolises the gradient in the $i$ axis.
+$$|\nabla f| = \text{mag}(\nabla f) = \sqrt{(\frac{\partial f}{\partial x})^2 +
+\frac{\partial f}{\partial y}^2}$$
 
-Now the question is how to calculate the $G_x$ and $G_y$ of some digital image.
+Now the question is how to calculate the partial derivatives of some digital image.
 It is impossible to calculate the partial derivatives using the standard
 definition from mathematical analysis because digital images are discrete; thus,
-we must use an approximation. Even though using something like the Sobel filter
-is very common, in my prototype, a more basic Prewitt filter will suffice.
-\begin{figure}
-    \begin{center}
-        \begin{tabular}{ |c|c|c| }
-            \hline
-            -1 & 0 & 1 \\
-            \hline
-            -1 & \underline{0} & 1 \\
-            \hline
-            -1 & 0 & 1 \\
-            \hline
-        \end{tabular}
-        \begin{tabular}{ |c|c|c| }
-            \hline
-            -1 & -1 & -1 \\
-            \hline
-            0 & \underline{0} & 0 \\
-            \hline
-            1 & 1 & 1 \\
-            \hline
-        \end{tabular}
-    \end{center}
-    \caption{Prewitt horizontal and vertical mask.}
-    \label{table:prewitt}
-\end{figure}
-The horizontal Prewitt filter for 3x3 region looks like in the Figure
-\ref{table:prewitt}.
-The underlined 0 indicates the centre and the numbers specify weights in the
-neighbourhood of a pixel. Summing them all together we arrive at the horizontal or
-vertical approximation of the gradient.
+we must use an approximation. To calculate the $\frac{\partial f}{\partial x}$
+we can use the following approximation:
+$$\frac{\partial f}{\partial x} \approx f(i+1,j)-f(i-1,j)$$
+and similarly for the $\frac{\partial f}{\partial y}$ we can use:
+$$\frac{\partial f}{\partial y} \approx f(i, j+1)-f(i,j-1)$$
+
+This provides a reasonable approximation of the gradient. An example of the
+magnitude of the gradient is visible in Figure \textbf{TODO}.
 
 TODO image
 
@@ -262,7 +235,7 @@ TODO image
 
 The second common way of finding edges is using the second derivative, or more
 precisely using the Laplacian. For a 2D function $f(x, y)$ the Laplacian is
-defines as \parencite{gonzalez2002}:
+defines as \cite{gonzalez2002}:
 
 $$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}$$
 
@@ -270,12 +243,12 @@ However, in the context of digital image processing our signal is discrete;
 therefore, a discrete approximation is needed. A fairly standard way is to use
 the following approach to calculate the partial second derivative in the $x$
 axis:
-$$\frac{\partial^2 f}{\partial x^2} = f(x + 1, y) + f(x - 1, y) - 2*f(x, y)$$
+$$\frac{\partial^2 f}{\partial x^2} = f(i + 1, j) + f(i - 1, j) - 2f(i, j)$$
 and similar in the y axis:
-$$\frac{\partial^2 f}{\partial y^2} = f(x, y + 1) + f(x, y - 1) - 2*f(x, y)$$
+$$\frac{\partial^2 f}{\partial y^2} = f(i, j + 1) + f(i, j - 1) - 2f(i, j)$$
 Substituting into the prior definition we get the following approximation:
-$$\nabla^2 f = f(x+1, y) + f(x-1, y) + f(x, y+1) + f(x, y-1) - 4*f(x,y)$$
-To calculate the Laplacian of an image, this formula is applied on each pixel.
+$$\nabla^2 f = f(i+1, j) + f(i-1, j) + f(i, j+1) + f(i, j-1) - 4f(i,j)$$
+To calculate the Laplacian of an image, this formula is applied to every pixel.
 
 % todo insert an image and description
 % todo insert and examplorary image
@@ -289,14 +262,14 @@ To calculate the Laplacian of an image, this formula is applied on each pixel.
 \end{figure}
 
 One of the disadvantages of this approach is the sensitivity to noise. For
-demonstration purposes, the effects will be shown in 1D. In Figure
-\ref{fig:edges_noise}, the effect of noise is demonstrated. While the original
-signal does not look too destroyed, it is impossible to find the correct
+demonstration purposes, the effects are shown in 1D in Figure
+\ref{fig:edges_noise}. While the original
+signal does not look too degraded, it is impossible to find the correct
 zero-crossings. Therefore we have to help the operator by first smoothing the
 image. A common approach is to first use Gaussian smoothing; this is sometimes
 called a Laplacian of Gaussian operator or a Mexican hat filer. The idea is that
-by averaging, we reduce some of the effects of the noise. The Figure \textbf{TODO}
-demonstrates this effect.
+by averaging, we reduce some of the effects of the noise
+\cite{hipr-mexican-hat}. The Figure \textbf{TODO} demonstrates this effect.
 
 Since the Laplacian is based on second derivatives, it has the property that
 each edge produces a zero crossing. This can be readily utilised to find edges
@@ -313,16 +286,34 @@ thin, and form closed contours.
 
 The Otsu thresholding method is a popular technique to determine a threshold
 value between two classes (usually the foreground and the background). As such,
-it works well if the image has a clear bimodal distribution. The main idea of
-this approach is to see the problem of finding the threshold as an optimization
-problem, where the inter-class variance of the two classes is to be minimized.
-For some threshold $t$ we can define the variance as \parencite{otsu1979}:
-$$\sigma^2_W = \sigma^2_0 \omega_0 + \sigma^2_1 \omega_1$$  %todo: whats w?
-where the weight $\omega_1$ and $\omega_2$ are the probabilities of the two
-classes. It can be shown that minimizing the intra-class variance is the same as
-maximizing inter-class variance \parencite{otsu1979}. This idea leads to an
-efficient algorithm employed by many image processing libraries, such as
-scikit-image.
+it works well if the image's histogram has a clear bimodal distribution. The
+main idea of this approach is to see the problem of finding the threshold as an
+optimization problem, where the inter-class variance of the two classes is to be
+minimized. More information is available in the paper \cite{otsu1979}.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{resources/otsu-orig.png}}
+        \caption{Image from membrane-stained channel.}
+        \label{fig:otsu-orig}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{resources/otsu-thresholded.png}}
+        \caption{Thresholded image.}
+        \label{fig:otsu-thresholded}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/otsu-histogram.png}
+        \caption{Histogram of the image, with a line indicating the threshold.}
+        \label{fig:otsu-histogram}
+    \end{subfigure}
+    \caption{Demonstration of the otsu thresholding method.}
+    \label{fig:opening}
+\end{figure}
+
 
 TODO image and histogram
 
