@@ -210,7 +210,7 @@ $\nabla f$, is calculated too. Confusingly enough, sometimes this is also called
 the gradient in the literature, but here I will differentiate it by putting
 absolute value around it. Formally it is defined as:
 $$|\nabla f| = \text{mag}(\nabla f) = \sqrt{(\frac{\partial f}{\partial x})^2 +
-\frac{\partial f}{\partial y}^2}$$
+(\frac{\partial f}{\partial y})^2}$$
 
 Now the question is how to calculate the partial derivatives of some digital image.
 It is impossible to calculate the partial derivatives using the standard
@@ -868,7 +868,7 @@ proximity of cells shrinks the background area, causing the algorithm to
 categorise some of the foreground as the background. After some experimentation,
 we concluded that the gradient thresholdolding algorithm provides better result.
 In Figure \textbf{TODO} a comparison is made between these two algorithms. Also
-others easily accessed thresholding methods in the scikit library were
+others easily accessed thresholding methods in the \texttt{scikit-image} library were
 experimented with, but the gradient thresholding method provided reasonable
 results in many cases.
 
@@ -931,7 +931,7 @@ The implementation heavily relies on the following packages:
         implemented algorithm for scientific computing. It has a wide variety of
         uses such as signal analysis, linear algebra solving, or calculating the
         Fourier transform of image. In the application this library was not used
-        directly, but it is required by scikit-image.}
+        directly, but it is required by \texttt{scikit-image}.}
     \item{scikit-image \cite{scikit-image}, building on the SciPy's
         multidimensional image processing, provides numerous functions to
         process image data. The application relies on its implementation of
@@ -943,7 +943,10 @@ The implementation heavily relies on the following packages:
         some manipulating of the image data \cite{clarkc20102023}. The sole
         purpose of this packages for us, was for loading TIFF files into memory
         and storing them in a format supported by the other libraries.}
-        %TODO add python standard library?
+    \item{matplotlib \cite{hunter2007} is a popular library for creating
+        visualisation in Python. It supports drawing all sorts of plots, but the
+        program uses it to visually show results after some of the steps.}
+    \item{conda TODO}
 \end{itemize}
 These libraries provide a great environment for writing well performing image
 processing pipelines fast. All of these libraries have large communities
@@ -1037,8 +1040,8 @@ The code is split into the following files:
         segmentation of the raw data. It contains all the steps that have to be
         run, except for the few which are located in the \texttt{filters.py}
         file.
-    \item \texttt{requirements.txt}: Inside this file all the required packages
-        are specified.
+    \item \texttt{environment.yml}: Inside this file all the required packages
+        are specified along with the python version and which channel to use.
     \item \textbf{TODO:} tiff\_utils and utils.py
 \end{itemize}
 
@@ -1357,9 +1360,9 @@ times. Create the average and st. deviation. Also monitor the RAM usage.
 
 \textbf{TODO: obrazky plus popis}
 \begin{itemize}
-    \item Obrazky niekedy treba orezat, aby sa vyplnili stredy.
-    \item Nejasne okraje medzi bunkami: prelievanie.
-    \item Nejasny okraj medzi vnutrami okraj. buniek a pozadim robia blbosti
+    \item Obrazky niekedy treba orezat, aby sa vyplnili stredy. t004-roi-10-375
+    \item Nejasne okraje medzi bunkami: prelievanie. 
+    \item Nejasny okraj medzi vnutrami okraj. buniek a pozadim robia blbosti t004-roi-10-375
 \end{itemize}
 
 \chapter{Conclusion}
