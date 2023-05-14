@@ -1104,11 +1104,19 @@ relevant settings to the segmentation and evaluation algorithm. The main paramet
 user might need to tweak to get better segmentation, are:
 \begin{itemize}
     \item \texttt{zc\_sigma} (float): This number indicates the strength of the
-        Gaussian smoothing before the zero-crossing algorithm is applied. 
+        Gaussian smoothing before the zero-crossing algorithm is applied. When this
+        number is too low, the program tends to find too many cells. If this number is 
+        too large, then the program usually joins multiple cells together. The typical
+        range is from 1.5 to 3.5.
     \item \texttt{maximum\_projection\_from} (integer): From which layer should
-        the maximum projection be calculated.
+        the maximum projection be calculated. If you want to add more details, be sure
+        to set this to 0 otherwise finer structures are lost during the maximum
+        projection.
     \item \texttt{maximum\_projection\_to} (integer): Along with the previous
-        parameter, specify which layers are used in the maximum projection.
+        parameter, specify which layers are used in the maximum projection. If the
+        program creates several fictional cells inside a single cell, or is performing
+        quite poorly in noisy areas, try increasing this number. Typically, there
+        is not need to go above 4, and 2 is usually enough.
     \item \texttt{cell\_radius} (float): This number should equal a roughly
         approximated radius of a single cell. This is mainly used during the
         thresholding in the membrane channel. If part of the specimen is
@@ -1138,11 +1146,15 @@ changing them in the first steps. Those parameters are:
     \item \texttt{nuclei\_sigma} (float): This parameter specifies the strength
         of the Gaussian smoothing in the nuclei-stained channel. Increasing this
         parameter can help with noise since the gradient threshold is based on the
-        derivative of the image, but overall is quite negligible.
+        derivative of the image, but overall its effect is quite negligible on the
+        final result.
     \item \texttt{segmentation\_postprocess\_radius} (float): The radius of the
         disk-like structural element used in the post-processing of the
         segmentation. This can help to eliminate small regions which were
-        incorrectly found due to noise.
+        incorrectly found due to noise. If the post-processing is deleting some of 
+        the cells, decrease this number gradually. On the other hand, if the segmentation
+        requires cleanup from many small areas, try increasing this number. Normally,
+        this is a much smaller number than the \texttt{cell\_radius}.
 \end{itemize}
 
 When the user selects the segmentation option, the program looks at all TIFF
