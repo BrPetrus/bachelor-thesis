@@ -640,12 +640,12 @@ researchers at (\textbf{TODO}) faculty. The captured specimen is around 500
 microns by 500 microns by 80 microns, and a single voxel's size is $0.233\mu m$ by
 $0.233\mu m$ by $0.586\mu m$.
 
-In confocal scanning, researchers are able to stain specific structures in
-their specimen so that wanted structures reemit light when the proper wavelength
+In confocal laser scanning, researchers can stain specific structures in
+their specimen so that studied structures reemit light when the proper wavelength
 is shined upon them. This allows them to capture the density of studied proteins
 inside the specimen. In this particular case, the researchers captured the
 density of 3 different proteins, of which one is part of membranes, while the
-other two are primarily located inside the cell's nuclei.
+other two are primarily located inside the cells' nuclei.
 
 The data, totalling around 576 GB, consists of 12 different time steps, where
 each step has a size of 1920x1920x388 pixels. For every protein, the researchers
@@ -668,15 +668,14 @@ grayscale data with 16 bits per pixel.
     \caption{A sample from the data.}
     \label{fig:data_example}
 \end{figure}
-In the Figure \ref{fig:data_example} a single slice of the data was taken from
-two channels. They are from the same time point and from the same place.
+In Figure \ref{fig:data_example}, a single slice of the data was taken from
+two channels. They are from the same time point and the same place.
 
-\section{Problems with the dataset}
+\section{Problems with the data set}
 
 The size of the data and the inherent problems of fluorescence microscopy
-provide the main issues in analysing the data. It is very time consuming to
-analyse the whole data set; therefore, all work was done on much smaller slices
-of the data. Interesting regions with well lit
+provide the main issues in analysing the data. It is very time-consuming to
+analyse the whole data set; therefore, all work was done on much smaller data slices.
 
 \begin{figure}
     \centering
@@ -709,63 +708,62 @@ of the data. Interesting regions with well lit
 \subsection{Noise}
 
 The first problem with the data set is the quality. In most places, the noise is
-too strong to try to use it in any analysis.
+too strong to try to use in any analysis.
 
-In the membrane channel, two main problems can be seen seen. To begin, most
-membranes do not form connected segments, instead, a part the cell's membrane is
-usually missing or it is joined with the neighbouring cell's membrane as can be
+In the membrane channel, two main problems can be seen. To begin, most
+membranes do not form connected segments; instead, a part of the cell's membrane is
+usually missing, or it is joined with the neighbouring cell's membrane, as can be
 seen in Figure \textbf{\ref{fig:bad_edges}}. This complicates the analysis, as different
 regions may require different filters to be properly preprocessed. Moreover,
-this makes the edge detection much harder, since it relies on the magnitude of
-gradient of the image. Moreover, sometimes the gradient between the cell and the
-background is too smooth for the program to found the divisive line as in Figure
+this makes edge detection much harder since it relies on the magnitude of
+the gradient of the image. Moreover, sometimes the gradient between the cell and the
+background is too smooth for the program to find the divisive line as in Figure
 \ref{fig:bleeding_edges}.
 
-Another issue is that the light gets scattered inside the organoid as can be seen
+Another issue is that the light gets scattered inside the organoid, as shown
 in Figure \textbf{\ref{fig:scattering}}. That means that it is possible to analyse only the
-outer most layers of cells of the organoid.
+outermost layers of cells of the organoid.
 
-The protein channel comes with its own set of problems, some of them different.
-It is still true, that the sharpest data comes, again, from the outermost layer
-of the organoid, limiting the amount of usable data. Another issue is that the
-individual cells are sometimes quite fuzzy, which makes it hard to decide, where
-exactly the cells ends, or if they are multiple cells.
+The nuclei=stained channel comes with its own set of problems, some of them different.
+It is still true that the sharpest data comes, from the outermost layer
+of the organoid, severely limiting the amount of usable data. Another issue is that the
+individual cells are sometimes quite fuzzy, which makes it hard to decide where
+exactly the cell ends or if they are multiple cells instead of one.
 % todo: reword
 
 \subsection{Size}
 
 The size of the dataset poses the second problem, as it would be computationally
-expensive to try to process the whole data set at once; however a lot of the
+expensive to try to process the whole data set at once; however, a lot of the
 data is either unusable or of no interest. In most instances, the data is
 predominantly composed of the background, and at several moments in time, no
 specimen can be seen; therefore, to reduce the computational demands further,
 only specific regions of interest were manually selected to create the final
-data set. In the end, the reduced data set is only a few dozen megabytes large.
+data set. Ultimately, the reduced data set is only a few dozen megabytes large.
 
 \section{Dataset}
 
-For reasons specified in the previous sections it would not be reasonable
-to run the evaluation algorithm on the whole dataset. Moreover, it is not clear,
-how prediction on the whole dataset would be scored, not to mention the large
+For reasons specified in the previous sections, it would not be reasonable
+to run the evaluation algorithm on the whole data. Moreover, it is unclear
+how prediction on the whole data would be scored, not to mention the large
 computing and storage requirements; thus, we decided to create a set of images
 on which the algorithm will be evaluated. The set contains 11 images, which I
-hand picked from the raw data. I tried to include sections from various
-channels, times, and in variety of the quality. This was done to test the
-program's performance and precision under variety of different circumstances.
-
+hand-picked from the raw data. I tried to include sections from various
+channels, times, and in various quality. This was done to test the
+program's performance and precision under diverse circumstances.
 
 All of the images are included as attachments in the thesis. The general
-namescheme is \texttt{txxx-roi-y-z}, where \texttt{xxx} stands for the time,
-\texttt{roi-y} stands for region of interest with index \texttt{y}, and the
-\texttt{z} stands for the central frame. As the program is capable of using
+name scheme is \texttt{txxx-roi-y-z}, where \texttt{xxx} stands for the time,
+\texttt{roi-y} stands for the region of interest with index \texttt{y}, and the
+\texttt{z} stands for the central frame. As the program can use
 multiple frames from the membrane-stained channel, it is possible to provide
-several slices in a single image. The program then runs the maximum projection
+several slices in a single file. The program then runs the maximum projection
 in 3D, but the slice in the middle will be picked for further processing. On the
 other hand, the nuclei-stained data is always two-dimensional.
 
 This dataset was then passed to researchers at the faculty of \textbf{TODO} for
 evaluation. They manually labelled the nuclei-stained data in the following
-structure: Parts that were considered to be background was labelled using $0$.
+structure: Parts that were considered to be background were labelled using $0$.
 Sections which were too complicated or unclear were labelled using $65535$, and
 the rest of the cells were uniquely labelled with numbers starting at $1$. In
 Figure \ref{fig:label_ground_truth} the segmentation created by the expert of
@@ -777,14 +775,14 @@ the \ref{fig:label_membrane_channel} is shown.
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/ground-truth.png}}
         \caption{Ground truth labelling created by an expert. White means
-        complicated area, black is background, the rest are cells.}
+        complicated area, black is the background, and the rest are cells.}
         \label{fig:label_ground_truth}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/membrane-channel.png}}
-        \caption{Image from membrane-stained channel.}
+        \caption{Image from the membrane-stained channel.}
         \label{fig:label_membrane_channel}
     \end{subfigure}
     \hfill
@@ -800,14 +798,14 @@ the \ref{fig:label_membrane_channel} is shown.
 
 The goal of the algorithm is to segment individual cells and uniquely label each
 cell; however, as previously discussed, they are often not clearly separated
-from each other. A naive Otsu thresholding leads to unsatisfactory results as is
+from each other. A naive Otsu thresholding leads to unsatisfactory results, as is
 seen on Figure \ref{fig:otsu-nuclei-demo}. Thus, a more sophisticated algorithm
 had to be developed to segment the cells' nuclei finer.
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{resources/otsu-nuclei.png}}
-        \caption{Image from nuclei-stained channel.}
+        \caption{Image from the nuclei-stained channel.}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
@@ -818,17 +816,17 @@ had to be developed to segment the cells' nuclei finer.
     \caption{Otsu thresholding does not lead to satisfactory segmentation.}
     \label{fig:otsu-nuclei-demo}
 \end{figure}
-We settled on two step algorithm. In the first step, the membrane-stained
-channel is used, while in the second step the nuclei-stained channel is used.
-Every cell has a membrane and a nuclei in our specimen; hence, we should be able
+We settled on a two-step algorithm. In the first step, the membrane-stained
+channel is used, while in the second step, the nuclei-stained channel is used.
+Every cell in our specimen has a membrane and nuclei; hence, we should be able
 to use the information provided by the first channel to improve the thresholding
 in the second channel.
 
-In the first step quite imprecise and greedy segmentation is performed to
+In the first step, quite imprecise and greedy segmentation is performed to
 roughly find the membranes separating the individual cells. The segmentation is
 then utilized in the second step; the algorithm overlays the previous
 segmentation on top of the nuclei-stained channel and looks at every label.
-Each one represents a single cell, and some of it's surroundings. Finally, a
+Each one represents a single cell and some of its surroundings. Finally, a
 local version of the gradient threshold is performed on each region.
 \begin{figure}
     \begin{center}
@@ -842,21 +840,21 @@ local version of the gradient threshold is performed on each region.
 The goal is to provide a rough segmentation of the cells using the
 membrane-stained channel.
 
-\subsection*{Preprocessing}
-First, a pre-process of the data is performed to deal with some of the noise in
-the data. As can be seen on Figure \ref{fig:max-proj} we need to deal with the
-fact, that the intensities inside every cell is quite uneven. To even out the
-lighting inside cells a maximum projection (Section \ref{sec:max-proj}) is
-performed. The idea behind this step is, that edges have higher intensities than
+\subsection{Preprocessing}
+First, a pre-processing of the data is performed to deal with some of the noise in
+the data. As can be seen in Figure \ref{fig:max-proj}, we need to deal with the
+fact that the intensities inside every cell are quite uneven. To even out the
+lighting inside cells, a maximum projection (Section \ref{sec:max-proj}) is
+performed. The idea behind this step is that edges have higher intensities than
 the cells' insides; therefore, they should not be very influenced by this step,
-while the uneven lighting inside cells will be smoothed out. That happens,
+while the uneven lighting inside cells will be smoothed out. That happens
 because the highest intensity areas will propagate out to the surrounding area.
 
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/max_proj_before.png}}
-        \caption{Image from membrane-stained channel.}
+        \caption{Image from the membrane-stained channel.}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\linewidth}
         \centering
@@ -869,21 +867,23 @@ because the highest intensity areas will propagate out to the surrounding area.
 \end{figure}
 
 After dealing with the uneven lighting, additional smoothing is applied
-to further reduce the effect of residual noise. Since the voxel's dimensions are
+to reduce the effect of residual noise further. Since the voxel's dimensions are
 anisotropic, an anisotropic Gaussian smoothing is applied. This concludes the
 preprocessing.
 
-\subsection*{Zero-crossing algorithm}
+\subsection{Zero-crossing algorithm}
 Applying the zero-crossing algorithm at this stage would result in many
-fake cells being found in the background, due to the presence of noise. To
-remove this visual artefacts, we need to create a mask to differentiate the
+artificial cells being found in the background due to the presence of noise. To
+remove these visual artefacts, we need to create a mask to differentiate the
 background from the foreground. For this task, the Otsu thresholding method was
-used, due to a bimodal distribution of the data. Sometimes the boundary between
-the specimen's edge and the background is not clear as is in Figure
-\ref{fig:cell-mask}. However, it is much smaller issue, if part of the
-background is categorised as the foreground; hence, this issue can be fixed by
+employed due to the bimodal distribution of the data. Sometimes the boundary between
+the specimen's edge and the background is unclear as in Figure
+\ref{fig:cell-mask}. However, it is a considerably smaller issue if part of the
+the background is categorised as the foreground; hence, this issue can be fixed by
 running morphological erosion with a circular structural element of similar size
-to the average cell.
+to the average cell. This final mask then approximately distinguishes between the 
+background and the foreground. This mask is then utilised in the next steps, which
+ignore all background pixels during their calculations.
 
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
@@ -901,14 +901,14 @@ to the average cell.
     \label{fig:cell-mask}
 \end{figure}
 
-The zero-crossing algorithm provides a reasonable outline of the cells as is
+The zero-crossing algorithm provides a reasonable outline of the cells, as is
 shown in Figure \ref{fig:zc}. The user sometimes has to play around with
 various sigmas to improve the quality of the edge detection. When the sigma is
-too low the algorithm tends to find a large amount of small regions, while too
+too low, the algorithm tends to find many small artificial regions, while too
 large sigma causes the algorithm to join individual cells together. This step
-is further complicated by the fact, that some of the cells are missing parts of
-their membranes; hence, performance of this step is one of the limiting factors of
-whole the segmentation pipeline. %todo: Cell mask a ako to vplyvni.
+is further complicated by the fact that some of the cells are missing parts of
+their membranes; hence, the performance of this step is one of the limiting factors of
+the whole segmentation pipeline.
 
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
@@ -935,25 +935,26 @@ whole the segmentation pipeline. %todo: Cell mask a ako to vplyvni.
     \label{fig:zc-watershed}
 \end{figure}
 
-\subsection*{Watershed}
-Next step is to utilize the outlines to segment individual cells. First, we need
-to take the previous result and fill in the inside of the cells as can be seen
+\subsection{Watershed}
+The next step is to utilize the outlines to segment individual cells. First, we need
+to take the previous result and fill in the inside of the cells, as can be seen
 in Figure \ref{fig:cells}. How this is achieved is explained in Section
-\ref{sec-markers}. After this step is done, the image is further post processed,
-starting by using erosion to remove the edges, then a morphological opening with
-a disk-like structural element is performed to remove small fake cells, caused
+\ref{sec-markers}. After this step is done, the image is further post-processed,
+starting by using erosion to remove the edges, and then a morphological opening with
+a disk-like structural element is performed to remove small artificial cells caused
 by noise. Finally, dilation is applied to restore some of the unwanted losses
 during the morphological opening, leading to the result in Figure 
 \ref{fig:cells-post-processed}.
 
-Finally, the watershed algorithm is used to uniquely label the individual cells.
-Since the way it is implemented, even if two or more cells are joined, the
-watershed algorithm may be able to divide them. The result is shown in Figure
-\ref{fig:watershed}. More in-depth discussion is in Section \ref{sec-markers}.
+Finally, the watershed algorithm is used to label the individual cells uniquely.
+Since the way it is implemented, even if two or more cells are joined in the
+previous step, the watershed algorithm may be able to divide them. The result
+is shown in Figure \ref{fig:watershed}. A more in-depth discussion is in Section
+\ref{sec-markers}.
 
 This step concludes all that is done in the membrane-stained channel. The
 program has generated a rough approximation of the cells, which will be used to
-further improve the segmentation in nuclei-stained channel.
+further improve the segmentation in the nuclei-stained channel.
 
 \section{Nuclei-stained channel}
 Unlike in the membrane-stained channel, in the nuclei-stained channel the
@@ -972,21 +973,18 @@ areas denoted by the labels, the thresholding yields more suitable results. In
 essence, a local version of some thresholding algorithm can be used. Applying it
 this way, the resulting thresholding is shown in Figure \ref{fig:grad-thresh}.
 
-In our testing, Otsu thresholding method was not suitable as in many cases the
+In our testing, the Otsu thresholding method was not suitable as in many cases, the
 proximity of cells shrinks the background area, causing the algorithm to
 categorise some of the foreground as the background. After some experimentation,
-we concluded that the gradient thresholdolding algorithm provides better result.
-Also others easily accessed thresholding methods in the \texttt{scikit-image}
+we concluded that the gradient thresholdolding algorithm provides better results.
+Also, others easily accessed thresholding methods in the \texttt{scikit-image}
 library were experimented with, but the gradient thresholding method provided
 reasonable results in many cases.
 
-%todo: add Krnacova's method
-
-% todo: tu asi neni jasne, ze sa to robi postupne
-Even tough the data was smoothed before applying the threshold, many edges in
-the binary thresholded image appear quite jagged, to combat this a final round
+Even though the data was smoothed before applying the threshold, many edges in
+the binary thresholded image appear quite jagged. To combat this, a final round
 of post-processing is applied. It consists of applying binary morphological
-closing on each label to fill in dark spots; thus, rounding of the jagged edges.
+closing on each label to fill in dark spots, thus, rounding off the jagged edges.
 The overall effect of this step is not major, but it can help. It is shown in
 Figure \ref{fig:grad-thresh-post}.
 
@@ -1025,46 +1023,46 @@ This chapter describes which libraries were used, how to run the program, and
 non-trivial parts of the implementation.
 
 \section{Justification for Python and used libraries}
-As part of the bachelor thesis, I developed a terminal based program to run the
-aforementioned algorithm on new data and it is available as an attachment to the
+As part of the bachelor thesis, I developed a terminal-based program to run the
+aforementioned algorithm on new data, and it is available as an attachment to the
 thesis. It is written in Python 3.11 and can be run after installing the
-required packages. Those are specified specified inside the included
-`requirements.txt` file. The environment does not need any additional setup.
+required packages. Those are specified inside the included
+\texttt{environment.yml} file. The environment does not need any additional setup
+apart from the installation of the required packages.
 
 I decided to use Python as my main language. Since it is an interpreted language
-with dynamic typing, it allows for rapid development of new prototypes and easy
+with dynamic typing, it allows for the rapid development of new prototypes and easy
 experimentation. It also has a very minimal and expressive syntax, which makes
 it easy to read and write code \cite{python-docs-tutorial}. Finally, it has a
-vast ecosystem of tools and libraries, which accelerates the development even
-further. 
+vast ecosystem of tools and libraries, accelerating further development. 
 
-A significant disadvantage of the fact, that Python is an interpreted language,
+A significant disadvantage of the fact that Python is an interpreted language
 is its, in general, poor performance. This can be mitigated to a certain degree
 by using libraries instead of the default Python's data structures. Many of
 these libraries use some compiled language --- such as C, C++ or Fortran --- in
-the background to provide near comparable performance, while not breaking
+the background to provide great performance gains while not breaking
 the expressivity and simplicity of Python's syntax.
 
-For these reasons the scientific stack based on Python was chosen instead of
+For these reasons, the scientific stack based on Python was chosen instead of
 other alternatives, such as the ImageJ/Fiji or OpenCV ecosystem.
 
-The implementation heavily relies on the following packages:
+The implementation heavily relies on the following packages to do the calculations:
 \begin{itemize}
     \item{NumPy \cite{harris2020array} is an indispensable package, allowing
         Python to be utilized as a tool in scientific computing, and a
         significant part of the whole scientific computing environment in Python
-        is based around this package. In its centre is the ndarray object
-        representing a multi-dimensional matrix with uniform data type. The
-        NumPy team has managed to utilize vectorization to greatly improve the
-        performance of many common operation on matrices. This is achieved by
+        is based around this package. In its centre is the \texttt{ndarray} object
+        representing a multi-dimensional matrix with a uniform data type. The
+        NumPy team has managed to utilize vectorization to improve the
+        performance of many common operations on matrices greatly. This is achieved by
         writing a lot of the code in a low-level language such as C, which is
         pre-compiled and optimized, and taking advantage of the well optimized
         Intel MKL or OpenBLAS linear algebra library. This is all done in the
         background, mostly invisible to the programmer \cite{numpyManual2022}.}
-    \item{SciPy \cite{2020SciPy-NMeth} provides vast set of functions and
-        implemented algorithm for scientific computing. It has a wide variety of
-        uses such as signal analysis, linear algebra solving, or calculating the
-        Fourier transform of image. In the application this library was not used
+    \item{SciPy \cite{2020SciPy-NMeth} provides a vast set of functions and
+        implemented algorithms for scientific computing. It has a wide variety of
+        uses, such as signal analysis, linear algebra solving, or calculating the
+        Fourier transforms of images. In the application, this library was not used
         directly, but it is required by \texttt{scikit-image}.}
     \item{scikit-image \cite{scikit-image}, building on the SciPy's
         multidimensional image processing, provides numerous functions to
@@ -1072,44 +1070,46 @@ The implementation heavily relies on the following packages:
         Laplacian and gradient operators, mathematical morphology, and the watershed
         algorithm. As it is an extension of SciPy, it fits nicely into the
         technology stack.}
-    \item{Python Imaging Library (Pillow) is a python package for reading image
+    \item{Python Imaging Library (Pillow) is a Python package for reading image
         data in various formats, efficient representation of the data, and even
         some manipulating of the image data \cite{clarkc20102023}. The sole
-        purpose of this packages for us, was for loading TIFF files into memory
+        purpose of this package for us was for loading TIFF files into memory
         and storing them in a format supported by the other libraries.}
     \item{matplotlib \cite{hunter2007} is a popular library for creating
         visualisation in Python. It supports drawing all sorts of plots, but the
-        program uses it to visually show results after some of the steps.}
-    \item{conda TODO}
+        program uses it to show results after some of the steps visually.}
+    \item{conda is cross-platform a package management system and environment
+        management system. It allows the user to quickly setup and use different
+        Python environments, and it was used during the development of this program.
+        \cite{conda-manual}}
 \end{itemize}
-These libraries provide a great environment for writing well performing image
+These libraries provide a great environment for writing well-performing image
 processing pipelines fast. All of these libraries have large communities
 behind them, are continuously developed, and are open-sourced.
 
 \section{Running the program}
 
-The program has two main modes of operations; those are segmentation and
+The program has two main modes of operation; those are segmentation and
 evaluation. The first mode deals with loading the data and running the
 segmentation algorithm, while the latter is used to score the predicted
-segmentation using ground truth data. The user is able to choose the preferred
+segmentation using ground truth data. The user can choose the preferred
 mode by running the program with the \texttt{-s} flag for segmentation and the
 \texttt{-e} flag for the latter. Additionally, a helpful overview is
-provided, when the help flag \texttt{-h} is passed to the program.
+provided when the help flag \texttt{-h} is passed to the program.
 
 The program starts by loading the configuration file \texttt{config.py}, inside
-which is a dictionary called \texttt{config} and checks if all the types are
+which is a dictionary object called \texttt{config}, and checks if all the types are
 correct. This dictionary stores the
-relevant settings to the segmentation algorithm. The main parameters, which the
-user might need to tweak to get better segmentation are:
+relevant settings to the segmentation and evaluation algorithm. The main parameters, which the
+user might need to tweak to get better segmentation, are:
 \begin{itemize}
     \item \texttt{zc\_sigma} (float): This number indicates the strength of the
         Gaussian smoothing before the zero-crossing algorithm is applied. 
     \item \texttt{maximum\_projection\_from} (integer): From which layer should
         the maximum projection be calculated.
     \item \texttt{maximum\_projection\_to} (integer): Along with the previous
-        parameter specifies how many Gaussian smoothing are done and
-        incorporated in the maximum projection.
-    \item \texttt{cell\_radius} (float): This number should be equal to a rough
+        parameter, specify which layers are used in the maximum projection.
+    \item \texttt{cell\_radius} (float): This number should equal a roughly
         approximated radius of a single cell. This is mainly used during the
         thresholding in the membrane channel. If part of the specimen is
         classified as a background, try increasing the number.
@@ -1117,72 +1117,74 @@ user might need to tweak to get better segmentation are:
         ratios between dimensions of a single voxel.
     \item \texttt{show\_steps} (boolean): If this is equal to \texttt{True},
         the program will also plot partial results as the pipeline runs.
-    \item \texttt{verbose} (boolean): If this flag is equal to True, the program
-        will be more verbose.
-    \item \texttt{*\_folder} (string): These setting specify the relative paths
-        to folders, were data is loaded and stored.
+    \item \texttt{verbose} (boolean): If this flag equals True, the program
+        will be more verbose during its runtime.
+    \item \texttt{*\_folder} (string): These settings specify the relative paths
+        to folders where data is loaded and stored.
 \end{itemize}
-The program also has a couple extra tweakable parameters, but in my experience,
+The program also has a couple of extra tweakable parameters but in my experience,
 they did not change the results significantly; therefore, I do not recommend
 changing them in the first steps. Those parameters are:
 \begin{itemize}
     \item \texttt{zc\_min\_distance} (float): This is passed to the
         \texttt{peak\_local\_max} function from \texttt{scikit-image} package.
         It changes how close can two markers in the watershed be. If you feel
-        that the program is oversegmenting, increasing this number might help;
+        that the program is over-segmenting, increasing this number might help;
         however, changing the sigmas is a lot more significant.
     \item \texttt{pairs\_threshold} (float): This is used in the evaluation for
-        determining if two sets can be considered pairs. 1 means, that the sets
-        have to be identical, while 0.5 means that they have to share half of
+        determining if two sets can be considered pairs. 1 means that the sets
+        must be identical, while 0.5 means that they must share at least half of
         the pixels.
     \item \texttt{nuclei\_sigma} (float): This parameter specifies the strength
-        of the Gaussian smoothing in nuclei-stained channel. Increasing this
-        parameter can help with noise, since the gradient threshold is based on the
+        of the Gaussian smoothing in the nuclei-stained channel. Increasing this
+        parameter can help with noise since the gradient threshold is based on the
         derivative of the image, but overall is quite negligible.
     \item \texttt{segmentation\_postprocess\_radius} (float): The radius of the
-        disk-like strucutral element used in the post-processing of the
-        segmentation. This can help to eliminate small regions, which were
+        disk-like structural element used in the post-processing of the
+        segmentation. This can help to eliminate small regions which were
         incorrectly found due to noise.
 \end{itemize}
 
 When the user selects the segmentation option, the program looks at all TIFF
 files inside folders \texttt{membrane\_data} and \texttt{nuclei\_data}, if two files have the
-same name, then the program pairs them together. Then it starts going over all
+the same name, then the program pairs them together. Then it starts going over all
 the pairs and running the segmentation algorithm, storing the resulting
 segmentations inside the \texttt{segmentation\_output} folder.
 
 If the user selects the evaluation option, the program looks into two different
-folders --- \texttt{ground\_truth} and \texttt{prediction}, pairs files with the
-same name and runs the evaluation algorithms, which are described in more
+folders --- \texttt{ground\_truth} and \texttt{prediction} --- pairs files with the
+the same name and runs the evaluation algorithms, which are described in more
 details in \ref{chp:evaluation} chapter.
 
 The code is split into the following files: 
 \begin{itemize}
     \item \texttt{main.py}: The main application is located in the
-        \texttt{main.py} file; it parses the flags passed by the user, and loads
+        here; it parses the flags passed by the user, and loads
         up the configuration file. After that is done, the application starts
         either the segmentation or evaluation pipeline.
     \item \texttt{config.py}: This is the configuration file. It mainly includes
         the \texttt{config} dictionary, containing all the settings. It also
-        checks the types of the values inside the dictionary.
+        checks the types of values inside the dictionary.
     \item \texttt{evaluation.py}: Here, all functions related to evaluating
-        lies, e.g, finding pairs or calculating Jaccard index.
+        lies, e.g., finding pairs or calculating the Jaccard index.
     \item \texttt{filters.py}: This file contains implementations of various
-        filters, that the already mentioned libraries do not have implemented,
+        filters that the already mentioned libraries do not have implemented
         or which we decided to implement ourselves.
-    \item \texttt{segmentation.py}: Code in this file is responsible for the
-        segmentation of the raw data. It contains all the steps that have to be
+    \item \texttt{segmentation.py}: The code in this file is responsible for
+        segmenting the raw data. It contains all the steps that have to be
         run, except for the few which are located in the \texttt{filters.py}
         file.
-    \item \texttt{environment.yml}: Inside this file all the required packages
-        are specified along with the python version and which channel to use.
-    \item \textbf{TODO:} tiff\_utils and utils.py
+    \item \texttt{environment.yml}: Inside this file, all the required packages
+        are specified along with the Python version and which conda repository 
+        channel to use while installing plugins.
+    \item \texttt{tiff\_utils} and \texttt{utils.py}: Miscellaneous code used
+        to load the data and to format output to standard output is put here.
 \end{itemize}
 
 \section{Non-trivial parts of the implementation}
 Most of the steps inside the algorithm map nicely to available functions in the
 libraries, for example the \texttt{scikit-image} library provides a function for
-calculating the gradient of the image; hence, this section provides overview of
+calculating the Laplacian of the image; hence, this section provides an overview of
 the non-trivial steps, which had to be implemented manually.
 
 \subsection{Zero-crossing algorithm}
@@ -1192,28 +1194,28 @@ the non-trivial steps, which had to be implemented manually.
         \includegraphics[width=0.3\linewidth]{resources/neighbourhood.png}
     \end{center}
     \caption{The neighbourhood of the black pixel consists of the grey pixels in
-    4-connectedness. In 8-connectedness also the light grey pixels are part of the
-    neighbourhood}.
+    4-connectedness. In 8-connectedness, the light grey pixels are part of the
+    neighbourhood too}.
     \label{fig:neighbourhood}
 \end{figure}
 
-The zero-crossing algorithm starts by calculating the magnitude of the gradient
-using the laplacian function included inside the scikit-image library. To
-extract the zero-crossings the program will iterate over the whole array
-(excluding the border) and checks a single condition. Given its position $(i, j)$
+The zero-crossing algorithm starts by calculating the Laplacian using a function
+included inside the scikit-image library. To
+extract the zero-crossings, the program will iterate over the whole array
+(excluding the border) and check the following condition. Given its position $(i, j)$
 the algorithm checks if $|\nabla I(i, j))| < 0$ and its neighbours have
 non-negative magnitude of the gradient.  If this condition stands, then there is
-a zero-crossing at position $(i, j)$. In this case the neighbourhood is
-calculated as 4-connectedness. 4-connected means that the neighbourhood of the
+a zero-crossing at position $(i, j)$. In this case, the neighbourhood is
+calculated as 4-connectedness. That means that the neighbourhood of the
 pixel consists of the pixels on top, left, bottom, and right of the pixel as is
 shown in Figure \ref{fig:neighbourhood}.
 
 \subsection{Markers for watershed algorithm}
 \label{sec-markers}
 Extraction of the markers for the watershed function is not as trivial as it
-might seem. The algorithm tries to solve this issue, by taking the result of the
-zero-crossing algorithm and fills in the individual cells. To accomplish this
-a flood filling algorithm is used.
+might seem. The algorithm tries to solve this issue by taking the result of the
+zero-crossing algorithm and filling in the individual cells. To accomplish this
+a flood-filling algorithm is used.
 
 \begin{figure}
     \begin{center}
@@ -1224,18 +1226,19 @@ a flood filling algorithm is used.
 \end{figure}
 
 We obtain a binary image from the zero-crossing algorithm. Right now there are
-only two values, $0$ stands for background while $255$ stands for the found
-edges. We assume that the user usually puts the whole specimen into the view;
-therefore we assume that the borders of image belong to the background. Thus,
-the program iterates over the borders of the image. If at the currently look at
-position there is a background pixel, a flood fill is ran from there with a new
-value of $128$. After all the iterations are done, we are left with a grayscale
+only two values, $0$ stands for the background, while $255$ stands for the found
+edges. We assume that the user usually puts the whole specimen into view;
+therefore we assume that the borders of the image belong to the background.
+
+The program iterates over the borders of the image. If the current position is
+a background pixel, a flood fill is ran from there with a new value of $128$.
+After all the iterations are done, we are left with a grayscale
 image with three possible values, $0$ represents the original background, $128$
 represents all the space, which was filled during the last step, and $256$
-indicates the original edges. The program has managed to separate the insides of
-the cells and the background as can be seen on the middle image in Figure
+indicates the original edges. The program has then managed to separate the insides of
+the cells and the background as can be seen in the middle image in Figure
 \ref{fig:flood_fill}. Now we can use the newly acquired labelling to create a
-segmentation of cells as is seen in the last picture in the previously mentioned
+segmentation of cells, as is seen in the last picture in the previously mentioned
 Figure.
 
 \begin{figure}
@@ -1250,21 +1253,21 @@ Before this can be applied in the next steps, some of the smaller cells clearly
 outside of the specimen has to be removed. These are caused by the imperfections
 in the denoising parts. Even after the maximum projection and the cell mask are
 applied, in many cases, some residual noise can create small fake cells. To
-remove them a morphological opening is performed, leading to the left image in
+remove them, a morphological opening is performed, leading to the left image in
 Figure \ref{fig:distance_map}.
 
 Now that the cells were segmented, the distance map is calculated. This is shown
 as the right image in Figure \ref{fig:distance_map}. The distance map was
-calculating using the SciPy library and it uses Euclidean distance.
+calculated using the SciPy library, and it uses Euclidean distance.
 
-Next, to extract the markers the peaks inside the distance map were found using
-the \texttt{peak\_local\_max} from the scikit-image library. The benefit of
+Next, to extract the markers, the peaks inside the distance map were found using
+the \texttt{peak\_local\_max} function from the scikit-image library. The benefit of
 this function is that the user can provide a minimum distance separating two
-markers. Additionally, the function allows the user to specify threshold, that
+markers. Additionally, the function allows the user to specify a threshold, which
 means that peaks with low intensity will be ignored, further improving the
 labelling.
 
-Finally, the watershed algorithm is run on the distance map, with the results
+Finally, the watershed algorithm is run on the inverse of the distance map, with the results
 visualised in the 3rd image in Figure \ref{fig:distance_map}.
 
 \subsection{Maximum projection} 
@@ -1273,17 +1276,14 @@ To calculate the maximum projection of the data, the program iteratively uses
 Gaussian smoothing to create multiple images. The first image is left unchanged.
 The second image is created by applying the Gaussian filter to the first. The
 third image is created by applying the Gaussian filter to the previous image
-again and so on.
-
-Essentially, these images can be thought of as multiple layers of the same
-image. Then we can iterate over the original image, and vertically project the
-biggest image intensity.
+again and so on forming multiple layers on top of the original image. Then we can
+iterate over the original image and vertically project the biggest image intensity.
 
 \subsection{Gradient threshold}
 \textbf{TODO:} I don't know if this should be in here. I just copied the
 algorithm from the slides.
 
-That concludes all the non-trivial parts of the program, the rest were a direct
+That concludes all the non-trivial parts of the program; the rest were a direct
 application of mathematical functions in the aforementioned libraries.
 
 \chapter{Evaluation}
@@ -1502,5 +1502,9 @@ times. Create the average and st. deviation. Also monitor the RAM usage.
 \end{itemize}
 
 \chapter{Conclusion}
+
+The primary goal of this thesis was to develop pipeline for automatic segmentation of membrane-stained image data from fluorescent microscopy. This is done to make it easier for researchers to analyse the behaviour of cells, by decreasing the time required to segment them. This program was supposed to be packaged in an easy to use form with exemplary usage documented.
+
+The thesis was documented 
 
 \end{document}
