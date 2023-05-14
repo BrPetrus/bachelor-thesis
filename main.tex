@@ -310,8 +310,10 @@ minimized. More information is available in the paper \cite{otsu1979}.
         \label{fig:otsu-histogram}
     \end{subfigure}
     \caption{Demonstration of the otsu thresholding method.}
-    \label{fig:opening}
+    \label{fig:otsu-demonstration}
 \end{figure}
+
+%todo: Finish
 
 \subsection{Gradient threshold}
 
@@ -765,90 +767,162 @@ the \ref{fig:label_membrane_channel} is shown.
 
 The goal of the algorithm is to segment individual cells and uniquely label each
 cell; however, as previously discussed, they are often not clearly separated
-from each other. A naive Otsu thresholding leads to NEUSPOKOJIVE results as is
-seen on Figure \textbf{TODO}. Thus, a more sophisticated algorithm had to be
-developed to segment the cells' nuclei finer.
-
+from each other. A naive Otsu thresholding leads to unsatisfactory results as is
+seen on Figure \ref{fig:otsu-nuclei-demo}. Thus, a more sophisticated algorithm
+had to be developed to segment the cells' nuclei finer.
+\begin{figure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{resources/otsu-nuclei.png}}
+        \caption{Image from nuclei-stained channel.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{resources/otsu-naive.png}}
+        \caption{Otsu method applied on the left image.}
+    \end{subfigure}
+    \caption{Otsu thresholding does not lead to satisfactory segmentation.}
+    \label{fig:otsu-nuclei-demo}
+\end{figure}
 We settled on two step algorithm. In the first step, the membrane-stained
 channel is used, while in the second step the nuclei-stained channel is used.
 Every cell has a membrane and a nuclei in our specimen; hence, we should be able
 to use the information provided by the first channel to improve the thresholding
 in the second channel.
 
-In the first step quite DRSNA segmentation is performed to roughly find the
-membranes separating the individual cells. The segmentation is then utilized in
-the second step; the algorithm overlays the previous segmentation on top of the
-protein-stained channel and looks at every label. Each one represents a single
-cell, and some of it's surroundings. Finally, a local version of the gradient 
-threshold is performed on each region.
-
+In the first step quite imprecise and greedy segmentation is performed to
+roughly find the membranes separating the individual cells. The segmentation is
+then utilized in the second step; the algorithm overlays the previous
+segmentation on top of the nuclei-stained channel and looks at every label.
+Each one represents a single cell, and some of it's surroundings. Finally, a
+local version of the gradient threshold is performed on each region.
 \begin{figure}
     \begin{center}
-        \includegraphics[width=10cm]{./resources/inkscape/segmentation-steps.png}
+        \includegraphics[width=0.8\linewidth]{./resources/inkscape/segmentation-steps.png}
     \end{center}
     \caption{All steps in the segmentation algorithm.}
     \label{fig:segmentation_steps}
 \end{figure}
 
 \section{Membrane channel}
-Steps inside the membrane channel: watershed, thresholding, denoising, edge
-detection
-
 The goal is to provide a rough segmentation of the cells using the
-membrane-stained channel. First, a pre-process of the data is performed to deal
-with some of the noise in the data. As can be seen on Figure \textbf{TODO} we
-need to deal with the fact, that the intensity inside the cell is quite uneven.
-To even out the lighting inside cells a maximum projection from gaussian pyramid
-is performed. The idea behind this step is, that edge have higher intensities
-than insides of the cells; therefore they should not be very influenced by this
-step. At the same time the uneven lighting inside cells will be smooth out,
-since the highest intensity areas will \textbf{bleed} out to the surrounding
-area. This effect is demonstrated on the Figure \textbf{TODO}. That concludes
-the denoising part.
+membrane-stained channel.
 
+\subsection*{Preprocessing}
+First, a pre-process of the data is performed to deal with some of the noise in
+the data. As can be seen on Figure \ref{fig:max-proj} we need to deal with the
+fact, that the intensities inside every cell is quite uneven. To even out the
+lighting inside cells a maximum projection (Section \ref{sec:max-proj}) is
+performed. The idea behind this step is, that edges have higher intensities than
+the cells' insides; therefore, they should not be very influenced by this step,
+while the uneven lighting inside cells will be smoothed out. That happens,
+because the highest intensity areas will propagate out to the surrounding area.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{./resources/max_proj_before.png}}
+        \caption{Image from membrane-stained channel.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\linewidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{./resources/max_proj_after.png}}
+        \caption{After applying maximum projection.}
+    \end{subfigure}
+    \caption{The uneven lighting inside individual cells is mitigated using the
+    maximum projection technique.}
+    \label{fig:max-proj}
+\end{figure}
+
+After dealing with the uneven lighting, additional smoothing is applied
+to further reduce the effect of residual noise. Since the voxel's dimensions are
+anisotropic, an anisotropic Gaussian smoothing is applied. This concludes the
+preprocessing.
+
+\subsection*{Zero-crossing algorithm}
 % TODO: rephrase this
-Naively applying the zero-crossing algorithm results in other artefacts, such
-as noise causing the algorithm to find contours in the background; therefore,
-a cell mask must be created to differentiate between the foreground (the
-specimen) and the background. For this task, the Otsu thresholding method was
-used, due to a bimodal distribution of the data \textbf{TODO}. On the Figure
-\textbf{TODO} the thresholded data along with the histogram is shown. However,
-some of the useful data is incorrectly labelled as background, to combat this, in
-a general form a binary erosion with a circular structural element with radius
-equal to user-defined cell radius. The final version is show in the second row
-in Figure \textbf{TODO}.
+Applying the zero-crossing algorithm at this stage would result in many
+fake cells being found in the background, due to the presence of noise. To
+remove this visual artefacts, we need to create a mask to differentiate the
+background from the foreground. For this task, the Otsu thresholding method was
+used, due to a bimodal distribution of the data. Sometimes the boundary between
+the specimen's edge and the background is not clear as is in Figure
+\ref{fig:cell-mask}. However, it is much smaller issue, if part of the
+background is categorised as the foreground; hence, this issue can be fixed by
+running morphological erosion with a circular structural element of similar size
+to the average cell.
 
-After dealing with the uneven lighting the edge detection is performed. To help
-with the residual noise, anisotropic Gaussian smoothing is applied. The voxel
-dimensions in our data is not the same as in the z-axis the voxel is about 2.5
-times as large; hence, using an anisotropic filter is more correct. 
+\begin{figure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{./resources/threshold-before.png}}
+        \caption{Thresholded cell.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\linewidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{./resources/threshold-expanded.png}}
+        \caption{After applying morphological erosion.}
+    \end{subfigure}
+    \caption{The Otsu method might sometimes classify parts of the specimen as
+    background; thus, the mask must be expanded.}
+    \label{fig:cell-mask}
+\end{figure}
 
-Now the pre-processing is finished and the zero-crossing algorithm is applied.
 The zero-crossing algorithm provides a reasonable outline of the cells as is
-shown in Figure \textbf{TODO}. The user sometimes has to play around with
+shown in Figure \ref{fig:zc}. The user sometimes has to play around with
 various sigmas to improve the quality of the edge detection. When the sigma is
 too low the algorithm tends to find a large amount of small regions, while too
 large sigma causes the algorithm to join individual cells together. This step
 is further complicated by the fact, that some of the cells are missing parts of
-their membranes. \textbf{TODO}; hence, the is one of the limiting factors of
-the segmentation pipeline.
+their membranes; hence, performance of this step is one of the limiting factors of
+whole the segmentation pipeline. %todo: Cell mask a ako to vplyvni.
 
-Next step is to utilize the outlines to segment individual cells. For this task
-the watershed algorithm is used. To improve the quality of the segmentation,
-markers indicating the sources of water need to be created. Ideally, every cell
-has one marker. These markers are then fed to the watershed algorithm as places
-from which water stems from. %TODO tu som vymazal cast 
-The distance map and the markers are then passed to the
-watershed algorithm. It labels each cell with a unique label.
+\begin{figure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/zero-crossing.png}}
+        \caption{Edges found by the zero-crossing algorithm.}
+        \label{fig:zc}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/mask.png}}
+        \caption{Mask of cells found using zero-crossing algorithm.}
+        \label{fig:cells}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/mask-postprocessed.png}}
+        \caption{Post-processed mask.}
+        \label{fig:cells-post-processed}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/watershed.png}}
+        \caption{After watershed.}
+        \label{fig:watershed}
+    \end{subfigure}
+    \caption{Steps taken from zero-crossing algorithm towards watershed.}
+    \label{fig:zc-watershed}
+\end{figure}
 
-A great advantage of creating the markers from the distance map is that, even if
-the edge detections joins several cells together, the two cells can still be
-labelled individually.
+\subsection*{Watershed}
+Next step is to utilize the outlines to segment individual cells. First, we need
+to take the previous result and fill in the inside of the cells as can be seen
+in Figure \ref{fig:cells}. How this is achieved is explained in Section
+\ref{sec-markers}. After this step is done, the image is further post processed,
+starting by using erosion to remove the edges, then a morphological opening with
+a disk-like structural element is performed to remove small fake cells, caused
+by noise. Finally, dilation is applied to restore some of the unwanted losses
+during the morphological opening, leading to the result in Figure 
+\ref{fig:cells-post-processed}.
+
+Finally, the watershed algorithm is used to uniquely label the individual cells.
+Since the way it is implemented, even if two or more cells are joined, the
+watershed algorithm may be able to divide them. The result is shown in Figure
+\ref{fig:watershed}. More in-depth discussion is in Section \ref{sec-markers}.
+
+This step concludes all that is done in the membrane-stained channel. The
+program has generated a rough approximation of the cells, which will be used to
+further improve the segmentation in nuclei-stained channel.
 
 \section{Nuclei-stained channel}
-
-Steps inside the protein channel: thresholding, denoising
-
 In Figure \textbf{TODO} a common example of the nuclei-stained channel is shown.
 In this channel the preprocessing consists of just a simple Gaussian smoothing
 to help with the thresholding.
@@ -1075,6 +1149,7 @@ pixel consists of the pixels on top, left, bottom, and right of the pixel as is
 shown in Figure \ref{fig:neighbourhood}.
 
 \subsection{Markers for watershed algorithm}
+\label{sec-markers}
 Extraction of the markers for the watershed function is not as trivial as it
 might seem. The algorithm tries to solve this issue, by taking the result of the
 zero-crossing algorithm and fills in the individual cells. To accomplish this
@@ -1133,6 +1208,7 @@ Finally, the watershed algorithm is run on the distance map, with the results
 visualised in the 3rd image in Figure \ref{fig:distance_map}.
 
 \subsection{Maximum projection} 
+\label{sec:max-proj}
 To calculate the maximum projection of the data, the program iteratively uses
 Gaussian smoothing to create multiple images. The first image is left unchanged.
 The second image is created by applying the Gaussian filter to the first. The
