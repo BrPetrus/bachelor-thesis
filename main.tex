@@ -780,6 +780,7 @@ had to be developed to segment the cells' nuclei finer.
         \centering
         \frame{\includegraphics[width=\textwidth]{resources/otsu-naive.png}}
         \caption{Otsu method applied on the left image.}
+        \label{fig:otsu-naive}
     \end{subfigure}
     \caption{Otsu thresholding does not lead to satisfactory segmentation.}
     \label{fig:otsu-nuclei-demo}
@@ -840,7 +841,6 @@ anisotropic, an anisotropic Gaussian smoothing is applied. This concludes the
 preprocessing.
 
 \subsection*{Zero-crossing algorithm}
-% TODO: rephrase this
 Applying the zero-crossing algorithm at this stage would result in many
 fake cells being found in the background, due to the presence of noise. To
 remove this visual artefacts, we need to create a mask to differentiate the
@@ -923,46 +923,73 @@ program has generated a rough approximation of the cells, which will be used to
 further improve the segmentation in nuclei-stained channel.
 
 \section{Nuclei-stained channel}
-In Figure \textbf{TODO} a common example of the nuclei-stained channel is shown.
-In this channel the preprocessing consists of just a simple Gaussian smoothing
-to help with the thresholding.
+Unlike in the membrane-stained channel, in the nuclei-stained channel the
+pipeline is lot less complicated. The whole pre-processing consists of a single
+Gaussian smoothing, that is done because the data is quite grainy, and it helps
+the Gradient threshold used later.
 
 Applying the Otsu thresholding method in the nuclei-stained channel leads to
-poor results as is seen in Figue \textbf{TODO}. The problem is that the lighting
-is quite uneven. Some cells are significantly brighter than others; thus, global
-thresholding is not a viable option.
+poor results as is seen in Figure \ref{fig:otsu-naive}. The problem is that the
+lighting is quite uneven. Some cells are significantly brighter than others;
+thus, global thresholding is not a viable option.
 
 However, we can use the previously obtained segmentation from membrane-stained
 channel to improve the quality of the thresholding. By looking at just specific
 areas denoted by the labels, the thresholding yields more suitable results. In
-essence, a local version of some thresholding algorithm can be used.
+essence, a local version of some thresholding algorithm can be used. Applying it
+this way, the resulting thresholding is shown in Figure \ref{fig:grad-thresh}.
 
 In our testing, Otsu thresholding method was not suitable as in many cases the
 proximity of cells shrinks the background area, causing the algorithm to
 categorise some of the foreground as the background. After some experimentation,
 we concluded that the gradient thresholdolding algorithm provides better result.
-In Figure \textbf{TODO} a comparison is made between these two algorithms. Also
-others easily accessed thresholding methods in the \texttt{scikit-image} library were
-experimented with, but the gradient thresholding method provided reasonable
-results in many cases.
+Also others easily accessed thresholding methods in the \texttt{scikit-image}
+library were experimented with, but the gradient thresholding method provided
+reasonable results in many cases.
+
+%todo: add Krnacova's method
 
 % todo: tu asi neni jasne, ze sa to robi postupne
 Even tough the data was smoothed before applying the threshold, many edges in
 the binary thresholded image appear quite jagged, to combat this a final round
 of post-processing is applied. It consists of applying binary morphological
 closing on each label to fill in dark spots; thus, rounding of the jagged edges.
+The overall effect of this step is not major, but it can help. It is shown in
+Figure \ref{fig:grad-thresh-post}.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/nuclei.png}}
+        \caption{Image from nuclei-stained channel.}
+        \label{fig:nuclei}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/thresholded-gradient.png}}
+        \caption{Applying gradient threshold.}
+        \label{fig:grad-thresh}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/thresholded-gradient-post.png}}
+        \caption{Post-processing with morphological closing.}
+        \label{fig:grad-thresh-post}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/ground-truth-crop.png}}
+        \caption{Ground truth created by the expert. The white part indicates
+        not-studied area.}
+        \label{fig:ground-truth-crop}
+    \end{subfigure}
+    \caption{Steps inside the nuclei-stained channel compared with the ground
+    truth.}
+\end{figure}
 
 An example of the final segmentation and the ground truth --- created by a
-biologist --- is shown in Figure \textbf{TODO}. This concludes the section about
-how the algorithm works. In Figure \textbf{TODO} several other examples of
-segmentations are given.
-
-%todo: Revise all the parameters which can be tweaked by the user.
+biologist --- is shown in Figure \ref{fig:ground-truth-crop}. This concludes the
+section about how the algorithm works.
 
 \chapter{Implementation}
 This chapter describes which libraries were used, how to run the program, and
 non-trivial parts of the implementation.
-
 
 \section{Justification for Python and used libraries}
 As part of the bachelor thesis, I developed a terminal based program to run the
