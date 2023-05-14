@@ -114,40 +114,39 @@
 \addcontentsline{toc}{chapter}{Introduction}
 
 In the field of biology, the development of confocal laser scanning and
-fluorescence microscopy has allowed scientist to create high resolution 3D live
+fluorescence microscopy has allowed scientists to create high-resolution 3D live
 images of various plant and animal tissues \cite{stegmaier2016}. One of the
-areas, where these methods are actively utilized is in skin cancer research
-\cite{gupta2020} or in or the analysis of ovarian tissues from oncological
-patients \cite{fabbri2014}. Since cancer is the second-leading cause of of depth
-in the world \cite{mayo-clinic-cancer} , further research into this area and
-creation of faster tools is essential to develop cures for the diseases.
+areas where these methods are actively utilised is in skin cancer research
+\cite{gupta2020} or in the analysis of ovarian tissues from oncological patients
+\cite{fabbri2014}. Since cancer is the second-leading cause of death in the
+world \cite{mayo-clinic-cancer}, further research into this area and the
+creation of faster tools are essential to developing cures for the disease.
 
-One of the key processes in researching this topic is segmentation of cells to
-study their behaviour and shape; however, this often has to be done manually,
-taking valuable time from researchers to focus on more significant parts of
-their research. It is therefore needed to develop robust automatic segmentation
-techniques, which scale with the growing size of the data.
+One of the critical processes in researching this topic is the segmentation of
+cells to study their behaviour and shape; however, this often has to be done
+manually, taking valuable time from researchers to focus on more significant
+parts of their research. It is, therefore, necessary to develop robust automatic
+segmentation techniques that scale with the data's growing size.
 
-The focus of this thesis is to develop an image analysis pipeline for segmenting
+This thesis focuses on developing an image analysis pipeline for segmenting
 membrane-stained and nuclei-stained cells in fluorescence microscopy image data
 of organoids without reference annotations. This pipeline must be delivered in
-easy-to-use form and a quantitative analysis on the segmentation quality must be
-performed. The developed method relies mostly on the analysis of second partial
-derivative of the data, and watershed algorithm.
+an easy-to-use form, and a quantitative analysis of the segmentation quality
+must be performed. The developed method relies primarily on analysing the second
+partial derivative of the data and the watershed algorithm.
 
-In the first chapter, basic terms required for understanding of the rest of the
-thesis are defined. It also formalises the problem of edge detection,
-thresholding, and segmentation. In the next chapter the available data is
-described alongside the common issues, that had to be dealt with before
-analysing the data. Moreover, it describes the used dataset. In the third
-chapter the high-level overview of all the steps that are taken in the process
-of segmentation the data are visualised with many figures. Fourth chapter deals
-with the details of implementation of the non-trivial steps in the pipeline, and
-provides motivation behind choosing Python and the required libraries. It also
-serves as documentation for the numerous tweakable parameters, and the
+The first chapter defines the basic terms required for understanding the rest of
+the thesis. It also formalises the problem of edge detection, thresholding, and
+segmentation. In the next chapter, the available data is described alongside the
+common issues that must be dealt with before analysing the data. Moreover, it
+describes the used dataset. In the third chapter, the high-level overview of all
+the steps taken in the segmentation process is visualised. The fourth chapter
+deals with the details of implementing the non-trivial steps in the pipeline and
+provides the motivation behind choosing Python and the required libraries. It
+also serves as documentation for the numerous tweakable parameters and the
 exemplary usage of the problem on the dataset. Lastly, the fifth chapter
-discusses how the quantitative analysis was done, and its results, alongside the
-performance of the program on the dataset.
+discusses how the quantitative analysis was done and its results, alongside the
+program's performance on the dataset.
 
 \chapter{Basic terms}
 
