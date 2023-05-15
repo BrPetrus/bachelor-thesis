@@ -629,9 +629,20 @@ areas. The water continues to flow until just the dams are visible above the
 water \cite{gonzalez2002}. At this point the image is segmented using the dams,
 and every catchment basins is uniquely labelled.
 
-\textbf{TODO: Copy image from textbook}
-\textbf{TODO: Consider explaining markers are water sources here or in later
-chapters.}
+In Figure \ref{fig:demo-watershed} the result of running the watershed algorithm 
+on a simple image is shown.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/watershed-basic.png}}
+        \caption{A simple image with two overlapping circles.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/watershed-complex.png}}
+        \caption{Result of the watershed algorithm.}
+    \end{subfigure}
+    \label{fig:demo-watershed}
+\end{figure}
 
 \subsection{Distance transform}
 
