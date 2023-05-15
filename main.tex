@@ -1054,6 +1054,7 @@ biologist --- is shown in Figure \ref{fig:ground-truth-crop}. This concludes the
 section about how the algorithm works.
 
 \chapter{Implementation}
+\label{chp:implementation}
 This chapter describes which libraries were used, how to run the program, and
 non-trivial parts of the implementation.
 
@@ -1583,33 +1584,20 @@ of the image, the program is able to properly segment the image.
         \caption{Cropped image.}
     \end{subfigure}
     \caption{By cropping the image, the program was able to find better segmentation.}
-    \ref{fig:issues-cropping}
+    \label{fig:issues-cropping}
 \end{figure}
 
 \chapter{Conclusion}
 
-The primary goal of this thesis was to develop a pipeline for the automatic segmentation
-of membrane-stained image data from fluorescent microscopy. This is done to make it
-easier for researchers to analyse the behaviour of cells, by decreasing the time
-required to segment them. The developed program is fully functional and available as
-an attachment to the thesis alongside the whole data set, including the ground truth
-created by the expert and the already prepared membrane-stained and nuclei-stained data.
-The configuration file is set up to sane defaults, which should provide reasonable segmentation
-on most of the provided images.
+The primary goal of this thesis was to develop a pipeline for the automatic segmentation of membrane-stained image data from fluorescent microscopy. Creating such tools makes it easier for researchers to analyse the behaviour of cells by decreasing the time required to segment them. During the development of this program, we settled on solving this problem using the Laplacian operator and zero-crossing algorithm.
 
-I believe the program provides a reasonable easy-to-use terminal interface, which should not
-cause many problems to run. In Chapter TODO, all the available parameters are documented, with
-tips about which one to change in case of improper segmentation.
+The developed program is fully functional and available as an attachment to the thesis alongside the whole data set, including the ground truth
+created by the expert and the already prepared membrane-stained and nuclei-stained data. The configuration file is set up to reasonable defaults, which should provide fair segmentation on most of the provided images.
 
-Lastly the performance of the program and the quality of its segmentation has been evaluated
-in Chapter TODO, leading to an average Jaccard score of TODO. As can be seen the program is able
-to find on average about half of the real cells. Nicely visible nuclei are segmented with upwards
-of 0.8 Jaccard score, but the program often fails in cases, where some of the edges are missing,
-or there is a strong unevenness in the lighting.
+I believe the program provides a practical, easy-to-use terminal interface. In Chapter \ref{chp:evaluation}, all the available parameters are documented, with tips about which one to change in case of improper segmentation.  The included zip archive should allow the user to test the program out of the box.
 
-With all its faults, the program is still, in my opinion, usable. TODO Zzzzz...
+Lastly, the performance of the program and the quality of its segmentation has been evaluated in Chapter \ref{chp:evaluation} using the F1 score and Jaccard index. As can be seen, the program finds, on average, about half of the actual cells. Nicely visible cells are nicely segmented, but the program often fails when some edges are missing, or there is a substantial unevenness in the lighting. 
 
-In the future: mention machine learning, segmentation in 3D, performance optimalistions using 
-pythran/numba, deconvolution etc. Also do not forget to mention what was my own prinos.
+In the future, this work could be improved using additional steps in the preprocessing stage. From our research into the topic, machine learning techniques could be utilised to enhance the missing edges or approximate deconvolution algorithms. However, those techniques might take a considerable amount of reference data. Last but not least, although the performance is reasonable, if the program was to be used for the entire data, a just-in-time compiler like Numba or an ahead-of-time compiler like Pythran could take the performance much further.
 
 \end{document}
