@@ -379,8 +379,6 @@ gradient thresholding algorithm was used to segment the cell from the
 background. As can be seen, the magnitude of the gradient is biggest in the
 cell; hence, it contributes more to the value of the threshold.
 
-\textbf{TODO: Why this threshold method is useful}
-
 \section{Mathematical morphology}
 
 Mathematical morphology is an area of research studying how to extract valuable
@@ -1443,31 +1441,39 @@ Looking at the $\overline{J_S}$ scores, it is clear, that if the program finds a
 real cell, it segments it reasonably well. To further investigate this, I listed
 the Jaccard scored for found pairs in the evaluation of the file
 \texttt{t004-roi-10} in Table \ref{tab:scores_roi10}. In this particular case,
-all of them were above 0.5, but in some cases, the segmentation produces Jaccard
+most of them were above 0.5, but in some cases, the segmentation produces Jaccard
 scores below 0.5 (for example, when two real cells are marked as a single large
-blob).
+blob). In the last row of the table, a simple average of all the metrics is shown.
 
 \begin{table}
-    \begin{tabular}{|| c|c|c|c|c|c ||}
+    \begin{tabular}{|| c|c|c|c|c|c|c ||}
         \toprule
-        File name & $\overline{J}$ & $\overline{J_S}$ & $F\_1$ & Precision & Recall \\
+        File name & $\overline{J}$ & $\overline{J_S}$ & \ensuremath{F_1} & Precision & Recall & Average time\\
         \midrule
-        t002-roi-1&0.36&0.57&0.54&0.5&0.64\\
-        t002-roi-2&0.39&0.54&0.67&0.63&0.71\\
-        t004-roi-4-68&0.39&0.61&0.44&0.33&0.64\\
-        t004-roi-4-85&0.66&0.66&0.38&0.23&1.0\\
-        t004-roi-6&0.33&0.61&0.58&0.6&0.54\\
-        t004-roi-10&0.40&0.62&0.72&0.83&0.65\\
-        t004-roi-11&0.43&0.60&0.63&0.6&0.72\\
-        t006-roi-2&0.38&0.62&0.58&0.54&0.62\\
-        t006-roi-5&0.29&0.63&0.42&0.39&0.46\\
-        t008-roi-5&0.32&0.59&0.54&0.53&0.55\\
-        t008-roi-6&0.20&0.54&0.41&0.44&0.38\\
+        t002-roi-1&0.36&0.57&0.54&0.5&0.64&4.93\\
+        t002-roi-2&0.39&0.54&0.67&0.63&0.71&3.83\\
+        t004-roi-4-68&0.39&0.61&0.44&0.33&0.64&7.11\\
+        t004-roi-4-85&0.66&0.66&0.38&0.23&1.0&8.69\\
+        t004-roi-6&0.33&0.61&0.58&0.6&0.54&2.49\\
+        t004-roi-10&0.40&0.62&0.72&0.83&0.65&9.22\\
+        t004-roi-11&0.43&0.60&0.63&0.6&0.72&4.89\\
+        t006-roi-2&0.38&0.62&0.58&0.54&0.62&7.56\\
+        t006-roi-5&0.29&0.63&0.42&0.39&0.46&6.27\\
+        t008-roi-5&0.32&0.59&0.54&0.53&0.55&8.65\\
+        t008-roi-6&0.20&0.54&0.41&0.44&0.38&3.78\\
+        \midrule
+        Averages&0.38&0.60&0.54&0.51&0.63&6.13\\
         \bottomrule
     \end{tabular}
     \caption{Evaluation of the files inside the data set.}
     \label{tab:scores}
 \end{table}
+
+The last column indicates the average time taken to run the program on
+particular data. This was done using the \texttt{time} module from the standard
+python library. In this time only the calculations are taken into account,
+so the disk speed did not significantly affect the time. This was done over
+four runs and averaged. This was done on the Ryzen 5700U notebook processor.
 
 \begin{table}
     \begin{tabular}{||c||}
@@ -1495,24 +1501,53 @@ blob).
     \label{tab:scores_roi10}
 \end{table}
 
-\subsection{Changing the threshold}
-
-\textbf{TODO/MAYBE: Pick a single image and try different thresholds. Plot the F1 and
-Jaccard scores.}
-
-\subsection{Performance}
-
-\textbf{TODO:} Try running the whole program on the whole dataset multiple
-times. Create the average and st. deviation. Also, monitor the RAM usage.
-
+%\subsection{Changing the threshold}
+%\textbf{TODO/MAYBE: Pick a single image and try different thresholds. Plot the F1 and
+%Jaccard scores.}
 \section{Common problems}
 
-\textbf{TODO: obrazky plus popis}
-\begin{itemize}
-    \item Obrazky niekedy treba orezat, aby sa vyplnili stredy. t004-roi-10-375
-    \item Nejasne okraje medzi bunkami: prelievanie. 
-    \item Nejasny okraj medzi vnutrami okraj. buniek a pozadim robia blbosti t004-roi-10-375
-\end{itemize}
+Using the program on the dataset revealed two main typical issues with this
+approach. As mentioned in previous sections, many cells do not have a clear edge
+between causing the program to segment them as one, or completely miss them.
+This is evident in the image \ref{fig:issues-joining}, where a lot of noise
+causes the program to completely miss some of the cells. This can sometimes be
+alleviated by lowering the \texttt{zc\_sigma} parameter, but overall, the method
+fails in this area.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.3\linewidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/issues-data.png}}
+        \caption{Data with a lot of missing edges.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.3\linewidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/issues-complicated-areas-filled.png}}
+        \caption{Segmentation of the previous image.}
+    \end{subfigure}
+    \caption{Complicated area causes the program to join multiple cells together.}
+    \label{fig:issues-joining}
+\end{figure}
+
+The second common issue happened during the marker creation for the watershed
+algorithm. Here the biggest problem was that our assumption, that the image's
+outline was part of the background, cause the program to fill in the whole
+specimen. This is shown in \ref{fig:issues-cropping}. This is because, in this
+particular case, the division between the foreground and background was easily
+visible, and cause the program to create a connected contour around the
+specimen. In this case, the solution is quite easy, after manually cropping part
+of the image, the program is able to properly segment the image.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.3\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/mask-failed.png}}
+        \caption{Image.}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.3\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/issues-mask-croped.png}}
+        \caption{Cropped image.}
+    \end{subfigure}
+    \caption{By cropping the image, the program was able to find better segmentation.}
+    \ref{fig:issues-cropping}
+\end{figure}
 
 \chapter{Conclusion}
 
