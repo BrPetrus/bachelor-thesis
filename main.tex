@@ -244,44 +244,46 @@ $$\nabla f(i, j) = f(i+1,j) - f(i-1,j) + f(i,j+1) - f(i,j-1)$$
 
 An example of the magnitude of the gradient is visible in Figure
 \ref{fig:demo_grad_thresh} in the second image in the first row.
+We can then extract the edges with further processing but since the program
+does not rely on this method, I will skip the details; however, the program uses
+the magnitude of the gradient for calculating the gradient threshold, described later
+in this chapter.
 
 \subsection{Laplacian operator}
 
-The second common way of finding edges is using the second derivative, or more
-precisely using the Laplacian. For a 2D function $f(x, y)$ the Laplacian is
+The second common way --- and the one we will use for finding edges --- is using the second derivative, or more
+precisely, using the Laplacian. For a 2D function $f(x, y)$ the Laplacian is
 defines as \cite{gonzalez2002}:
 
 $$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}$$
 
-However, in the context of digital image processing our signal is discrete;
+However, in the context of digital image processing, our signal is discrete;
 therefore, a discrete approximation is needed. A fairly standard way is to use
 the following approach to calculate the partial second derivative in the $x$
 axis:
 $$\frac{\partial^2 f}{\partial x^2} = f(i + 1, j) + f(i - 1, j) - 2f(i, j)$$
 and similar in the y axis:
 $$\frac{\partial^2 f}{\partial y^2} = f(i, j + 1) + f(i, j - 1) - 2f(i, j)$$
-Substituting into the prior definition we get the following approximation:
+Substituting into the prior definition, we get the following approximation:
 $$\nabla^2 f = f(i+1, j) + f(i-1, j) + f(i, j+1) + f(i, j-1) - 4f(i,j)$$
 To calculate the Laplacian of an image, this formula is applied to every pixel.
+The outer pixels can be dealt with in many ways, but the developed program simply
+ignores them.
 
 % todo insert an image and description
 % todo insert and examplorary image
 
 One of the disadvantages of this approach is the sensitivity to noise. For
 demonstration purposes, the effects are shown in 1D in Figure
-\ref{fig:edges_noise}. While the original
+\ref{fig:filtering-noise}. While the original
 signal does not look too degraded, it is impossible to find the correct
 zero-crossings. Therefore we have to help the operator by first smoothing the
-image. A common approach is to first use Gaussian smoothing; this is sometimes
+image. A common approach is first to use Gaussian smoothing; this is sometimes
 called a Laplacian of Gaussian operator or a Mexican hat filer. The idea is that
 by averaging, we reduce some of the effects of the noise
-\cite{hipr-mexican-hat}. 
-
-The Figure \ref{fig:filtering-noise} demonstrates this
-effect. By appyling a small amount of noise, the original signal is not
-significantly distorted, but hardly anything can be deduced from the second
-derivative. However, if Gaussian smoothing is applied first, the second
-derivative gets a lot clearer. 
+\cite{hipr-mexican-hat}. As is shown in the figure, without the additional Gaussian
+smoothing, we cannot deduce much from the second derivative, but after the smoothing
+is applied, the zero-crossing becomes visible.
 
 \begin{figure}
     \begin{subfigure}[t]{0.48\textwidth}
@@ -304,8 +306,8 @@ inside an image. A simple algorithm is to go through the whole image and check
 if a particular pixel at a given position is positive while its neighbours are
 negative. If this condition is true, we set this position to white in the
 resulting image and black otherwise. This creates the following image in
-Subfigure \ref{fig:zc}. Here another valuable property of the zero-crossing
-algorithm can be seen. The produced edges are thin, and form closed contours.
+Subfigure \ref{fig:zc}. Here is another valuable property of the zero-crossing
+algorithm. The produced edges are thin and form closed contours.
 
 \section{Thresholding}
 
@@ -1509,9 +1511,9 @@ blob). In the last row of the table, a simple average of all the metrics is show
 
 The last column indicates the average time taken to run the program on
 particular data. This was done using the \texttt{time} module from the standard
-python library. In this time only the calculations are taken into account,
+Python library and only the time taken to calculate was considered,
 so the disk speed did not significantly affect the time. This was done over
-four runs and averaged. This was done on the Ryzen 5700U notebook processor.
+four runs and averaged using the Ryzen 5700U notebook processor.
 
 \begin{table}
     \begin{tabular}{||c||}
@@ -1561,7 +1563,7 @@ fails in this area.
         \frame{\includegraphics[width=\textwidth]{./resources/issues-complicated-areas-filled.png}}
         \caption{Segmentation of the previous image.}
     \end{subfigure}
-    \caption{Complicated area causes the program to join multiple cells together.}
+    \caption{A complicated area causes the program to join multiple cells together.}
     \label{fig:issues-joining}
 \end{figure}
 
