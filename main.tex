@@ -150,12 +150,6 @@ program's performance on the dataset.
 
 \chapter{Basic terms}
 
-TODO:
-\begin{itemize}
-    \item{Define distance map}
-    \item{Image denoising part}
-\end{itemize}
-
 Image processing involves the use of many mathematical techniques and algorithms
 to extract useful information or somehow alter the image. The purpose of this
 section is to provide a comprehensive and shallow overview of the fundamental
@@ -190,18 +184,6 @@ as an one- or multi-dimensional array of values. If the coordinates and the
 intensity are subsets of some discrete set, then the function represents a
 digital image.
 
-\section{Image denoising}
-
-In a perfect world, every image would be sharp and ev ... not quite it :/
-
-Quite counter-intuitively, to reduce the effect of noise while reading details,
-some sort of averaging of the image is performed. How and why a noise ends up in
-an image is a vast topic, which is not going to be discussed here in depth.
-
-\textbf{TODO:} This paragraph requires more work, but I am really not sure what
-to include here, and in what depth, should it go.
-
-
 \section{Edge detection}
 
 In digital image processing, edges typically separate different regions of
@@ -217,12 +199,15 @@ between two regions, as is shown in Figure \ref{fig:edge_intensities}. It is
 hard to define precisely where an edge begins and ends, so the first and the
 second derivative of the image is usually calculated and analysed.
 
+Looking at the second derivate of the image, we can see two distinct spikes,
+which are called zero-crossings, and they will be utilised as the main workhorse
+of the program for finding edges.
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=6cm]{resources/inkscape/gradient.png}
     \end{center}
-    \caption{Intensity of a signal with an edge.}
+    \caption{Intensity of a signal, and its first and second derivative.}
     \label{fig:edge_intensities}
 \end{figure}
 
@@ -257,11 +242,8 @@ $$\frac{\partial f}{\partial y} \approx f(i, j+1)-f(i,j-1)$$
 Using them, we can reasonably approximate the gradient as:
 $$\nabla f(i, j) = f(i+1,j) - f(i-1,j) + f(i,j+1) - f(i,j-1)$$
 
-An example of the magnitude of the gradient is visible in Figure \textbf{TODO}.
-
-\begin{itemize}
-    \item Images
-\end{itemize}
+An example of the magnitude of the gradient is visible in Figure
+\ref{fig:demo_grad_thresh} in the second image in the first row.
 
 \subsection{Laplacian operator}
 
@@ -285,14 +267,6 @@ To calculate the Laplacian of an image, this formula is applied to every pixel.
 % todo insert an image and description
 % todo insert and examplorary image
 
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=6cm]{"resources/gonzalez_edges_and_noise.jpg"}
-    \end{center}
-    \caption{Effect of noise on signal \cite{gonzalez2002}}
-    \label{fig:edges_noise}
-\end{figure}
-
 One of the disadvantages of this approach is the sensitivity to noise. For
 demonstration purposes, the effects are shown in 1D in Figure
 \ref{fig:edges_noise}. While the original
@@ -301,16 +275,37 @@ zero-crossings. Therefore we have to help the operator by first smoothing the
 image. A common approach is to first use Gaussian smoothing; this is sometimes
 called a Laplacian of Gaussian operator or a Mexican hat filer. The idea is that
 by averaging, we reduce some of the effects of the noise
-\cite{hipr-mexican-hat}. The Figure \textbf{TODO} demonstrates this effect.
+\cite{hipr-mexican-hat}. 
+
+The Figure \ref{fig:filtering-noise} demonstrates this
+effect. By appyling a small amount of noise, the original signal is not
+significantly distorted, but hardly anything can be deduced from the second
+derivative. However, if Gaussian smoothing is applied first, the second
+derivative gets a lot clearer. 
+
+\begin{figure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/small_noise.png}}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \frame{\includegraphics[width=\textwidth]{./resources/filtered_noise.png}}
+    \end{subfigure}
+    \caption{Demonstration of the effect of noise and filtering on a simple
+    linear increase in intensity. In the second row, the first derivate of the
+    signal is displayed, and in the third row is the second derivative. On the
+    left, an artificial noise has been added to the signal. On the right, a
+    Gaussian smoothing has been applied.}
+    \label{fig:filtering-noise}
+\end{figure}
 
 Since the Laplacian is based on second derivatives, it has the property that
 each edge produces a zero crossing. This can be readily utilised to find edges
 inside an image. A simple algorithm is to go through the whole image and check
 if a particular pixel at a given position is positive while its neighbours are
 negative. If this condition is true, we set this position to white in the
-resulting image and black otherwise. This creates an TODO. Here another valuable
-property of the zero-crossing algorithm can be seen. The produced edges are
-thin, and form closed contours.
+resulting image and black otherwise. This creates the following image in
+Subfigure \ref{fig:zc}. Here another valuable property of the zero-crossing
+algorithm can be seen. The produced edges are thin, and form closed contours.
 
 \section{Thresholding}
 
@@ -609,7 +604,15 @@ skeletonizing images, finding perimeters etc \cite{mathworks_morp_oper}.
 
 \section{Segmentation}
 
-\textbf{TODO}
+Image segmentation is a fundamental steps in the image processing. Unlike in the
+previous sections, we are no longer interested in manipulating and changing the
+image. The point of image segmentation is to split the image into regions with
+some specific meaning, e.g. in our case, to split the data into regions of
+inidivual cells \cite{gonzalez2002}.
+
+Numerous techniques can be applied, but in this thesis, we are interesting in
+one particular technique --- the watershed algorithm --- and segmentation based
+on the Laplacian operator in the zero-crossing algorithm.
 
 \subsection{Watershed algorithm}
 
@@ -629,6 +632,29 @@ and every catchment basins is uniquely labelled.
 \textbf{TODO: Copy image from textbook}
 \textbf{TODO: Consider explaining markers are water sources here or in later
 chapters.}
+
+\subsection{Distance transform}
+
+One of the last required terms to define is the distance transform, which is
+used in the implementation to calculate the watershed algorithm.
+
+The distance transform is defined on binary images. After the distance transform
+is applied on an image, each intensity is replaced by the closest distance to
+the backgground. In principle any metric can be used, but the Euclidean distance
+is used in our case. A simple example is shown in Figure
+\ref{fig:demonstration-distance-map}.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \frame{\includegraphics[width=\textwidth]{"./resources/distance-map-cirle.png"}}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \frame{\includegraphics[width=\textwidth]{"./resources/distance-map-transform"}}
+    \end{subfigure}
+    \caption{Demonstration of the distance transform. The farther the pixel is
+    from the background the higher is the pixel's intensity.}
+    \label{fig:demonstration-distance-map}
+\end{figure}
 
 \chapter{Image data}
 
