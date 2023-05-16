@@ -647,24 +647,24 @@ is used in our case. A simple example is shown in Figure
 
 \chapter{Image data}
 
-The image data --- of mouse mammary organoids --- was acquired using confocal
-laser scanning. The original data was captured in 2021 by a group of
-researchers at (\textbf{TODO}) faculty. The captured specimen is around 500
+The image data --- of mouse mammary organoids --- was acquired using a confocal
+laser scanning microscope. The original data was captured in 2021 by a group of
+researchers at the Faculty of Medicine, Masaryk University. The captured field of view is around 500
 microns by 500 microns by 80 microns, and a single voxel's size is $0.233\mu m$ by
 $0.233\mu m$ by $0.586\mu m$.
 
-In confocal laser scanning, researchers can stain specific structures in
-their specimen so that studied structures reemit light when the proper wavelength
-is shined upon them. This allows them to capture the density of studied proteins
+In confocal laser scanning microscopy, researchers can stain specific structures in
+their specimen so that the studied structures emit light when the proper wavelength
+is shined upon them. This allows them to capture the expression of studied proteins
 inside the specimen. In this particular case, the researchers captured the
-density of 3 different proteins, of which one is part of membranes, while the
+expression of 3 different proteins, of which one is part of membranes, while the
 other two are primarily located inside the cells' nuclei.
 
 The data, totalling around 576 GB, consists of 12 different time steps, where
-each step has a size of 1920x1920x388 pixels. For every protein, the researchers
+each step has a size of 1920x1920x388 voxels. For every protein, the researchers
 captured the image using two different optical setups; thus, there are six
 channels. The data is stored in numerous TIFF files, and every channel contains
-grayscale data with 16 bits per pixel.
+grayscale data with 16 bits per voxel.
 \begin{figure}
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
@@ -681,14 +681,14 @@ grayscale data with 16 bits per pixel.
     \caption{A sample from the data.}
     \label{fig:data_example}
 \end{figure}
-In Figure \ref{fig:data_example}, a single slice of the data was taken from
+In Figure \ref{fig:data_example}, a single slice of the image data was taken from
 two channels. They are from the same time point and the same place.
 
-\section{Problems with the data set}
+\section{Typical challenges to deal with}
 
-The size of the data and the inherent problems of fluorescence microscopy
-provide the main issues in analysing the data. It is very time-consuming to
-analyse the whole data set; therefore, all work was done on much smaller data slices.
+The size of the data and the inherent phenomenons of fluorescence microscopy
+provide the main challenges in analysing the data. It is very time-consuming to
+analyse the whole data set; therefore, all work was done on smaller data slices.
 
 \begin{figure}
     \centering
@@ -728,42 +728,42 @@ membranes do not form connected segments; instead, a part of the cell's membrane
 usually missing, or it is joined with the neighbouring cell's membrane, as can be
 seen in Figure \textbf{\ref{fig:bad_edges}}. This complicates the analysis, as different
 regions may require different filters to be properly preprocessed. Moreover,
-this makes edge detection much harder since it relies on the magnitude of
-the gradient of the image. Moreover, sometimes the gradient between the cell and the
+this makes edge detection more difficult because it relies on the magnitude of
+the gradient of the image. Moreover, sometimes the intensity change between the cell and the
 background is too smooth for the program to find the divisive line as in Figure
 \ref{fig:bleeding_edges}.
 
 Another issue is that the light gets scattered inside the organoid, as shown
-in Figure \textbf{\ref{fig:scattering}}. That means that it is possible to analyse only the
+in Figure \textbf{\ref{fig:scattering}}. That means that it is possible to reliably analyse only the
 outermost layers of cells of the organoid.
 
-The nuclei=stained channel comes with its own set of problems, some of them different.
+The nuclei-stained channel comes with its own set of problems, some of them different.
 It is still true that the sharpest data comes, from the outermost layer
 of the organoid, severely limiting the amount of usable data. Another issue is that the
-individual cells are sometimes quite fuzzy, which makes it hard to decide where
-exactly the cell ends or if they are multiple cells instead of one.
+individual cells are sometimes quite fuzzy, which makes it difficult to decide where
+exactly the cell ends or if there are multiple cells instead of one.
 % todo: reword
 
 \subsection{Size}
 
 The size of the dataset poses the second problem, as it would be computationally
-expensive to try to process the whole data set at once; however, a lot of the
-data is either unusable or of no interest. In most instances, the data is
+expensive to try to process the whole dataset at once; however, a lot of the
+data is either unusable or of no interest. In most instances, the image data is
 predominantly composed of the background, and at several moments in time, no
 specimen can be seen; therefore, to reduce the computational demands further,
 only specific regions of interest were manually selected to create the final
-data set. Ultimately, the reduced data set is only a few dozen megabytes large.
+dataset. Ultimately, the reduced dataset is only a few dozen megabytes large.
 
 \section{Dataset}
 
 For reasons specified in the previous sections, it would not be reasonable
-to run the evaluation algorithm on the whole data. Moreover, it is unclear
-how prediction on the whole data would be scored, not to mention the large
+to run the evaluation algorithm on the whole image data. Moreover, it is unclear
+how prediction on the whole image data would be scored, not to mention the large
 computing and storage requirements; thus, we decided to create a set of images
-on which the algorithm will be evaluated. The set contains 11 images, which I
-hand-picked from the raw data. I tried to include sections from various
-channels, times, and in various quality. This was done to test the
-program's performance and precision under diverse circumstances.
+on which the algorithm would be evaluated. The set contains 11 images, which I
+hand-picked from the raw image data. I tried to include sections from various
+channels, times, and of various quality. This was done to test the
+program's performance under diverse circumstances.
 
 All of the images are included as attachments in the thesis. The general
 name scheme is \texttt{txxx-roi-y-z}, where \texttt{xxx} stands for the time,
@@ -774,16 +774,18 @@ several slices in a single file. The program then runs the maximum projection
 in 3D, but the slice in the middle will be picked for further processing. On the
 other hand, the nuclei-stained data is always two-dimensional.
 
-This dataset was then passed to researchers at the faculty of \textbf{TODO} for
-evaluation. They manually labelled the nuclei-stained data in the following
-structure: Parts that were considered to be background were labelled using $0$.
+This dataset was then manually annotated as follows: Parts that were considered to be background were labelled using $0$.
 Sections which were too complicated or unclear were labelled using $65535$, and
 the rest of the cells were uniquely labelled with numbers starting at $1$. In
-Figure \ref{fig:label_ground_truth} the segmentation created by the expert of
-the \ref{fig:label_membrane_channel} is shown.
+Figure \ref{fig:label_ground_truth} the manual segmentation of the corresponding raw image data (Fig \ref{fig:label_membrane_channel}) created by the expert is shown.
 
 \begin{figure}
-    \centering
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
+        \frame{\includegraphics[width=\textwidth]{./resources/membrane-channel.png}}
+        \caption{Image from the membrane-stained channel.}
+        \label{fig:label_membrane_channel}
+    \end{subfigure}
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/ground-truth.png}}
@@ -791,14 +793,6 @@ the \ref{fig:label_membrane_channel} is shown.
         complicated area, black is the background, and the rest are cells.}
         \label{fig:label_ground_truth}
     \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.4\textwidth}
-        \centering
-        \frame{\includegraphics[width=\textwidth]{./resources/membrane-channel.png}}
-        \caption{Image from the membrane-stained channel.}
-        \label{fig:label_membrane_channel}
-    \end{subfigure}
-    \hfill
     \caption{Expert's labelling of the image on the right.}
     \label{fig:labelling_example}
 \end{figure}
