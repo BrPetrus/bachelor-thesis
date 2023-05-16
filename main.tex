@@ -1201,7 +1201,7 @@ application of mathematical functions in the aforementioned libraries.
 \chapter{Evaluation}
 \label{chp:evaluation}
 This chapter deals with evaluating the results, common problems, and the
-performance of the pipeline. Two metrics will be defined and analysed on the part of
+performance of the pipeline. Two evaluation measures are defined and analysed on the part of
 the data set.
 
 \section{Scoring of the algorithm}
@@ -1227,12 +1227,12 @@ segment the cell, and in the bottom right, the program missed completely,
 creating a new fictional cell, which was not found by the expert.
 
 To take the analysis further, we need a way how to pair the relevant predictions
-with the real segmentations. In the simplified diagram, I only used two colours
+with the real segmentations. In the Figure \ref{fig:evaluation_basic}, I only used two colours
 to denote the predicted and real cells; however, in the real segmentation, each
 cell has a unique label. To complicate things further, similar cells do not
 have to have the same label in the predicted and real segmentation.
 
-Solving this problem was done using a simple metric based on set operations.
+Solving this problem was done using a simple measure based on set operations.
 Looking at each cell as a set of its pixels, we can talk about the intersection
 of two cells. To illustrate, take a look at the cells in the top left corner of
 the aforementioned figure. If we consider the two cells as sets of their
@@ -1242,16 +1242,13 @@ equal to the black set.
 In general, by picking a single real cell and one predicted cell, we can construct
 two sets containing their pixels. The set containing the pixels of the real cell is
 denoted as $R_i$, while the second set containing the pixels of the predicted
-cell is denoted as $P_i$. If the intersection is large enough, these two
-cells are considered to be a pair and are later used in the quality
-metrics. In full, the condition is
-$$|R_i \cap S_i| > \alpha * |R_i| \Leftrightarrow R_i \text{ and } S_i \text{ form a pair}$$
+cell is denoted as $P_j$. If the intersection is large enough, these two
+cells are considered to be a pair and are later used in the performance measure. In full, the condition is
+$$|R_i \cap P_i| > \alpha \cdot |R_i| \Leftrightarrow R_i \text{ and } S_i \text{ form a pair}$$
 for some threshold $\alpha$. By default, this threshold is set to 0.5, ensuring
-that every $R_i$ can have just one pairing member $S_i$. Towards the end of this
-chapter, this threshold is changed to analyse how the scoring changes based
-on this threshold.
+that every $R_i$ can have just one pairing member $S_i$.
 
-\subsection{Segmentation quality}
+\subsection{Segmentation accuracy}
 \begin{figure}
     \begin{center}
         \includegraphics{resources/inkscape/evaluation_imprecise_segmentation.png}
@@ -1259,17 +1256,17 @@ on this threshold.
     \caption{Segmentation where the program labelled a lot of extra areas.}
     \label{fig:evaluation_imprecise}
 \end{figure}
-The first metric tries to evaluate how well the predicted segmentation overlap
+The first measure evaluates the accuracy of the predicted segmentation overlap
 with the expert's segmentation. Just checking the size of the intersection is
 not good enough, as if the program just created large blobs as in Figure
 \ref{fig:evaluation_imprecise}, they would technically contain the whole cell;
 however, such a result is not satisfactory because the segmentation contains a
 a lot of areas around the cell.
 
-To take this into account, the segmentation quality is evaluated using the
-Jaccard index. Jaccard index of two sets $A$ and $B$ is defined
+To take this into account, the segmentation accuracy is evaluated using the
+Jaccard index. The Jaccard index of two sets $A$ and $B$ is defined
 as\cite{2020eelbode}:
-$$J(A, B) = \frac{|A \cap B|}{|A \cup B|}$$
+$$J(A, B) = \frac{|A \cap B|}{|A \cup B|}.$$
 The range of the Jaccard index is from 0 to 1 (included). If the two sets are
 identical, then the Jaccard index is equal to 1, while if the two sets do not
 have any identical elements, the index is equal to 0.
@@ -1283,11 +1280,11 @@ In the final evaluation, after the pairing, the Jaccard index of each pair of
 cells will be calculated and averaged, leading to a metric of how well the
 program segmented the data. Sometimes, the program's segmentation is not good enough,
 and a couple of the real cells are not paired with any predicted cells. We decided
-to score these cells as having 0 Jaccard index. To provide a more meaningful analysis,
+to score these cells as having zero Jaccard index. To provide a more meaningful analysis,
 two different averages are calculated. If these missed areas are counted, then it
 is denoted using $\overline{J}$. Otherwise, the symbol $\overline{J_S}$ is used.
 
-\subsection{Detection quality}
+\subsection{Detection performance}
 \begin{figure}
     \begin{center}
         \includegraphics{resources/inkscape/evaluation_with_TP.png}
@@ -1297,48 +1294,49 @@ is denoted using $\overline{J}$. Otherwise, the symbol $\overline{J_S}$ is used.
     \label{fig:evaluation_with_TP}
 \end{figure}
 
-Apart from the quality of the segmentation, a useful metric is how many cells
-the program was able to find compared to how many were found by the expert. The
+Apart from the quality of the segmentation, a useful measure is how many cells
+the program was able to correctly find compared to how many were found by the expert. The
 concept of pairs from the previous section is also used here to pair up the
 predictions with the real cells. If a pair is found, then it is considered as a
 true positive. If a cell found by an expert does not have a partner, then it is
 considered to be a false negative, and if a cell found by the program does have
 a corresponding cell found by an expert, it is considered to be a false
-positive. In Figure \ref{fig:evaluation_with_TP}, this idea is visualised.
+positive. In Figure \ref{fig:evaluation_with_TP}, this idea is visualised. To denote the number of
+true positives TP is used. Similarly for false positives it is FP and for false
+negatives it is FN.
 
 Now that the notion of true positives, false positives, and false negatives have
-been mapped to our results, a standard F1 score can be applied. It is defined as
+been mapped to our results, the standard F1 score can be applied. It is defined as
 the harmonic mean between recall and precision \cite{sklearn-f1score}, formally:
 $$\text{recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}$$
 $$\text{precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}$$
-$$F_1 = \frac{2 * \text{recall} * \text{precision}}{\text{recall} +
+$$F_1 = \frac{2 \cdot \text{recall} \cdot \text{precision}}{\text{recall} +
 \text{precision}}$$
-Generally speaking, recall is a useful measure to see how many of the predicted
+Generally speaking, precision is a useful measure to see how many of the predicted
 cells are actual cells. If our system has a low recall, that means that a
 significant number of cells found by the expert were missed by our program. On
 the other hand, precision talks about how many of the program's predictions are actual
-cells. Then the F1 score is just a useful overall measure, taking into account
-under-segmenting and over-segmenting in our data.
+cells. Then the F1 score is just a useful overall measure, accounting for
+under-segmentation and over-segmentation in our data.
 
 \subsection{Results}
-When evaluating the data set, I took each image and gave myself around 2--5
-minutes to find the best segmentation. First I visually inspected the results
-and tried to tweak the parameters to fix some of the common issues. After I was
-satisfied with the results I tried to tweak the parameters again, this time
-evaluating the $\overline{J_s}$ score. After that, I recorded the results and
-proceeded to the next image.
+When evaluating the program on the dataset, I took each image and gave myself around 2--5
+minutes to find the best segmentation. Before looking at the $\overline{J_s}$ scores, I
+visually inspected the results. Once I was satisfied and could not see any of the common
+issues, I tweaked the parameters to find the biggest $\overline{J_s}$ score.
+After that, I recorded the results and proceeded to the next image.
 
-The final results are recorded in Table \ref{tab:scores}. Every row begins
-with the filename and provides various scores I was able to achieve with the
+The final results are reported in Table \ref{tab:scores}. Every row begins
+with the filename and provides various scores I achieved with the
 program. As can be seen from the table, certain images got better results than
-the other.
+others.
 
 In general, the program has higher recall than precision, meaning that the
 program finds the majority of the cells marked by the expert; however, it also
-find many false positives. Those are cells, that the program predicted, but were
-not found by the expert.
+finds many false positives. Those are cells that the program predicted but were
+not found by the expert. Those are mostly caused by noise in the data.
 
-Looking at the $\overline{J_S}$ scores, it is clear, that if the program finds a
+Looking at the $\overline{J_S}$ scores, it is clear that if the program finds a
 real cell, it segments it reasonably well. To further investigate this, I listed
 the Jaccard scored for found pairs in the evaluation of the file
 \texttt{t004-roi-10} in Table \ref{tab:scores_roi10}. In this particular case,
@@ -1408,9 +1406,9 @@ four runs and averaged using the Ryzen 5700U notebook processor.
 \section{Common problems}
 
 Using the program on the dataset revealed two main typical issues with this
-approach. As mentioned in previous sections, many cells do not have a clear edge
-between causing the program to segment them as one, or completely miss them.
-This is evident in the image \ref{fig:issues-joining}, where a lot of noise
+approach. As mentioned in the previous sections, many cells do not have a clear boundary
+between them causing the program to segment them as one, or completely miss them.
+This is evident in Figure \ref{fig:issues-joining}, where a lot of noise
 causes the program to completely miss some of the cells. This can sometimes be
 alleviated by lowering the \texttt{zc\_sigma} parameter, but overall, the method
 fails in this area.
@@ -1429,12 +1427,12 @@ fails in this area.
 \end{figure}
 
 The second common issue happened during the marker creation for the watershed
-algorithm. Here the biggest problem was that our assumption, that the image's
-outline was part of the background, cause the program to fill in the whole
+algorithm. Here the biggest problem was that our assumption that the image's
+outline was part of the background, causes the program to fill in the whole
 specimen. This is shown in \ref{fig:issues-cropping}. This is because, in this
 particular case, the division between the foreground and background was easily
-visible, and cause the program to create a connected contour around the
-specimen. In this case, the solution is quite easy, after manually cropping part
+visible and causes the program to create a connected contour around the
+specimen. In this case, the solution is quite easy; after manually cropping part
 of the image, the program is able to properly segment the image.
 
 \begin{figure}
