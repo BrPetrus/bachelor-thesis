@@ -60,9 +60,7 @@
     TeXkeywords = {segmentation, image processing, scikit-image, watershed,
                    thresholding, fluorescence microscopy, zero-crossing},
     abstract    = {%
-      This is the abstract of my thesis, which can
-
-      span multiple paragraphs.
+        This thesis aims to develop an image analysis pipeline for segmenting membrane-stained and nuclei-stained image data obtained using a fluorescent microscope. The thesis describes a two-step processing using the analysis of the Laplacian operator and watershed algorithm in the first step and thresholding in the second step to segment individual cells in the image data. Then the program's segmentation accuracy and detection performance are evaluated using reference data. The thesis also includes the program with documentation on how to use it.
     },
     thanks      = {%
        I am extremely grateful to my advisor, Assoc. Prof. RNDr. Martin Maška,
@@ -1345,11 +1343,11 @@ scores below 0.5 (for example, when two real cells are marked as a single large
 blob). In the last row of the table, a simple average of all the metrics is shown.
 
 \begin{table}
-    \begin{tabular}{|| c|c|c|c|c|c|c ||}
+    \hspace*{-0.5cm}\begin{tabular}{|| c|c|c|c|c|c|c ||}
         \toprule
-        File name & $\overline{J}$ & $\overline{J_S}$ & \ensuremath{F_1} & Precision & Recall & Average time\\
+        File name & $\overline{J}$ & $\overline{J_S}$ & \ensuremath{F_1} & Precision & Recall & Avg. time [s]\\
         \midrule
-        t002-roi-1&0.36&0.57&0.54&0.5&0.64&4.93\\
+        t002-roi-1&0.36&0.57&0.54&0.50&0.64&4.93\\
         t002-roi-2&0.39&0.54&0.67&0.63&0.71&3.83\\
         t004-roi-4-68&0.39&0.61&0.44&0.33&0.64&7.11\\
         t004-roi-4-85&0.66&0.66&0.38&0.23&1.0&8.69\\
@@ -1361,11 +1359,34 @@ blob). In the last row of the table, a simple average of all the metrics is show
         t008-roi-5&0.32&0.59&0.54&0.53&0.55&8.65\\
         t008-roi-6&0.20&0.54&0.41&0.44&0.38&3.78\\
         \midrule
-        Averages&0.38&0.60&0.54&0.51&0.63&6.13\\
+        Averages&$0.38$&$0.60$&$0.54$&$0.51$&$0.63$&$6.13$\\
+        Standard dev.&$0.11$&$0.037$&$0.11$&$0.16$&$0.16$&$2.29$\\
         \bottomrule
     \end{tabular}
     \caption{Evaluation of the files inside the data set.}
     \label{tab:scores}
+\end{table}
+
+\begin{table}
+    \hspace*{-0.5cm}\begin{tabular}{|| c|c|c|c|c ||}
+        \toprule
+        File name & \texttt{max\_proj\_from} & \texttt{max\_proj\_to}& \texttt{zc\_sigma} & \texttt{cell\_size}\\
+        \midrule
+        t002-roi-1   &0&2&2.0&25\\
+        t002-roi-2   &0&1&2.6&25\\
+        t004-roi-4-68&0&2&3.0&25\\
+        t004-roi-4-85&0&2&3.0&25\\
+        t004-roi-6   &0&2&3.0&20\\
+        t004-roi-10  &0&3&2.5&25\\
+        t004-roi-11  &0&2&3.0&25\\
+        t006-roi-2   &0&2&3.0&30\\
+        t006-roi-5   &0&2&4.0&30\\
+        t008-roi-5   &0&1&2.2&25\\
+        t008-roi-6   &0&2&5.0&25\\
+        \bottomrule
+    \end{tabular}
+    \caption{Segmentation settings for the files.}
+    \label{table:configurations}
 \end{table}
 
 The last column indicates the average time taken to run the program on
@@ -1400,9 +1421,6 @@ four runs and averaged using the Ryzen 5700U notebook processor.
     \label{tab:scores_roi10}
 \end{table}
 
-%\subsection{Changing the threshold}
-%\textbf{TODO/MAYBE: Pick a single image and try different thresholds. Plot the F1 and
-%Jaccard scores.}
 \section{Common problems}
 
 Using the program on the dataset revealed two main typical issues with this
