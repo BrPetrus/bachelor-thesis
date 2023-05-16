@@ -83,6 +83,7 @@
 \usepackage{url}      %% Hyperlinks
 \usepackage{markdown} %% Lightweight markup
 \usepackage{listings} %% Source code highlighting
+\usepackage{graphicx}
 \lstset{
   basicstyle      = \ttfamily,
   identifierstyle = \color{black},
@@ -298,22 +299,25 @@ minimized. More information is available in the paper \cite{otsu1979}.
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{resources/otsu-orig.png}}
-        \caption{Image from the membrane-stained channel.}
+        \caption{}
         \label{fig:otsu-orig}
+        %\caption{}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{resources/otsu-thresholded.png}}
-        \caption{Thresholded image.}
+        \caption{}
         \label{fig:otsu-thresholded}
+        %\caption{}
     \end{subfigure}
     \begin{subfigure}[t]{0.6\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/otsu-histogram.png}
-        \caption{Histogram of the image, with a line indicating the threshold.}
+        \caption{}
         \label{fig:otsu-histogram}
+        %\caption{}
     \end{subfigure}
-    \caption{Demonstration of the Otsu thresholding method.}
+    \caption{Demonstration of the Otsu thresholding method. In (\subref{fig:otsu-orig}) an image from the membrane-stained channel is shown. In (\subref{fig:otsu-thresholded}) the Otsu thresholding is applied. In (\subref{fig:otsu-histogram}) the histogram of the image data shown with a line indicating the threshold.}
     \label{fig:otsu-demonstration}
 \end{figure}
 
@@ -436,7 +440,7 @@ particular example and does not necessarily have to be of regular size.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=6.3cm]{resources/morph_dilation.jpg}i
+        \includegraphics[width=6.3cm]{resources/morph_dilation.jpg}
     \end{center}
     \caption{Morphological dilation (Gonzalez 2002)} % todo: Replace
     \label{fig:morph_dilation}
@@ -489,36 +493,35 @@ thin structures, which may interfere with later processing.
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/opening_orig.png}
-        \caption{A binary image A.}
+        \caption{}
         \label{fig:opening_orig}
     \end{subfigure}
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/opening_erosion.png}
-        \caption{Erosion of image A.}
+        \caption{}
         \label{fig:opening_erosion}
     \end{subfigure}
     \begin{subfigure}[t]{0.2\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/opening_erosion_se.png}
-        \caption{Structural element used in erosion.}
+        \caption{}
         \label{fig:opening_erosion_se}
     \end{subfigure}
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/opening_dilation.png}
-        \caption{Dilation after erosion of image A.}
+        \caption{}
         \label{fig:opening_dilation}
     \end{subfigure}
     \begin{subfigure}[t]{0.2\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/opening_dilation_se.png}
-        \caption{Structural element used in dilation.}
-        \label{fig:closing_dilation_se}
+        \caption{}
+        \label{fig:opening_dilation_se}
     \end{subfigure}
-    \caption{Morphological opening of the image A. Centres of structural
-    elements are indicated by the circles. The gray pixels indicate which pixels
-    were lost (erosion) or added (dilation) after the transformation.}
+    \caption{Morphological opening (\subref{fig:opening_dilation}) of the binary image (\subref{fig:opening_orig}) . Centres of structural elements are indicated by the circles. The gray pixels indicate which pixels
+    were lost (erosion) or added (dilation) after the transformation. In (\subref{fig:opening_erosion}) the erosion of the binary image with a structuring element (\subref{fig:opening_erosion_se}) is shown, and in (\subref{fig:opening_dilation}) the dilation of the previous image by the structuring element (\subref{fig:opening_dilation_se}) is shown.}
     \label{fig:opening}
 \end{figure}
 
@@ -534,43 +537,41 @@ $$A \bullet B = (A \oplus B) \ominus \hat{B} $$
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/closing_orig.png}
-        \caption{A binary image A.}
+        \caption{}
         \label{fig:closing_orig}
     \end{subfigure}
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/closing_dilation.png}
-        \caption{Dilation of image A.}
-        \label{fig:opening_erosion}
+        \caption{}
+        \label{fig:closing_dilation}
     \end{subfigure}
     \begin{subfigure}[t]{0.2\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/opening_erosion_se.png}
-        \caption{Structural element used in dilation.}
-        \label{fig:opening_erosion_se}
+        \caption{}
+        \label{fig:closing_erosion_se}
     \end{subfigure}
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/closing_erosion.png}
-        \caption{Erosion after dilation of image A.}
-        \label{fig:opening_dilation}
+        \caption{}
+        \label{fig:closing_erosion}
     \end{subfigure}
     \begin{subfigure}[t]{0.2\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/inkscape/opening_dilation_se.png}
-        \caption{Structural element used in erosion.}
+        \caption{}
         \label{fig:closing_dilation_se}
     \end{subfigure}
-    \caption{Morphological closing of the image A. Centres of structural
-    elements are indicated by the circles. The grey pixels indicate which pixels
-    were lost (erosion) or added (dilation) after the transformation.}
+    \caption{Morphological closing (\subref{fig:closing_erosion}) of the binary image (\subref{fig:closing_orig}). The circles indicate centres of structural elements. The grey pixels indicate which pixels were lost (erosion) or added (dilation) after the transformation. In (\subref{fig:closing_dilation}) the dilation with structuring element (\subref{fig:closing_erosion_se}) is applied on (\subref{fig:closing_orig}). In (\subref{fig:closing_erosion}) the erosion of (\subref{fig:closing_dilation}) with structuring element (\subref{fig:closing_dilation_se}) is shown.}
     \label{fig:closing}
 \end{figure}
 
-Like for the previous operator, this is visualised in Figure \ref{fig:closing},
+As for the previous operator, this is visualised in Figure \ref{fig:closing},
 where the square structural element is applied on the binary image.
-Morphological closing, like the opening, keeps the larger structural elements,
-but also fills in holes, which might have been created for example by noise.
+Morphological closing, like the opening, keeps the larger structural elements
+but also fills in holes, which might have been created, for example, by noise.
 Also, it does not remove small objects.
 
 While mathematical morphology is a massive topic of interest to many
@@ -580,45 +581,48 @@ skeletonizing images, finding perimeters etc \cite{mathworks_morp_oper}.
 
 \section{Segmentation}
 
-Image segmentation is a fundamental steps in the image processing. Unlike in the
+Image segmentation is a fundamental step in the image processing. Unlike in the
 previous sections, we are no longer interested in manipulating and changing the
 image. The point of image segmentation is to split the image into regions with
 some specific meaning, e.g. in our case, to split the data into regions of
-inidivual cells \cite{gonzalez2002}.
+individual cells \cite{gonzalez2002}.
 
-Numerous techniques can be applied, but in this thesis, we are interesting in
+Numerous techniques can be applied, but in this thesis, we are interested in
 one particular technique --- the watershed algorithm --- and segmentation based
 on the Laplacian operator in the zero-crossing algorithm.
 
 \subsection{Watershed algorithm}
 
-The watershed algorithm is a wide-spread technique for image segmentation. The
+The watershed algorithm is a widespread technique for image segmentation. The
 fundamental principle of the watershed algorithm is to view the image as a
 topological map, where the intensities indicate the height of the landscape, in
-other words, peaks in the image represent mountains or hills while low values
+other words, peaks in the image represent mountains or hills, while low values
 represent valleys.
 
-The algorithm then creates water springs at these valleys, from which the water
-flows at a uniform rate. As the waters from different springs rises, they might
-start to mix. At these points we build dams to separate the various flooded
+The algorithm then creates water springs in these valleys, from which the water
+flows at a uniform rate. As the waters from different springs rise, they might
+start to mix. At these points, we build dams to separate the various flooded
 areas. The water continues to flow until just the dams are visible above the
-water \cite{gonzalez2002}. At this point the image is segmented using the dams,
-and every catchment basins is uniquely labelled.
-
-In Figure \ref{fig:demo-watershed} the result of running the watershed algorithm 
-on a simple image is shown.
+water \cite{gonzalez2002}. At this point, the image is segmented using the dams,
+and every catchment basin is uniquely labelled.
 
 \begin{figure}
     \begin{subfigure}[t]{0.48\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/watershed-basic.png}}
-        \caption{A simple image with two overlapping circles.}
+        \caption{}
+        \label{fig:demo-watershed-orig}
     \end{subfigure}
     \begin{subfigure}[t]{0.48\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/watershed-complex.png}}
-        \caption{Result of the watershed algorithm.}
+        \caption{}
+        \label{fig:demo-watershed-run}
     \end{subfigure}
+    \caption{Demonstration of the watershed algorithm. In (\subref{fig:demo-watershed-orig}) a binary image with two overlapping circles is shown. Running the algorithm produces (\subref{fig:demo-watershed-run}).}
     \label{fig:demo-watershed}
 \end{figure}
+
+In Figure \ref{fig:demo-watershed}, the result of running the watershed algorithm 
+on a simple image is shown.
 
 \subsection{Distance transform}
 
@@ -639,7 +643,7 @@ is used in our case. A simple example is shown in Figure
         \frame{\includegraphics[width=\textwidth]{"./resources/distance-map-transform"}}
     \end{subfigure}
     \caption{Demonstration of the distance transform. The farther the pixel is
-    from the background the higher is the pixel's intensity.}
+    from the background, the higher the pixel's intensity.}
     \label{fig:demonstration-distance-map}
 \end{figure}
 
@@ -667,16 +671,16 @@ grayscale data with 16 bits per voxel.
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/C3-t006-200-scaled.jpg}
-        \caption{Membrane-stained channel.}
+        \caption{}
         \label{fig:data_example_membraine}
     \end{subfigure}
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/C2-t006-200-scaled.jpg}
-        \caption{Nuclei-stained channel.}
+        \caption{}
         \label{fig:data_example_nuclei}
     \end{subfigure}
-    \caption{A sample from the data.}
+    \caption{On the left panel a sample from the membrane-stained channel is shown, while on the right panel a corresponding slice from the nuclei-stained channel is shown.}
     \label{fig:data_example}
 \end{figure}
 In Figure \ref{fig:data_example}, a single slice of the image data was taken from
@@ -693,27 +697,24 @@ analyse the whole data set; therefore, all work was done on smaller data slices.
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/bad-edges.png}}
-        \caption{In this image, many of the inner edges are missing.}
+        \caption{}
         \label{fig:bad_edges}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.3\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/bleading-edge.png}}
-        \caption{Here, there is not a clear edge between the inner cell and the
-        background.}
+        \caption{}
         \label{fig:bleeding_edges}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/light-scattering.png}}
-        \caption{Scattering inside the cell, causing large problems with the
-        segmentation.}
+        \caption{}
         \label{fig:scattering}
     \end{subfigure}
-    \caption{Typical issues with the data.}
-    \label{fig:labelling_example}
+    \caption{Typical issues with the data. In (\subref{fig:bad_edges}) many of the membranes are missing, in (\subref{fig:bleeding_edges}) there is not a clear boundary between the specimen and the background, and in (\subref{fig:scattering}) the scattering of light inside the organoid, causes large problems with the segmentation.}
 \end{figure}
 
 \subsection{Noise}
@@ -724,7 +725,7 @@ too strong to try to use in any analysis.
 In the membrane channel, two main problems can be seen. To begin, most
 membranes do not form connected segments; instead, a part of the cell's membrane is
 usually missing, or it is joined with the neighbouring cell's membrane, as can be
-seen in Figure \textbf{\ref{fig:bad_edges}}. This complicates the analysis, as different
+seen in Figure \ref{fig:bad_edges}. This complicates the analysis, as different
 regions may require different filters to be properly preprocessed. Moreover,
 this makes edge detection more difficult because it relies on the magnitude of
 the gradient of the image. Moreover, sometimes the intensity change between the cell and the
@@ -781,18 +782,16 @@ Figure \ref{fig:label_ground_truth} the manual segmentation of the corresponding
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/membrane-channel.png}}
-        \caption{Image from the membrane-stained channel.}
+        \caption{}
         \label{fig:label_membrane_channel}
     \end{subfigure}
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/ground-truth.png}}
-        \caption{Ground truth labelling created by an expert. White means
-        complicated area, black is the background, and the rest are cells.}
+        \caption{}
         \label{fig:label_ground_truth}
     \end{subfigure}
-    \caption{Expert's labelling of the image on the right.}
-    \label{fig:labelling_example}
+    \caption{In (\subref{fig:label_ground_truth}) the labelling created by an expert of the \subref{fig:label_membrane_channel} is shown. White means a complicated area, black is the background, and the rest are the cells.}
 \end{figure}
 
 
@@ -806,16 +805,17 @@ had to be developed to segment the cells' nuclei finer.
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{resources/otsu-nuclei.png}}
-        \caption{Image from the nuclei-stained channel.}
+        \caption{}
+        \label{fig:otsu-nuclei}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{resources/otsu-naive.png}}
-        \caption{Otsu method applied on the left image.}
+        \caption{}
         \label{fig:otsu-naive}
     \end{subfigure}
-    \caption{Otsu thresholding does not lead to satisfactory segmentation.}
+    \caption{Otsu thresholding (\subref{fig:otsu-naive}) of the image (\subref{fig:otsu-nuclei}) does not lead to satisfactory segmentation.}
     \label{fig:otsu-nuclei-demo}
 \end{figure}
 We settled on a two-step algorithm. In the first step, the membrane-stained
@@ -854,16 +854,17 @@ because the highest intensity areas will propagate out to the surrounding area.
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/max_proj_before.png}}
-        \caption{Image from the membrane-stained channel.}
+        \caption{}
         \label{fig:max-proj-before}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\linewidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/max_proj_after.png}}
-        \caption{After applying maximum projection.}
+        \caption{}
+        \label{fig:max-proj-after}
     \end{subfigure}
-    \caption{The uneven lighting inside individual cells is mitigated using the
-    maximum projection technique.}
+    \caption{The uneven illumination inside individual cells (\subref{fig:max-proj-before}) is mitigated using the
+    maximum projection technique (\subref{fig:max-proj-after}).}
     \label{fig:max-proj}
 \end{figure}
 
@@ -888,15 +889,17 @@ ignore all background image elements during their calculations.
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/threshold-before.png}}
-        \caption{Thresholded cell.}
+        \caption{}
+        \label{fig:cell-mask-bef}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\linewidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/threshold-expanded.png}}
-        \caption{After applying morphological erosion.}
+        \caption{}
+        \label{fig:cell-mask-aft}
     \end{subfigure}
     \caption{The Otsu method might sometimes classify parts of the specimen as
-    background; thus, the mask must be expanded.}
+    background (\subref{fig:cell-mask-bef}); thus, the mask must be expanded (\subref{fig:cell-mask-aft}) using morphological erosion.}
     \label{fig:cell-mask}
 \end{figure}
 
@@ -910,25 +913,25 @@ the whole segmentation pipeline.
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/zero-crossing.png}}
-        \caption{Edges found by the zero-crossing algorithm.}
+        \caption{}
         \label{fig:zc}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/mask.png}}
-        \caption{Mask of cells found using zero-crossing algorithm.}
+        \caption{}
         \label{fig:cells}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/mask-postprocessed.png}}
-        \caption{Post-processed mask.}
+        \caption{}
         \label{fig:cells-post-processed}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/watershed.png}}
-        \caption{After watershed.}
+        \caption{}
         \label{fig:watershed}
     \end{subfigure}
-    \caption{Steps taken from zero-crossing algorithm towards watershed.}
+    \caption{Steps taken from zero-crossing algorithm towards watershed. First, in (\subref{fig:zc}) the edges found by the zero-crossing algorithm are shown. Then in (\subref{fig:cells}) the mask of cells is displayed. Then the mask is post-processed (\subref{fig:cells-post-processed}) and finally the result after watershed is shown (\subref{fig:watershed}).}
     \label{fig:zc-watershed}
 \end{figure}
 
@@ -984,27 +987,26 @@ Figure \ref{fig:grad-thresh-post}.
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/nuclei.png}}
-        \caption{Image from nuclei-stained channel.}
+        \caption{}
         \label{fig:nuclei}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/thresholded-gradient.png}}
-        \caption{Applying gradient threshold.}
+        \caption{}
         \label{fig:grad-thresh}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/thresholded-gradient-post.png}}
-        \caption{Post-processing with morphological closing.}
+        \caption{}
         \label{fig:grad-thresh-post}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \frame{\includegraphics[width=\textwidth]{./resources/ground-truth-crop.png}}
-        \caption{Ground truth created by the expert. The white part indicates
-        not-studied area.}
+        \caption{}
         \label{fig:ground-truth-crop}
     \end{subfigure}
     \caption{Steps inside the nuclei-stained channel compared with the ground
-    truth.}
+    truth (\subref{fig:ground-truth-crop}). In (\subref{fig:nuclei}) an image from the nuclei-stained channel is shown. In (\subref{fig:grad-thresh}) the result of applying the gradient threshold is displayed. Then in (\subref{fig:grad-thresh-post}) the previous image was post-processed using morphological closing.}
 \end{figure}
 
 An example of the final segmentation and the reference segmentation --- created by a
@@ -1335,12 +1337,7 @@ finds many false positives. Those are cells that the program predicted but were
 not found by the expert. Those are mostly caused by noise in the data.
 
 Looking at the $\overline{J_S}$ scores, it is clear that if the program finds a
-real cell, it segments it reasonably well. To further investigate this, I listed
-the Jaccard scored for found pairs in the evaluation of the file
-\texttt{t004-roi-10} in Table \ref{tab:scores_roi10}. In this particular case,
-most of them were above 0.5, but in some cases, the segmentation produces Jaccard
-scores below 0.5 (for example, when two real cells are marked as a single large
-blob). In the last row of the table, a simple average of all the metrics is shown.
+real cell, it segments it reasonably well. In the last row of the table, a simple average of all the metrics is shown with the standard deviation.
 
 \begin{table}
     \hspace*{-0.5cm}\begin{tabular}{|| c|c|c|c|c|c|c ||}
@@ -1395,32 +1392,6 @@ Python library and only the time taken to calculate was considered,
 so the disk speed did not significantly affect the time. This was done over
 four runs and averaged using the Ryzen 5700U notebook processor.
 
-\begin{table}
-    \begin{tabular}{||c||}
-        \toprule
-        $J_i$\\
-        \midrule
-        0.42\\
-        0.67\\
-        0.78\\
-        0.69\\
-        0.21\\
-        0.82\\
-        0.86\\
-        0.57\\
-        0.60\\
-        0.71\\
-        0.61\\
-        0.57\\
-        0.70\\
-        0.70\\
-        0.40\\
-        \bottomrule
-    \end{tabular}
-    \caption{Jaccard indices for the file \texttt{t004-roi-10}.}
-    \label{tab:scores_roi10}
-\end{table}
-
 \section{Common problems}
 
 Using the program on the dataset revealed two main typical issues with this
@@ -1434,13 +1405,15 @@ fails in this area.
 \begin{figure}
     \begin{subfigure}[t]{0.3\linewidth}
         \frame{\includegraphics[width=\textwidth]{./resources/issues-data.png}}
-        \caption{Data with a lot of missing edges.}
+        \caption{}
+        \label{fig:issues-joining-missing}
     \end{subfigure}
     \begin{subfigure}[t]{0.3\linewidth}
         \frame{\includegraphics[width=\textwidth]{./resources/issues-complicated-areas-filled.png}}
-        \caption{Segmentation of the previous image.}
+        \caption{}
+        \label{fig:issues-joining-mask}
     \end{subfigure}
-    \caption{A complicated area causes the program to join multiple cells together.}
+    \caption{A complicated area in the upper part of the image data (\subref{fig:issues-joining-missing}) causes the program to join multiple cells together in the segmentation (\subref{fig:issues-joining-mask}).}
     \label{fig:issues-joining}
 \end{figure}
 
@@ -1449,7 +1422,7 @@ algorithm. Here the biggest problem was that our assumption that the image's
 outline was part of the background, causes the program to fill in the whole
 specimen. This is shown in \ref{fig:issues-cropping}. This is because, in this
 particular case, the division between the foreground and background was easily
-visible and causes the program to create a connected contour around the
+visible and caused the program to create a connected contour around the
 specimen. In this case, the solution is quite easy; after manually cropping part
 of the image, the program is able to properly segment the image.
 
