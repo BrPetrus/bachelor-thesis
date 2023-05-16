@@ -1014,8 +1014,8 @@ biologist --- is shown in Figure \ref{fig:ground-truth-crop}.
 
 \chapter{Implementation}
 \label{chp:implementation}
-This chapter describes which libraries were used, how to run the program, and
-non-trivial parts of the implementation.
+This chapter describes which libraries were used, lists the main parameters, and
+details non-trivial parts of the implementation.
 
 \section{Justification for Python and used libraries}
 As part of the bachelor thesis, I developed a terminal-based program to run the
@@ -1046,7 +1046,7 @@ The implementation heavily relies on the following packages to do the calculatio
     \item{NumPy \cite{harris2020array} is an indispensable package, allowing
         Python to be utilized as a tool in scientific computing, and a
         significant part of the whole scientific computing environment in Python
-        is based around this package. In its centre is the \texttt{ndarray} object
+        is based around this package. In its centre is an \texttt{ndarray} object
         representing a multi-dimensional matrix with a uniform data type. The
         NumPy team has managed to utilize vectorization to improve the
         performance of many common operations on matrices greatly. This is achieved by
@@ -1068,131 +1068,40 @@ The implementation heavily relies on the following packages to do the calculatio
     \item{Python Imaging Library (Pillow) is a Python package for reading image
         data in various formats, efficient representation of the data, and even
         some manipulating of the image data \cite{clarkc20102023}. The sole
-        purpose of this package for us was for loading TIFF files into memory
-        and storing them in a format supported by the other libraries.}
+        purpose of this package for us was to load TIFF files into memory
+        and to store them in a format supported by the other libraries.}
     \item{matplotlib \cite{hunter2007} is a popular library for creating
         visualisation in Python. It supports drawing all sorts of plots, but the
         program uses it to show results after some of the steps visually.}
     \item{conda is cross-platform a package management system and environment
-        management system. It allows the user to quickly setup and use different
-        Python environments, and it was used during the development of this program.
+        management system. It allows the user to quickly set up and use different
+        Python environments and it was used during the development of this program.
         \cite{conda-manual}}
 \end{itemize}
 These libraries provide a great environment for writing well-performing image
 processing pipelines fast. All of these libraries have large communities
 behind them, are continuously developed, and are open-sourced.
 
-\section{Running the program}
+\section{Main parameters}
+The user can tweak several parameters of the segmentation pipeline. For a full description of all
+the parameters and tips on changing them, refer to Appendix \ref{app:running-the-program}.
 
-The program has two main modes of operation; those are segmentation and
-evaluation. The first mode deals with loading the data and running the
-segmentation algorithm, while the latter is used to score the predicted
-segmentation using ground truth data. The user can choose the preferred
-mode by running the program with the \texttt{-s} flag for segmentation and the
-\texttt{-e} flag for the latter. Additionally, a helpful overview is
-provided when the help flag \texttt{-h} is passed to the program.
-
-The program starts by loading the configuration file \texttt{config.py}, inside
-which is a dictionary object called \texttt{config}, and checks if all the types are
-correct. This dictionary stores the
-relevant settings to the segmentation and evaluation algorithm. The main parameters, which the
-user might need to tweak to get better segmentation, are:
+The four main parameters are:
 \begin{itemize}
-    \item \texttt{zc\_sigma} (float): This number indicates the strength of the
-        Gaussian smoothing before the zero-crossing algorithm is applied. When this
-        number is too low, the program tends to find too many cells. If this number is 
-        too large, then the program usually joins multiple cells together. The typical
-        range is from 1.5 to 3.5.
-    \item \texttt{maximum\_projection\_from} (integer): From which layer should
-        the maximum projection be calculated. If you want to add more details, be sure
-        to set this to 0 otherwise finer structures are lost during the maximum
-        projection.
-    \item \texttt{maximum\_projection\_to} (integer): Along with the previous
-        parameter, specify which layers are used in the maximum projection. If the
-        program creates several fictional cells inside a single cell, or is performing
-        quite poorly in noisy areas, try increasing this number. Typically, there
-        is not need to go above 4, and 2 is usually enough.
-    \item \texttt{cell\_radius} (float): This number should equal a roughly
-        approximated radius of a single cell. This is mainly used during the
-        thresholding in the membrane channel. If part of the specimen is
-        classified as a background, try increasing the number.
-    \item \texttt{axis\_relative\_sizes} (list of three floats): Specifies the
-        ratios between dimensions of a single voxel.
-    \item \texttt{show\_steps} (boolean): If this is equal to \texttt{True},
-        the program will also plot partial results as the pipeline runs.
-    \item \texttt{verbose} (boolean): If this flag equals True, the program
-        will be more verbose during its runtime.
-    \item \texttt{*\_folder} (string): These settings specify the relative paths
-        to folders where data is loaded and stored.
-\end{itemize}
-The program also has a couple of extra tweakable parameters but in my experience,
-they did not change the results significantly; therefore, I do not recommend
-changing them in the first steps. Those parameters are:
-\begin{itemize}
-    \item \texttt{zc\_min\_distance} (float): This is passed to the
-        \texttt{peak\_local\_max} function from \texttt{scikit-image} package.
-        It changes how close can two markers in the watershed be. If you feel
-        that the program is over-segmenting, increasing this number might help;
-        however, changing the sigmas is a lot more significant.
-    \item \texttt{pairs\_threshold} (float): This is used in the evaluation for
-        determining if two sets can be considered pairs. 1 means that the sets
-        must be identical, while 0.5 means that they must share at least half of
-        the pixels.
-    \item \texttt{nuclei\_sigma} (float): This parameter specifies the strength
-        of the Gaussian smoothing in the nuclei-stained channel. Increasing this
-        parameter can help with noise since the gradient threshold is based on the
-        derivative of the image, but overall its effect is quite negligible on the
-        final result.
-    \item \texttt{segmentation\_postprocess\_radius} (float): The radius of the
-        disk-like structural element used in the post-processing of the
-        segmentation. This can help to eliminate small regions which were
-        incorrectly found due to noise. If the post-processing is deleting some of 
-        the cells, decrease this number gradually. On the other hand, if the segmentation
-        requires cleanup from many small areas, try increasing this number. Normally,
-        this is a much smaller number than the \texttt{cell\_radius}.
-\end{itemize}
-
-When the user selects the segmentation option, the program looks at all TIFF
-files inside folders \texttt{membrane\_data} and \texttt{nuclei\_data}, if two files have the
-the same name, then the program pairs them together. Then it starts going over all
-the pairs and running the segmentation algorithm, storing the resulting
-segmentations inside the \texttt{segmentation\_output} folder.
-
-If the user selects the evaluation option, the program looks into two different
-folders --- \texttt{ground\_truth} and \texttt{prediction} --- pairs files with the
-the same name and runs the evaluation algorithms, which are described in more
-details in \ref{chp:evaluation} chapter.
-
-The code is split into the following files: 
-\begin{itemize}
-    \item \texttt{main.py}: The main application is located in the
-        here; it parses the flags passed by the user, and loads
-        up the configuration file. After that is done, the application starts
-        either the segmentation or evaluation pipeline.
-    \item \texttt{config.py}: This is the configuration file. It mainly includes
-        the \texttt{config} dictionary, containing all the settings. It also
-        checks the types of values inside the dictionary.
-    \item \texttt{evaluation.py}: Here, all functions related to evaluating
-        lies, e.g., finding pairs or calculating the Jaccard index.
-    \item \texttt{filters.py}: This file contains implementations of various
-        filters that the already mentioned libraries do not have implemented
-        or which we decided to implement ourselves.
-    \item \texttt{segmentation.py}: The code in this file is responsible for
-        segmenting the raw data. It contains all the steps that have to be
-        run, except for the few which are located in the \texttt{filters.py}
-        file.
-    \item \texttt{environment.yml}: Inside this file, all the required packages
-        are specified along with the Python version and which conda repository 
-        channel to use while installing plugins.
-    \item \texttt{tiff\_utils} and \texttt{utils.py}: Miscellaneous code used
-        to load the data and to format output to standard output is put here.
+    \item \texttt{zc\_sigma} (float): This number indicates the strength of the Gaussian smoothing
+    applied before the zero-crossing algorithm is applied.
+    \item \texttt{maximum\_projection\_from} (integer): From which layer should the maximum projection
+    be calculated
+    \item \texttt{maximum\_projection\_to} (integer): Along with the previous parameter, specify which layers are used in the maximum projection.
+    \item \texttt{cell\_radius} (float): This number should equal an average radius of a single cell in
+    the image data.
 \end{itemize}
 
 \section{Non-trivial parts of the implementation}
 Most of the steps inside the algorithm map nicely to available functions in the
 libraries, for example the \texttt{scikit-image} library provides a function for
 calculating the Laplacian of the image; hence, this section provides an overview of
-the non-trivial steps, which had to be implemented manually.
+the non-trivial steps which I had to implement.
 
 \subsection{Zero-crossing algorithm}
 
@@ -1207,14 +1116,14 @@ the non-trivial steps, which had to be implemented manually.
 \end{figure}
 
 The zero-crossing algorithm starts by calculating the Laplacian using a function
-included inside the scikit-image library. To
+included inside the \texttt{scikit-image} library. To
 extract the zero-crossings, the program will iterate over the whole array
-(excluding the border) and check the following condition. Given its position $(i, j)$
-the algorithm checks if $|\nabla I(i, j))| < 0$ and its neighbours have
-non-negative magnitude of the gradient.  If this condition stands, then there is
+(excluding the 1-pixel border) and check the following condition. Given its position $(i, j)$
+the algorithm checks if $\nabla^2 I(i, j)) < 0$ and its neighbours have
+non-negative Laplacian.  If this condition stands, then there is
 a zero-crossing at position $(i, j)$. In this case, the neighbourhood is
-calculated as 4-connectedness. That means that the neighbourhood of the
-pixel consists of the pixels on top, left, bottom, and right of the pixel as is
+calculated as 4-connectedness. That means that the neighbourhood of the image element
+consists of the image elements on top, left, bottom, and right of the image element, as is
 shown in Figure \ref{fig:neighbourhood}.
 
 \subsection{Markers for watershed algorithm}
@@ -1228,7 +1137,7 @@ a flood-filling algorithm is used.
     \begin{center}
         \includegraphics[width=\linewidth]{resources/flood_fill.png}
     \end{center}
-    \caption{segmenting cells after zero-crossing algorithm.}
+    \caption{Segmenting cells after zero-crossing algorithm.}
     \label{fig:flood_fill}
 \end{figure}
 
@@ -1242,11 +1151,10 @@ a background pixel, a flood fill is ran from there with a new value of $128$.
 After all the iterations are done, we are left with a grayscale
 image with three possible values, $0$ represents the original background, $128$
 represents all the space, which was filled during the last step, and $256$
-indicates the original edges. The program has then managed to separate the insides of
-the cells and the background as can be seen in the middle image in Figure
+indicates the original edges. The program has then managed to separate the interiors of
+the cells and the background as can be seen in the middle panel in Figure %todo: rework ref
 \ref{fig:flood_fill}. Now we can use the newly acquired labelling to create a
-segmentation of cells, as is seen in the last picture in the previously mentioned
-Figure.
+segmentation of cells, as is seen in the last panel in Figure \ref{fig:flood_fill}. %todo: rework ref
 
 \begin{figure}
     \begin{center}
@@ -1265,10 +1173,10 @@ Figure \ref{fig:distance_map}.
 
 Now that the cells were segmented, the distance map is calculated. This is shown
 as the right image in Figure \ref{fig:distance_map}. The distance map was
-calculated using the SciPy library, and it uses Euclidean distance.
+calculated using the \texttt{SciPy} library, and it uses Euclidean distance.
 
 Next, to extract the markers, the peaks inside the distance map were found using
-the \texttt{peak\_local\_max} function from the scikit-image library. The benefit of
+the \texttt{peak\_local\_max} function from the \texttt{scikit-image} library. The benefit of
 this function is that the user can provide a minimum distance separating two
 markers. Additionally, the function allows the user to specify a threshold, which
 means that peaks with low intensity will be ignored, further improving the
@@ -1286,10 +1194,6 @@ third image is created by applying the Gaussian filter to the previous image
 again and so on, forming multiple layers on top of the original image. Then we can
 iterate over the original image and vertically project the biggest image intensity.
 The result of doing this at every position is the maximum projection.
-
-\subsection{Gradient threshold}
-\textbf{TODO/QUESTION:} I don't know if this should be in here. I just copied the
-algorithm from the slides, and there is nothing special about it.
 
 That concludes all the non-trivial parts of the program; the rest were a direct
 application of mathematical functions in the aforementioned libraries.
@@ -1558,5 +1462,115 @@ The program provides a practical, easy-to-use terminal interface. In Chapter \re
 Lastly, the performance of the program and the quality of its segmentation has been evaluated in Chapter \ref{chp:evaluation} using the F1 score and Jaccard index. The program finds, on average, about half of the actual cells. Clearly visible cells are nicely segmented, but the program often fails when some edges are missing or there is a substantial unevenness in the signal heterogeneity. 
 
 In the future, this work could be improved using additional steps in the preprocessing stage. From our research into the topic, machine learning techniques could be utilised to enhance the missing edges, or approximate deconvolution algorithms might help with the denoising. However, those techniques might take a considerable amount of reference data. Last but not least, although the performance is reasonable, if the program was to be used for the entire data, a just-in-time compiler like Numba or an ahead-of-time compiler like Pythran could take the performance much further.
+
+\printbibliography[heading=bibintoc] %% Print the bibliography.
+
+\appendix %% Start the appendices.
+\chapter{Running the program}
+\label{app:running-the-program}
+The program has two main modes of operation; those are segmentation and
+evaluation. The first mode deals with loading the data and running the
+segmentation algorithm, while the latter is used to score the predicted
+segmentation using ground truth data. The user can choose the preferred
+mode by running the program with the \texttt{-s} flag for segmentation and the
+\texttt{-e} flag for the latter. Additionally, a helpful overview is
+provided when the help flag \texttt{-h} is passed to the program.
+
+The program starts by loading the configuration file \texttt{config.py}, inside
+which is a dictionary object called \texttt{config}, and checks if all the types are
+correct. This dictionary stores the
+relevant settings to the segmentation and evaluation algorithm. The main parameters, which the
+user might need to tweak to get better segmentation, are:
+\begin{itemize}
+    \item \texttt{zc\_sigma} (float): This number indicates the strength of the
+        Gaussian smoothing before the zero-crossing algorithm is applied. When this
+        number is too low, the program tends to find too many cells. If this number is 
+        too large, then the program usually joins multiple cells together. The typical
+        range is from 1.5 to 3.5.
+    \item \texttt{maximum\_projection\_from} (integer): From which layer should
+        the maximum projection be calculated. If you want to add more details, be sure
+        to set this to 0 otherwise finer structures are lost during the maximum
+        projection.
+    \item \texttt{maximum\_projection\_to} (integer): Along with the previous
+        parameter, specify which layers are used in the maximum projection. If the
+        program creates several fictional cells inside a single cell, or is performing
+        quite poorly in noisy areas, try increasing this number. Typically, there
+        is not need to go above 4, and 2 is usually enough.
+    \item \texttt{cell\_radius} (float): This number should equal a roughly
+        approximated radius of a single cell. This is mainly used during the
+        thresholding in the membrane channel. If part of the specimen is
+        classified as a background, try increasing the number.
+    \item \texttt{axis\_relative\_sizes} (list of three floats): Specifies the
+        ratios between dimensions of a single voxel.
+    \item \texttt{show\_steps} (boolean): If this is equal to \texttt{True},
+        the program will also plot partial results as the pipeline runs.
+    \item \texttt{verbose} (boolean): If this flag equals True, the program
+        will be more verbose during its runtime.
+    \item \texttt{*\_folder} (string): These settings specify the relative paths
+        to folders where data is loaded and stored.
+\end{itemize}
+The program also has a couple of extra tweakable parameters but in my experience,
+they did not change the results significantly; therefore, I do not recommend
+changing them in the first steps. Those parameters are:
+\begin{itemize}
+    \item \texttt{zc\_min\_distance} (float): This is passed to the
+        \texttt{peak\_local\_max} function from \texttt{scikit-image} package.
+        It changes how close can two markers in the watershed be. If you feel
+        that the program is over-segmenting, increasing this number might help;
+        however, changing the sigmas is a lot more significant.
+    \item \texttt{pairs\_threshold} (float): This is used in the evaluation for
+        determining if two sets can be considered pairs. 1 means that the sets
+        must be identical, while 0.5 means that they must share at least half of
+        the pixels.
+    \item \texttt{nuclei\_sigma} (float): This parameter specifies the strength
+        of the Gaussian smoothing in the nuclei-stained channel. Increasing this
+        parameter can help with noise since the gradient threshold is based on the
+        derivative of the image, but overall its effect is quite negligible on the
+        final result.
+    \item \texttt{segmentation\_postprocess\_radius} (float): The radius of the
+        disk-like structural element used in the post-processing of the
+        segmentation. This can help to eliminate small regions which were
+        incorrectly found due to noise. If the post-processing is deleting some of 
+        the cells, decrease this number gradually. On the other hand, if the segmentation
+        requires cleanup from many small areas, try increasing this number. Normally,
+        this is a much smaller number than the \texttt{cell\_radius}.
+\end{itemize}
+
+When the user selects the segmentation option, the program looks at all TIFF
+files inside folders \texttt{membrane\_data} and \texttt{nuclei\_data}, if two files have the
+the same name, then the program pairs them together. Then it starts going over all
+the pairs and running the segmentation algorithm, storing the resulting
+segmentations inside the \texttt{segmentation\_output} folder.
+
+If the user selects the evaluation option, the program looks into two different
+folders --- \texttt{ground\_truth} and \texttt{prediction} --- pairs files with the
+the same name and runs the evaluation algorithms, which are described in more
+details in Chapter \ref{chp:evaluation}.
+
+The code is split into the following files: 
+\begin{itemize}
+    \item \texttt{main.py}: The main application is located in the
+        here; it parses the flags passed by the user, and loads
+        up the configuration file. After that is done, the application starts
+        either the segmentation or evaluation pipeline.
+    \item \texttt{config.py}: This is the configuration file. It mainly includes
+        the \texttt{config} dictionary, containing all the settings. It also
+        checks the types of values inside the dictionary.
+    \item \texttt{evaluation.py}: Here, all functions related to evaluating
+        lies, e.g., finding pairs or calculating the Jaccard index.
+    \item \texttt{filters.py}: This file contains implementations of various
+        filters that the already mentioned libraries do not have implemented
+        or which we decided to implement ourselves.
+    \item \texttt{segmentation.py}: The code in this file is responsible for
+        segmenting the raw data. It contains all the steps that have to be
+        run, except for the few which are located in the \texttt{filters.py}
+        file.
+    \item \texttt{environment.yml}: Inside this file, all the required packages
+        are specified, along with the Python version and which conda repository 
+        channel to use while installing plugins.
+    \item \texttt{tiff\_utils.py}: Miscellaneous code used
+        to load the image data.
+\end{itemize}
+
 
 \end{document}
