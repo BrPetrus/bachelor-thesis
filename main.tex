@@ -56,9 +56,9 @@
     title       = {Segmentation of Membrane-Stained Cells in Image Data of Organoids},
     TeXtitle    = {Segmentation of Membrane-Stained Cells in Image Data of Organoids},
     keywords    = {segmentation, image processing, scikit-image, watershed,
-    otsu, confocal scannint, fluorescence microscopy, zero-crossing},
+                   thresholding, fluorescence microscopy, zero-crossing},
     TeXkeywords = {segmentation, image processing, scikit-image, watershed,
-    otsu, confocal scannint, fluorescence microscopy, zero-crossing},
+                   thresholding, fluorescence microscopy, zero-crossing},
     abstract    = {%
       This is the abstract of my thesis, which can
 
@@ -66,8 +66,10 @@
     },
     thanks      = {%
        I am extremely grateful to my advisor, Assoc. Prof. RNDr. Martin Maška,
-       Ph.D, for his continueos guidance, helpful advice, and feedback. I am
-       also thankful to my family and close friend for their support.
+       Ph.D., for his continuous guidance, helpful advice, and feedback. I am
+       also thankful to my family and close friend for their support. Finally,
+       I am grateful to Dr. Zuzana Sumbalová Koledová and Matea Brezak for providing
+       me with the annotated image data analysed in this thesis.
     },
     bib         = bibliography.bib,
     %% Remove the following line to use the JVS 2018 faculty logo.
@@ -114,39 +116,13 @@
 \addcontentsline{toc}{chapter}{Introduction}
 
 In the field of biology, the development of confocal laser scanning and
-fluorescence microscopy has allowed scientists to create high-resolution 3D live
-images of various plant and animal tissues \cite{stegmaier2016}. One of the
-areas where these methods are actively utilised is in skin cancer research
-\cite{gupta2020} or in the analysis of ovarian tissues from oncological patients
-\cite{fabbri2014}. Since cancer is the second-leading cause of death in the
-world \cite{mayo-clinic-cancer}, further research into this area and the
-creation of faster tools are essential to developing cures for the disease.
+fluorescence microscopy has allowed scientists to create high-resolution multidimensional images of various plant and animal tissues \cite{stegmaier2016}. One of the areas where these methods are actively utilised is in skin cancer research \cite{gupta2020} or in the analysis of ovarian tissues from oncological patients \cite{fabbri2014}. Since cancer is the second-leading cause of death in the world \cite{mayo-clinic-cancer}, further research into this area and the creation of better tools for image processing are essential to developing cures for the disease.
 
-One of the critical processes in researching this topic is the segmentation of
-cells to study their behaviour and shape; however, this often has to be done
-manually, taking valuable time from researchers to focus on more significant
-parts of their research. It is, therefore, necessary to develop robust automatic
-segmentation techniques that scale with the data's growing size.
+One of the critical processes in researching this topic is the segmentation of cells to study their behaviour and shape; however, this often has to be done manually, taking valuable time from researchers to focus on more significant parts of their research. It is, therefore, necessary to develop robust automatic segmentation techniques that scale with the data's growing size.
 
-This thesis focuses on developing an image analysis pipeline for segmenting
-membrane-stained and nuclei-stained cells in fluorescence microscopy image data
-of organoids without reference annotations. This pipeline must be delivered in
-an easy-to-use form, and a quantitative analysis of the segmentation quality
-must be performed. The developed method relies primarily on analysing the second
-partial derivative of the data and the watershed algorithm.
+This thesis focuses on developing an image analysis pipeline for segmenting membrane-stained and nuclei-stained cells in fluorescence microscopy image data of organoids without reference annotations. This pipeline is delivered in an easy-to-use form, and a quantitative analysis of the segmentation quality is performed. The developed method consists of two steps. In the first step, the program analyses the second partial derivate of the image data and uses the watershed algorithm to create a coarse segmentation of the cell; then, in the second step, this is utilised to create a better-fitting segmentation by thresholding the nuclei-stained channel.
 
-The first chapter defines the basic terms required for understanding the rest of
-the thesis. It also formalises the problem of edge detection, thresholding, and
-segmentation. In the next chapter, the available data is described alongside the
-common issues that must be dealt with before analysing the data. Moreover, it
-describes the used dataset. In the third chapter, the high-level overview of all
-the steps taken in the segmentation process is visualised. The fourth chapter
-deals with the details of implementing the non-trivial steps in the pipeline and
-provides the motivation behind choosing Python and the required libraries. It
-also serves as documentation for the numerous tweakable parameters and the
-exemplary usage of the problem on the dataset. Lastly, the fifth chapter
-discusses how the quantitative analysis was done and its results, alongside the
-program's performance on the dataset.
+The first chapter defines the basic terms required for understanding the rest of the thesis. It also formalises the problem of edge detection, thresholding, and segmentation. The next chapter describes the available image data and the common issues that must be dealt with before analysing the data. In the third chapter, a high-level overview of all the steps taken in the segmentation process is detailed and visualised. The fourth chapter details the implementation of the non-trivial steps in the pipeline and provides the motivation behind choosing Python and the required libraries. The fifth chapter discusses how the quantitative analysis was done and its results, alongside the program's performance on the analysed dataset. Lastly, the appendix serves as a documentation for the numerous tweakable parameters.
 
 \chapter{Basic terms}
 
@@ -1595,15 +1571,15 @@ of the image, the program is able to properly segment the image.
 
 \chapter{Conclusion}
 
-The primary goal of this thesis was to develop a pipeline for the automatic segmentation of membrane-stained image data from fluorescent microscopy. Creating such tools makes it easier for researchers to analyse the behaviour of cells by decreasing the time required to segment them. During the development of this program, we settled on solving this problem using the Laplacian operator and zero-crossing algorithm.
+The primary goal of this thesis was to develop a pipeline for the automatic segmentation of membrane-stained image data from fluorescent microscopy. Creating such tools makes it easier for researchers to analyse the behaviour of cells by decreasing the time required to segment them manually. Due to the unavailability of annotated data, techniques based on machine learning could not be used; therefore, we settled on solving the segmentation using traditional image processing techniques. The developed pipeline consists of two main steps. In the first step, the Laplacian operator and zero-crossing algorithm is used to find a course segmentation of the cells, while in the second step, this is further refined using thresholding to find the nuclei-stained cells.
 
 The developed program is fully functional and available as an attachment to the thesis alongside the whole data set, including the ground truth
 created by the expert and the already prepared membrane-stained and nuclei-stained data. The configuration file is set up to reasonable defaults, which should provide fair segmentation on most of the provided images.
 
-I believe the program provides a practical, easy-to-use terminal interface. In Chapter \ref{chp:evaluation}, all the available parameters are documented, with tips about which one to change in case of improper segmentation.  The included zip archive should allow the user to test the program out of the box.
+The program provides a practical, easy-to-use terminal interface. In Chapter \ref{chp:evaluation}, all the available parameters are documented, with tips about which one to change in case of improper segmentation. The included zip archive allows the user to test the program out of the box.
 
-Lastly, the performance of the program and the quality of its segmentation has been evaluated in Chapter \ref{chp:evaluation} using the F1 score and Jaccard index. As can be seen, the program finds, on average, about half of the actual cells. Nicely visible cells are nicely segmented, but the program often fails when some edges are missing, or there is a substantial unevenness in the lighting. 
+Lastly, the performance of the program and the quality of its segmentation has been evaluated in Chapter \ref{chp:evaluation} using the F1 score and Jaccard index. The program finds, on average, about half of the actual cells. Clearly visible cells are nicely segmented, but the program often fails when some edges are missing or there is a substantial unevenness in the signal heterogeneity. 
 
-In the future, this work could be improved using additional steps in the preprocessing stage. From our research into the topic, machine learning techniques could be utilised to enhance the missing edges or approximate deconvolution algorithms. However, those techniques might take a considerable amount of reference data. Last but not least, although the performance is reasonable, if the program was to be used for the entire data, a just-in-time compiler like Numba or an ahead-of-time compiler like Pythran could take the performance much further.
+In the future, this work could be improved using additional steps in the preprocessing stage. From our research into the topic, machine learning techniques could be utilised to enhance the missing edges, or approximate deconvolution algorithms might help with the denoising. However, those techniques might take a considerable amount of reference data. Last but not least, although the performance is reasonable, if the program was to be used for the entire data, a just-in-time compiler like Numba or an ahead-of-time compiler like Pythran could take the performance much further.
 
 \end{document}
