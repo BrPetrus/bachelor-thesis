@@ -67,7 +67,7 @@
     thanks      = {%
        I am extremely grateful to my advisor, Assoc. Prof. RNDr. Martin Maška,
        Ph.D., for his continuous guidance, helpful advice, and feedback. I am
-       also thankful to my family and close friend for their support. Finally,
+       also thankful to my family and close friends for their support. Finally,
        I am grateful to Dr. Zuzana Sumbalová Koledová and Matea Brezak for providing
        me with the annotated image data analysed in this thesis.
     },
@@ -799,14 +799,10 @@ Figure \ref{fig:label_ground_truth} the manual segmentation of the corresponding
 
 
 \chapter{The developed segmentation method}
-
-%todo: inkorporovat fakt, ze hlavne v jadrovom kanale to robime
-%note: Overview/Goals;High level overview of the process.
-
 The goal of the algorithm is to segment individual cells and uniquely label each
 cell; however, as previously discussed, they are often not clearly separated
 from each other. A naive Otsu thresholding leads to unsatisfactory results, as is
-seen on Figure \ref{fig:otsu-nuclei-demo}. Thus, a more sophisticated algorithm
+shown in Figure \ref{fig:otsu-nuclei-demo}. Thus, a more sophisticated algorithm
 had to be developed to segment the cells' nuclei finer.
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
@@ -814,6 +810,7 @@ had to be developed to segment the cells' nuclei finer.
         \frame{\includegraphics[width=\textwidth]{resources/otsu-nuclei.png}}
         \caption{Image from the nuclei-stained channel.}
     \end{subfigure}
+    \hfill
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{resources/otsu-naive.png}}
@@ -829,12 +826,10 @@ Every cell in our specimen has a membrane and nuclei; hence, we should be able
 to use the information provided by the first channel to improve the thresholding
 in the second channel.
 
-In the first step, quite imprecise and greedy segmentation is performed to
-roughly find the membranes separating the individual cells. The segmentation is
-then utilized in the second step; the algorithm overlays the previous
+In the first step, a coarse segmentation step is employed on the raw image data (Figure \ref{fig:max-proj-before}) to roughly find the membranes separating the individual cells (Figure \ref{fig:watershed}). The coarse segmentation is then utilized in the second step; the algorithm overlays the previous
 segmentation on top of the nuclei-stained channel and looks at every label.
 Each one represents a single cell and some of its surroundings. Finally, a
-local version of the gradient threshold is performed on each region.
+local version of the gradient thresholding is performed on each region (Figure \ref{fig:grad-thresh-post}).
 \begin{figure}
     \begin{center}
         \includegraphics[width=0.8\linewidth]{./resources/inkscape/segmentation-steps.png}
@@ -843,18 +838,18 @@ local version of the gradient threshold is performed on each region.
     \label{fig:segmentation_steps}
 \end{figure}
 
-\section{Membrane channel}
-The goal is to provide a rough segmentation of the cells using the
+\section{Coarse cell segmentation}
+The goal is to provide a coarse segmentation of the cells using the
 membrane-stained channel.
 
 \subsection{Preprocessing}
-First, a pre-processing of the data is performed to deal with some of the noise in
-the data. As can be seen in Figure \ref{fig:max-proj}, we need to deal with the
+First, the input image data is pre-processed to reduce the amount of noise in it.
+As shown in Figure \ref{fig:max-proj}, we need to deal with the
 fact that the intensities inside every cell are quite uneven. To even out the
-lighting inside cells, a maximum projection (Section \ref{sec:max-proj}) is
-performed. The idea behind this step is that edges have higher intensities than
-the cells' insides; therefore, they should not be very influenced by this step,
-while the uneven lighting inside cells will be smoothed out. That happens
+signal inside cells, a maximum projection (Section \ref{sec:max-proj}) is
+performed. The idea behind this step is that cell membranes have higher intensities than
+the cells' interiors; therefore, they should not be very influenced by this step,
+while the uneven illumination inside cells would be smoothed out. That happens
 because the highest intensity areas will propagate out to the surrounding area.
 
 \begin{figure}
@@ -862,6 +857,7 @@ because the highest intensity areas will propagate out to the surrounding area.
         \centering
         \frame{\includegraphics[width=\textwidth]{./resources/max_proj_before.png}}
         \caption{Image from the membrane-stained channel.}
+        \label{fig:max-proj-before}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\linewidth}
         \centering
@@ -875,22 +871,20 @@ because the highest intensity areas will propagate out to the surrounding area.
 
 After dealing with the uneven lighting, additional smoothing is applied
 to reduce the effect of residual noise further. Since the voxel's dimensions are
-anisotropic, an anisotropic Gaussian smoothing is applied. This concludes the
-preprocessing.
+anisotropic, an anisotropic Gaussian smoothing is applied.
 
 \subsection{Zero-crossing algorithm}
 Applying the zero-crossing algorithm at this stage would result in many
 artificial cells being found in the background due to the presence of noise. To
 remove these visual artefacts, we need to create a mask to differentiate the
 background from the foreground. For this task, the Otsu thresholding method was
-employed due to the bimodal distribution of the data. Sometimes the boundary between
-the specimen's edge and the background is unclear as in Figure
+employed due to the bimodal distribution of the image intensities. Sometimes the interface between
+the organoid's contour and the background is unclear, as depicted in Figure
 \ref{fig:cell-mask}. However, it is a considerably smaller issue if part of the
 the background is categorised as the foreground; hence, this issue can be fixed by
-running morphological erosion with a circular structural element of similar size
-to the average cell. This final mask then approximately distinguishes between the 
+running morphological erosion with a circular structural element with a diameter similar to the average cell diameter. This final mask then approximately distinguishes between the 
 background and the foreground. This mask is then utilised in the next steps, which
-ignore all background pixels during their calculations.
+ignore all background image elements during their calculations.
 
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
@@ -910,10 +904,8 @@ ignore all background pixels during their calculations.
 
 The zero-crossing algorithm provides a reasonable outline of the cells, as is
 shown in Figure \ref{fig:zc}. The user sometimes has to play around with
-various sigmas to improve the quality of the edge detection. When the sigma is
-too low, the algorithm tends to find many small artificial regions, while too
-large sigma causes the algorithm to join individual cells together. This step
-is further complicated by the fact that some of the cells are missing parts of
+the strength of the Gaussian smoothing (\texttt{zc\_sigma} in later chapters) to improve the quality of the edge detection. When the strength is too low, the program tends to find many small artificial regions; conversely, strong smoothing causes the algorithm to join individual cells together. 
+This step is further complicated by the fact that some of the cells are missing parts of
 their membranes; hence, the performance of this step is one of the limiting factors of
 the whole segmentation pipeline.
 
@@ -947,10 +939,10 @@ The next step is to utilize the outlines to segment individual cells. First, we 
 to take the previous result and fill in the inside of the cells, as can be seen
 in Figure \ref{fig:cells}. How this is achieved is explained in Section
 \ref{sec-markers}. After this step is done, the image is further post-processed,
-starting by using erosion to remove the edges, and then a morphological opening with
-a disk-like structural element is performed to remove small artificial cells caused
+starting by using erosion to remove the leftover edges found by the zero-crossing, and then a morphological opening with
+a disk-like structuring element is performed to remove small artificial cells caused
 by noise. Finally, dilation is applied to restore some of the unwanted losses
-during the morphological opening, leading to the result in Figure 
+caused by the morphological opening, leading to the result in Figure 
 \ref{fig:cells-post-processed}.
 
 Finally, the watershed algorithm is used to label the individual cells uniquely.
@@ -959,18 +951,14 @@ previous step, the watershed algorithm may be able to divide them. The result
 is shown in Figure \ref{fig:watershed}. A more in-depth discussion is in Section
 \ref{sec-markers}.
 
-This step concludes all that is done in the membrane-stained channel. The
-program has generated a rough approximation of the cells, which will be used to
-further improve the segmentation in the nuclei-stained channel.
-
-\section{Nuclei-stained channel}
+\section{Fine nucleus segmentation}
 Unlike in the membrane-stained channel, in the nuclei-stained channel the
 pipeline is lot less complicated. The whole pre-processing consists of a single
 Gaussian smoothing, that is done because the data is quite grainy, and it helps
-the Gradient threshold used later.
+the gradient thresholding to produce more reliable results.
 
 Applying the Otsu thresholding method in the nuclei-stained channel leads to
-poor results as is seen in Figure \ref{fig:otsu-naive}. The problem is that the
+poor results, as shown in Figure \ref{fig:otsu-naive}. The problem is that the
 lighting is quite uneven. Some cells are significantly brighter than others;
 thus, global thresholding is not a viable option.
 
@@ -1021,9 +1009,8 @@ Figure \ref{fig:grad-thresh-post}.
     truth.}
 \end{figure}
 
-An example of the final segmentation and the ground truth --- created by a
-biologist --- is shown in Figure \ref{fig:ground-truth-crop}. This concludes the
-section about how the algorithm works.
+An example of the final segmentation and the reference segmentation --- created by a
+biologist --- is shown in Figure \ref{fig:ground-truth-crop}.
 
 \chapter{Implementation}
 \label{chp:implementation}
