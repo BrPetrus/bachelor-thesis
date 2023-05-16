@@ -126,10 +126,10 @@ The first chapter defines the basic terms required for understanding the rest of
 
 \chapter{Basic terms}
 
-Image processing involves the use of many mathematical techniques and algorithms
+Image processing involves mathematical techniques and algorithms
 to extract useful information or somehow alter the image. The purpose of this
 section is to provide a comprehensive and shallow overview of the fundamental
-concepts used in my image processing pipeline.
+concepts used in the developed image processing pipeline.
 
 \section{Digital Image}
 Our eyesight is undoubtedly one of our most helpful senses, allowing us to
@@ -153,12 +153,10 @@ values.
 
 Once we start using computers to work with images, we no longer can work with
 real-valued spatial dimensions and intensities, because we only have a finite
-number of bits. The process of acquiring images in a finite grid and assigning
+number of bits. The process of discretizing images in a finite grid and assigning
 intensities from a finite range is called sampling and quantization. In essence,
-we create a discretized version of the original signal, which can be represented
-as an one- or multi-dimensional array of values. If the coordinates and the
-intensity are subsets of some discrete set, then the function represents a
-digital image.
+we create a digitalized version of the original signal, which can be represented
+as a one- or \mbox{multi-dimensional} array of values.
 
 \section{Edge detection}
 
@@ -187,7 +185,7 @@ of the program for finding edges.
     \label{fig:edge_intensities}
 \end{figure}
 
-\subsection{Calculating gradient}
+\subsection{Gradient operator}
 
 The first common way of working out where the edge is located is by looking at
 the gradient of the image. The gradient of an image $\nabla f(x,y)$ is defined
@@ -196,27 +194,27 @@ $$\nabla f =
 \begin{bmatrix}
     \dfrac{\partial f}{\partial x}\\[2ex]
     \dfrac{\partial f}{\partial y}
-\end{bmatrix}$$
+\end{bmatrix}.$$
 This vector represents the rate of change in the image intensities, and it points in
 the direction of the maximum rate of change of intensity. Often just the bare
 vector is not of interest; instead, the magnitude of the gradient, denoted as
-$\nabla f$, is calculated too. Confusingly enough, sometimes this is also called
+$|\nabla f|$, is calculated too. Confusingly enough, sometimes this is also called
 the gradient in the literature, but here I will differentiate it by putting
 absolute value around it. Formally it is defined as:
-$$|\nabla f| = \text{mag}(\nabla f) = \sqrt{(\frac{\partial f}{\partial x})^2 +
-(\frac{\partial f}{\partial y})^2}$$
+$$|\nabla f| = \sqrt{\left(\frac{\partial f}{\partial x}\right)^2 +
+\left(\frac{\partial f}{\partial y}\right)^2}.$$
 
 Now the question is how to calculate the partial derivatives of some digital image.
 It is impossible to calculate the partial derivatives using the standard
 definition from mathematical analysis because digital images are discrete; thus,
 we must use an approximation. To calculate the $\frac{\partial f}{\partial x}$
 we can use the following approximation:
-$$\frac{\partial f}{\partial x} \approx f(i+1,j)-f(i-1,j)$$
+$$\frac{\partial f}{\partial x}(i, j) \approx \frac{f(i+1,j)-f(i-1,j)}{2}$$
 and similarly for the $\frac{\partial f}{\partial y}$ we can use:
-$$\frac{\partial f}{\partial y} \approx f(i, j+1)-f(i,j-1)$$
+$$\frac{\partial f}{\partial y}(i, j) \approx \frac{f(i, j+1)-f(i,j-1)}{2}.$$
 
-Using them, we can reasonably approximate the gradient as:
-$$\nabla f(i, j) = f(i+1,j) - f(i-1,j) + f(i,j+1) - f(i,j-1)$$
+Using them, we can reasonably approximate the magnitude of the gradient as:
+$$|\nabla f(i, j)| = \frac{1}{2}\sqrt{(f(i+1, j) - f(i-1, j))^2 + (f(i, j+1) - f(i, j-1))^2}.$$
 
 An example of the magnitude of the gradient is visible in Figure
 \ref{fig:demo_grad_thresh} in the second image in the first row.
@@ -228,26 +226,24 @@ in this chapter.
 \subsection{Laplacian operator}
 
 The second common way --- and the one we will use for finding edges --- is using the second derivative, or more
-precisely, using the Laplacian. For a 2D function $f(x, y)$ the Laplacian is
+precisely, using the Laplacian operator. For a 2D function $f(x, y)$ the Laplacian operator is
 defines as \cite{gonzalez2002}:
 
-$$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}$$
+$$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}.$$
 
 However, in the context of digital image processing, our signal is discrete;
-therefore, a discrete approximation is needed. A fairly standard way is to use
+therefore, a discrete approximation is needed again. A fairly standard way is to use
 the following approach to calculate the partial second derivative in the $x$
 axis:
-$$\frac{\partial^2 f}{\partial x^2} = f(i + 1, j) + f(i - 1, j) - 2f(i, j)$$
+$$\frac{\partial^2 f}{\partial x^2}(i, j) = f(i + 1, j) + f(i - 1, j) - 2f(i, j)$$
 and similar in the y axis:
-$$\frac{\partial^2 f}{\partial y^2} = f(i, j + 1) + f(i, j - 1) - 2f(i, j)$$
+$$\frac{\partial^2 f}{\partial y^2}(i, j) = f(i, j + 1) + f(i, j - 1) - 2f(i, j).$$
 Substituting into the prior definition, we get the following approximation:
-$$\nabla^2 f = f(i+1, j) + f(i-1, j) + f(i, j+1) + f(i, j-1) - 4f(i,j)$$
+$$\nabla^2 f = f(i+1, j) + f(i-1, j) + f(i, j+1) + f(i, j-1) - 4f(i,j).$$
 To calculate the Laplacian of an image, this formula is applied to every pixel.
 The outer pixels can be dealt with in many ways, but the developed program simply
 ignores them.
 
-% todo insert an image and description
-% todo insert and examplorary image
 
 One of the disadvantages of this approach is the sensitivity to noise. For
 demonstration purposes, the effects are shown in 1D in Figure
@@ -304,7 +300,7 @@ minimized. More information is available in the paper \cite{otsu1979}.
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \frame{\includegraphics[width=\textwidth]{resources/otsu-orig.png}}
-        \caption{Image from membrane-stained channel.}
+        \caption{Image from the membrane-stained channel.}
         \label{fig:otsu-orig}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
@@ -319,7 +315,7 @@ minimized. More information is available in the paper \cite{otsu1979}.
         \caption{Histogram of the image, with a line indicating the threshold.}
         \label{fig:otsu-histogram}
     \end{subfigure}
-    \caption{Demonstration of the otsu thresholding method.}
+    \caption{Demonstration of the Otsu thresholding method.}
     \label{fig:otsu-demonstration}
 \end{figure}
 
