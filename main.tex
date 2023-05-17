@@ -1387,10 +1387,10 @@ visually inspected the results. Once I was satisfied and could not see any of th
 issues, I tweaked the parameters to find the biggest $\overline{J_s}$ score.
 After that, I recorded the results and proceeded to the next image.
 
-The final results are reported in Table \ref{tab:scores} and the used configurations in Table \ref{table:configurations}. Every row begins
-with the filename and provides various scores I achieved with the
-program. As can be seen from the table, certain images got better results than
-others.
+The final results are reported in Table \ref{tab:scores} and the used
+configurations in Table \ref{table:configurations}. Every row begins with the
+filename and provides various scores I achieved with the program. As can be seen
+from the table, certain images got better results than others.
 
 In general, the program has slightly higher recall than precision, meaning that the
 program finds the majority of the cells marked by the expert; however, it also
@@ -1398,7 +1398,52 @@ finds many false positives. Those are cells that the program predicted but were
 not found by the expert. Those are mostly caused by noise in the data.
 
 Looking at the $\overline{J_S}$ scores, it is clear that if the program finds a
-real cell, it segments it reasonably well. In the last row of the table, a simple average of all the metrics is shown with the standard deviation.
+real cell, it segments it reasonably well. In the last row of the table, a
+simple average of all the metrics is shown with the standard deviation. In
+Figure \ref{fig:comparison-1} and in Figure \ref{fig:comparison-2} the
+comparison between the program's prediction and the expert's labelling is shown.
+In case of the second figure, the program has a lower $\bar{J}$ because several
+of the cells were not found by the program, due to significant noise in the
+membrane-stained channel. On the other hand, in Figure \ref{fig:comparison-1}
+the effect of noise was more suppressed, and the program found more of the
+cells, leading to higher $\bar{J}$.
+
+\begin{figure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./resources/t004-roi-10-375-predtiction.png}
+        \caption{}
+        \label{fig:comparison-pred-1}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./resources/t004-roi-10-375-truth.png}
+        \caption{}
+        \label{fig:comparison-truth-1}
+    \end{subfigure}
+    \caption{Prediction (\subref{fig:comparison-pred-1}) for the file
+    \texttt{t004-roi-10} and the expert's labelling
+    (\subref{fig:comparison-truth-1})}
+    \label{fig:comparison-1}
+\end{figure}
+\begin{figure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./resources/t008-roi-6-180-prediction.png}
+        \caption{}
+        \label{fig:comparison-pred-2}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./resources/t008-roi-6-180-truth.png}
+        \caption{}
+        \label{fig:comparison-truth-2}
+    \end{subfigure}
+    \caption{Prediction (\subref{fig:comparison-pred-2}) for the file
+    \texttt{t004-roi-6} and the expert's labelling
+    (\subref{fig:comparison-truth-2})}
+    \label{fig:comparison-2}
+\end{figure}
 
 \begin{table}
     \hspace*{-0.5cm}\begin{tabular}{|| c|c|c|c|c|c|c ||}
@@ -1484,7 +1529,8 @@ outline was part of the background, causes the program to fill in the whole
 specimen. This is shown in \ref{fig:issues-cropping}. This is because, in this
 particular case, the division between the foreground and background was easily
 visible and caused the program to create a connected contour around the
-specimen. In this case, the solution is quite easy; after manually cropping part
+specimen. In this case, the solution is quite easy; after manually cropping the
+bottom part
 of the image, the program is able to properly segment the image.
 
 \begin{figure}
