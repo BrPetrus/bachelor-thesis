@@ -1387,12 +1387,12 @@ visually inspected the results. Once I was satisfied and could not see any of th
 issues, I tweaked the parameters to find the biggest $\overline{J_s}$ score.
 After that, I recorded the results and proceeded to the next image.
 
-The final results are reported in Table \ref{tab:scores}. Every row begins
+The final results are reported in Table \ref{tab:scores} and the used configurations in Table \ref{table:configurations}. Every row begins
 with the filename and provides various scores I achieved with the
 program. As can be seen from the table, certain images got better results than
 others.
 
-In general, the program has higher recall than precision, meaning that the
+In general, the program has slightly higher recall than precision, meaning that the
 program finds the majority of the cells marked by the expert; however, it also
 finds many false positives. Those are cells that the program predicted but were
 not found by the expert. Those are mostly caused by noise in the data.
@@ -1410,15 +1410,15 @@ real cell, it segments it reasonably well. In the last row of the table, a simpl
         t004-roi-4-68&0.39&0.61&0.44&0.33&0.64&7.11\\
         t004-roi-4-85&0.66&0.66&0.38&0.23&1.0&8.69\\
         t004-roi-6&0.33&0.61&0.58&0.6&0.54&2.49\\
-        t004-roi-10&0.40&0.62&0.72&0.83&0.65&9.22\\
+        t004-roi-10&0.40&0.61&0.73&0.83&0.65&9.22\\
         t004-roi-11&0.43&0.60&0.63&0.6&0.72&4.89\\
         t006-roi-2&0.38&0.62&0.58&0.54&0.62&7.56\\
         t006-roi-5&0.29&0.63&0.42&0.39&0.46&6.27\\
         t008-roi-5&0.32&0.59&0.54&0.53&0.55&8.65\\
         t008-roi-6&0.20&0.54&0.41&0.44&0.38&3.78\\
         \midrule
-        Averages&$0.38$&$0.60$&$0.54$&$0.51$&$0.63$&$6.13$\\
-        Standard dev.&$0.11$&$0.037$&$0.11$&$0.16$&$0.16$&$2.29$\\
+        Averages&$0.38$&$0.61$&$0.54$&$0.51$&$0.63$&$6.13$\\
+        Standard dev.&$0.11$&$0.037$&$0.12$&$0.16$&$0.16$&$2.29$\\
         \bottomrule
     \end{tabular}
     \caption{Evaluation of the files inside the data set.}
@@ -1435,23 +1435,23 @@ real cell, it segments it reasonably well. In the last row of the table, a simpl
         t004-roi-4-68&0&2&3.0&25\\
         t004-roi-4-85&0&2&3.0&25\\
         t004-roi-6   &0&2&3.0&20\\
-        t004-roi-10  &0&3&2.5&25\\
+        t004-roi-10  &0&3&2.4&25\\
         t004-roi-11  &0&2&3.0&25\\
         t006-roi-2   &0&2&3.0&30\\
         t006-roi-5   &0&2&4.0&30\\
         t008-roi-5   &0&1&2.2&25\\
-        t008-roi-6   &0&2&5.0&25\\
+        t008-roi-6   &0&2&4.5&25\\
         \bottomrule
     \end{tabular}
     \caption{Segmentation settings for the files.}
     \label{table:configurations}
 \end{table}
 
-The last column indicates the average time taken to run the program on
+The last column indicates the average time in seconds taken to run the program --- on my computer with the Ryzen 5700U notebook processor --- on
 particular data. This was done using the \texttt{time} module from the standard
 Python library and only the time taken to calculate was considered,
 so the disk speed did not significantly affect the time. This was done over
-four runs and averaged using the Ryzen 5700U notebook processor.
+four runs and averaged.
 
 \section{Common problems}
 
