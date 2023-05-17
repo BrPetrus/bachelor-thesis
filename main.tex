@@ -665,6 +665,8 @@ is used in our case. A simple example is shown in Figure
     \label{fig:demonstration-distance-map}
 \end{figure}
 
+\clearpage
+
 \chapter{Image data}
 
 The image data --- of mouse mammary organoids --- was acquired using a confocal
@@ -812,6 +814,7 @@ Figure \ref{fig:label_ground_truth} the manual segmentation of the corresponding
     \caption{In (\subref{fig:label_ground_truth}) the labelling created by an expert of the \subref{fig:label_membrane_channel} is shown. White means a complicated area, black is the background, and the rest are the cells.}
 \end{figure}
 
+\clearpage
 
 \chapter{The developed segmentation method}
 The goal of the algorithm is to segment individual cells and uniquely label each
@@ -1030,6 +1033,8 @@ Figure \ref{fig:grad-thresh-post}.
 An example of the final segmentation and the reference segmentation --- created by a
 biologist --- is shown in Figure \ref{fig:ground-truth-crop}.
 
+\clearpage
+
 \chapter{Implementation}
 \label{chp:implementation}
 This chapter describes which libraries were used, lists the main parameters, and
@@ -1216,6 +1221,7 @@ The result of doing this at every position is the maximum projection.
 That concludes all the non-trivial parts of the program; the rest were a direct
 application of mathematical functions in the aforementioned libraries.
 
+\clearpage
 \chapter{Evaluation}
 \label{chp:evaluation}
 This chapter deals with evaluating the results, common problems, and the
@@ -1457,18 +1463,45 @@ of the image, the program is able to properly segment the image.
     \label{fig:issues-cropping}
 \end{figure}
 
+\clearpage
 \chapter{Conclusion}
 
-The primary goal of this thesis was to develop a pipeline for the automatic segmentation of membrane-stained image data from fluorescent microscopy. Creating such tools makes it easier for researchers to analyse the behaviour of cells by decreasing the time required to segment them manually. Due to the unavailability of annotated data, techniques based on machine learning could not be used; therefore, we settled on solving the segmentation using traditional image processing techniques. The developed pipeline consists of two main steps. In the first step, the Laplacian operator and zero-crossing algorithm is used to find a course segmentation of the cells, while in the second step, this is further refined using thresholding to find the nuclei-stained cells.
+The primary goal of this thesis was to develop a pipeline for the automatic
+segmentation of membrane-stained image data from fluorescent microscopy.
+Creating such tools makes it easier for researchers to analyse the behaviour of
+cells by decreasing the time required to segment them manually. Due to the
+unavailability of annotated data, techniques based on machine learning could not
+be used; therefore, we settled on solving the segmentation using traditional
+image processing techniques. The developed pipeline consists of two main steps.
+In the first step, the Laplacian operator and zero-crossing algorithm is used to
+find a course segmentation of the cells, while in the second step, this is
+further refined using thresholding to find the nuclei-stained cells.
 
-The developed program is fully functional and available as an attachment to the thesis alongside the whole data set, including the ground truth
-created by the expert and the already prepared membrane-stained and nuclei-stained data. The configuration file is set up to reasonable defaults, which should provide fair segmentation on most of the provided images.
+The developed program is fully functional and available as an attachment to the
+thesis alongside the whole data set, including the ground truth created by the
+expert and the already prepared membrane-stained and nuclei-stained data. The
+configuration file is set up to reasonable defaults, which should provide fair
+segmentation on most of the provided images.
 
-The program provides a practical, easy-to-use terminal interface. In Chapter \ref{chp:evaluation}, all the available parameters are documented, with tips about which one to change in case of improper segmentation. The included zip archive allows the user to test the program out of the box.
+The program provides a practical, easy-to-use terminal interface. In Chapter
+\ref{chp:evaluation}, all the available parameters are documented, with tips
+about which one to change in case of improper segmentation. The included zip
+archive allows the user to test the program out of the box.
 
-Lastly, the performance of the program and the quality of its segmentation has been evaluated in Chapter \ref{chp:evaluation} using the F1 score and Jaccard index. The program finds, on average, about half of the actual cells. Clearly visible cells are nicely segmented, but the program often fails when some edges are missing or there is a substantial unevenness in the signal heterogeneity. 
+Lastly, the performance of the program and the quality of its segmentation has
+been evaluated in Chapter \ref{chp:evaluation} using the F1 score and Jaccard
+index. The program finds, on average, about half of the actual cells. Clearly
+visible cells are nicely segmented, but the program often fails when some edges
+are missing or there is a substantial unevenness in the signal heterogeneity. 
 
-In the future, this work could be improved using additional steps in the preprocessing stage. From our research into the topic, machine learning techniques could be utilised to enhance the missing edges, or approximate deconvolution algorithms might help with the denoising. However, those techniques might take a considerable amount of reference data. Last but not least, although the performance is reasonable, if the program was to be used for the entire data, a just-in-time compiler like Numba or an ahead-of-time compiler like Pythran could take the performance much further.
+In the future, this work could be improved using additional steps in the
+preprocessing stage. From our research into the topic, machine learning
+techniques could be utilised to enhance the missing edges, or approximate
+deconvolution algorithms might help with the denoising. However, those
+techniques might take a considerable amount of reference data. Last but not
+least, although the performance is reasonable, if the program was to be used for
+the entire data, a just-in-time compiler like Numba or an ahead-of-time compiler
+like Pythran could take the performance much further.
 
 \printbibliography[heading=bibintoc] %% Print the bibliography.
 

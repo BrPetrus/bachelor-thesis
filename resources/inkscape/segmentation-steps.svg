@@ -30,10 +30,10 @@
      showgrid="true"
      inkscape:lockguides="false"
      inkscape:zoom="1.6304596"
-     inkscape:cx="296.54215"
-     inkscape:cy="242.56964"
+     inkscape:cx="252.38283"
+     inkscape:cy="248.08956"
      inkscape:window-width="1920"
-     inkscape:window-height="1050"
+     inkscape:window-height="1170"
      inkscape:window-x="0"
      inkscape:window-y="30"
      inkscape:window-maximized="1"
@@ -417,10 +417,13 @@
        x="2"
        y="64"
        id="text292"
-       transform="translate(9.9806791,12.4755)"><tspan
+       transform="translate(9.9806791,12.4755)"
+       inkscape:export-filename="segmentation-steps.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          x="0"
          y="0"
-         id="tspan660">Membrane-stained data</tspan></text>
+         id="tspan1415">Membrane-stained data</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';white-space:pre;shape-inside:url(#rect2719);display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-dasharray:none;stroke-opacity:1"
@@ -430,10 +433,10 @@
        transform="translate(0.67280927,0.58664614)"><tspan
          x="10.175781"
          y="23.900572"
-         id="tspan662">Maximum projection &amp; </tspan><tspan
+         id="tspan1417">Maximum projection &amp; </tspan><tspan
          x="10.175781"
          y="27.869322"
-         id="tspan664">Gaussian smoothing</tspan></text>
+         id="tspan1419">Gaussian smoothing</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';white-space:pre;shape-inside:url(#rect2721);display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-dasharray:none;stroke-opacity:1"
@@ -443,12 +446,12 @@
        transform="translate(0.91109057,0.54953661)"><tspan
          x="14.925781"
          y="42.900572"
-         id="tspan666">Zero-crossing </tspan><tspan
+         id="tspan1421">Zero-crossing </tspan><tspan
          x="14.925781"
          y="47.715026"
-         id="tspan670"><tspan
+         id="tspan1425"><tspan
            dx="0 1.7875241 0.98424828 1.7081442 1.831974 1.4954209 1.0159993 1.1175976 2.01612"
-           id="tspan668">algorithm</tspan></tspan></text>
+           id="tspan1423">algorithm</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';white-space:pre;shape-inside:url(#rect2723);display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-dasharray:none;stroke-opacity:1"
@@ -458,7 +461,7 @@
        transform="translate(0.99681557,0.8830055)"><tspan
          x="17"
          y="72.888854"
-         id="tspan672">Watershed</tspan></text>
+         id="tspan1427">Watershed</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';white-space:pre;shape-inside:url(#rect2725);display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-dasharray:none;stroke-opacity:1"
@@ -468,7 +471,7 @@
        transform="matrix(0.98213901,0,0,0.90770902,1.2084316,5.7030786)"><tspan
          x="15"
          y="57.888854"
-         id="tspan674">Post-processing</tspan></text>
+         id="tspan1429">Post-processing</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;fill-opacity:1;stroke:url(#linearGradient7300);stroke-width:0.125;stroke-dasharray:none"
@@ -489,7 +492,7 @@
        transform="translate(0.88152444,0.58664614)"><tspan
          x="60"
          y="57.888854"
-         id="tspan676">Gaussian smoothing</tspan></text>
+         id="tspan1431">Gaussian smoothing</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';white-space:pre;shape-inside:url(#rect2741);display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-dasharray:none;stroke-opacity:1"
@@ -499,7 +502,7 @@
        transform="translate(0.94184939,0.58664559)"><tspan
          x="60"
          y="72.888854"
-         id="tspan678">Local thresholding</tspan></text>
+         id="tspan1433">Local thresholding</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';white-space:pre;shape-inside:url(#rect2803);display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-dasharray:none;stroke-opacity:1"
@@ -509,7 +512,7 @@
        transform="translate(0.94184944,0.58664594)"><tspan
          x="62.517578"
          y="87.888854"
-         id="tspan680">Post-processing</tspan></text>
+         id="tspan1435">Post-processing</tspan></text>
     <rect
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.352778;stroke-dasharray:none;stroke-opacity:1"
        id="rect2719"
