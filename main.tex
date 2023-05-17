@@ -60,7 +60,7 @@
     TeXkeywords = {segmentation, image processing, scikit-image, watershed,
                    thresholding, fluorescence microscopy, zero-crossing},
     abstract    = {%
-        This thesis aims to develop an image analysis pipeline for segmenting membrane-stained and nuclei-stained image data obtained using a fluorescent microscope. The thesis describes a two-step processing using the analysis of the Laplacian operator and watershed algorithm in the first step and thresholding in the second step to segment individual cells in the image data. Then the program's segmentation accuracy and detection performance are evaluated using reference data. The thesis also includes the program with documentation on how to use it.
+        In this thesis, we present a two-stage image analysis pipeline for segmenting membrane-stained and nuclei-stained image data of organoids captured using a fluorescence microscope. In the first stage, a coarse segmentation of individual cells in the membrane channel is obtained by analysing the Laplacian operator's response and watershed-driven tesselation. In the second stage, the coarse segmentation is projected into the nuclear channel, and individual nuclei regions are refined via local gradient thresholding. The performance of the developed pipeline is evaluated using a representative, manually annotated dataset, with the focus on detection and segmentation accuracy and execution time. The developed pipeline is implemented in Python and complemented with a detailed documentation of its usage. 
     },
     thanks      = {%
        I am extremely grateful to my advisor, Assoc. Prof. RNDr. Martin Maška,
@@ -342,10 +342,28 @@ $$a = \sum_{u, v} I(u, v) \frac{|\nabla I(u, v)|}{\sum_{i, j} |\nabla(i,j)|}$$
 where $I(i, j)$ stands for the image intensity at the $(i, j)$ position.
 
 \begin{figure}
-    \begin{center}
-        \includegraphics[width=8cm]{"resources/demo-gradient-threshold.png"}
-    \end{center}
-    \caption{Demo of gradient threshold.}
+    \begin{subfigure}{0.3\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./resources/grad-thresh-orig.png}
+        \caption{}
+        \label{fig:grad-thresh-orig}
+    \end{subfigure}
+    \begin{subfigure}{0.3\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./resources/grad-thresh-grad.png}
+        \caption{}
+        \label{fig:grad-thresh-grad}
+    \end{subfigure}
+    \begin{subfigure}{0.3\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./resources/grad-thresh-final.png}
+        \caption{}
+        \label{fig:grad-thresh-final}
+    \end{subfigure}
+    \caption{Demonstration of the gradient thresholding. Image data from the
+    membrane-stained channel (\subref{fig:grad-thresh-orig}) was thresholded
+    (\subref{fig:grad-thresh-grad}) using the gradient thresholding. In
+    (\subref{fig:grad-thresh-grad}) the magnitude of the gradient is shown.}
     \label{fig:demo_grad_thresh}
 \end{figure}
 
@@ -387,9 +405,9 @@ reflection of the image around its origin, as shown in Figure
 $$\hat{B} = \{w | w=-b \text{ , for } b \in B\}$$
 \begin{figure}
     \begin{center}
-        \includegraphics[width=6.3cm]{resources/morph_reflection.jpg}
+        \includegraphics[width=0.5\textwidth]{resources/inkscape/morphology-reflection.png}
     \end{center}
-    \caption{Morphological reflection} % todo: replace
+    \caption{Morphological reflection of image $A$, where $C=\hat{A}$} % todo: replace
     \label{fig:morp_refl}
 \end{figure}
 
