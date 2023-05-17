@@ -28,8 +28,8 @@
      inkscape:document-units="mm"
      showgrid="true"
      inkscape:zoom="1"
-     inkscape:cx="230.49999"
-     inkscape:cy="260.49999"
+     inkscape:cx="231.5"
+     inkscape:cy="260.5"
      inkscape:window-width="1920"
      inkscape:window-height="1170"
      inkscape:window-x="0"
@@ -178,11 +178,11 @@
        sodipodi:nodetypes="cssssscc" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.24247;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleStart)"
-       d="m 130,60.746248 h 20.25725"
+       d="m 130,50.746248 h 20.25725"
        id="path1192" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.250327;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2245)"
-       d="M 130,60.746248 V 41.333234"
+       d="M 130,50.746248 V 31.333234"
        id="path2241" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.681569;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2319)"
@@ -219,6 +219,23 @@
          style="font-size:5.07762px;stroke-width:0;stroke-dasharray:none"
          x="89.775177"
          y="143.69083">A</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.07763px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
+       x="76.382919"
+       y="13.630093"
+       id="text2435-3-7"
+       inkscape:transform-center-x="-6.2167143"
+       inkscape:transform-center-y="-0.27726955"
+       transform="scale(1.0004672,0.99953302)"
+       inkscape:export-filename="morphology-reflection.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
+         sodipodi:role="line"
+         id="tspan2433-1-9"
+         style="font-size:5.07762px;stroke-width:0;stroke-dasharray:none"
+         x="76.382919"
+         y="13.630093">A</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:5.07763px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
