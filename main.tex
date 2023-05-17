@@ -66,7 +66,7 @@
        I am extremely grateful to my advisor, Assoc. Prof. RNDr. Martin Maška,
        Ph.D., for his continuous guidance, helpful advice, and feedback. I am
        also thankful to my family and close friends for their support. Finally,
-       I am grateful to Dr. Zuzana Sumbalová Koledová and Matea Brezak for providing
+       I am grateful to Dr. Zuzana Sumbalová Koledová and Dr. Matea Brezak for providing
        me with the annotated image data analysed in this thesis.
     },
     bib         = bibliography.bib,
@@ -119,7 +119,7 @@ fluorescence microscopy has allowed scientists to create high-resolution multidi
 
 One of the critical processes in researching this topic is the segmentation of cells to study their behaviour and shape; however, this often has to be done manually, taking valuable time from researchers to focus on more significant parts of their research. It is, therefore, necessary to develop robust automatic segmentation techniques that scale with the data's growing size.
 
-This thesis focuses on developing an image analysis pipeline for segmenting membrane-stained and nuclei-stained cells in fluorescence microscopy image data of organoids without reference annotations. This pipeline is delivered in an easy-to-use form, and a quantitative analysis of the segmentation quality is performed. The developed method consists of two steps. In the first step, the program analyses the second partial derivate of the image data and uses the watershed algorithm to create a coarse segmentation of the cell; then, in the second step, this is utilised to create a better-fitting segmentation by thresholding the nuclei-stained channel.
+This thesis focuses on developing an image analysis pipeline for segmenting membrane-stained and nuclei-stained cells in fluorescence microscopy image data of organoids without reference annotations. This pipeline is delivered in an easy-to-use form, and a quantitative analysis of the segmentation quality is performed. The developed method consists of two steps. In the first step, the program analyses the second partial derivate of the image data and uses the watershed algorithm to create a coarse segmentation of individual cells; then, in the second step, this is utilised to create a better-fitting segmentation by locally thresholding the nuclei-stained channel.
 
 The first chapter defines the basic terms required for understanding the rest of the thesis. It also formalises the problem of edge detection, thresholding, and segmentation. The next chapter describes the available image data and the common issues that must be dealt with before analysing the data. In the third chapter, a high-level overview of all the steps taken in the segmentation process is detailed and visualised. The fourth chapter details the implementation of the non-trivial steps in the pipeline and provides the motivation behind choosing Python and the required libraries. The fifth chapter discusses how the quantitative analysis was done and its results, alongside the program's performance on the analysed dataset. Lastly, the appendix serves as a documentation for the numerous tweakable parameters.
 
@@ -180,7 +180,7 @@ of the program for finding edges.
     \begin{center}
         \includegraphics[width=6cm]{resources/inkscape/gradient.png}
     \end{center}
-    \caption{Intensity of a signal, and its first and second derivative.}
+    \caption{Intensity of the signal, and its first and second derivative.}
     \label{fig:edge_intensities}
 \end{figure}
 
@@ -213,7 +213,7 @@ and similarly for the $\frac{\partial f}{\partial y}$ we can use:
 $$\frac{\partial f}{\partial y}(i, j) \approx \frac{f(i, j+1)-f(i,j-1)}{2}.$$
 
 Using them, we can reasonably approximate the magnitude of the gradient as:
-$$|\nabla f(i, j)| = \frac{1}{2}\sqrt{(f(i+1, j) - f(i-1, j))^2 + (f(i, j+1) - f(i, j-1))^2}.$$
+$$|\nabla f(i, j)| \approx \frac{1}{2}\sqrt{(f(i+1, j) - f(i-1, j))^2 + (f(i, j+1) - f(i, j-1))^2}.$$
 
 An example of the magnitude of the gradient is visible in Figure
 \ref{fig:demo_grad_thresh} in the second image in the first row.
@@ -234,11 +234,11 @@ However, in the context of digital image processing, our signal is discrete;
 therefore, a discrete approximation is needed again. A fairly standard way is to use
 the following approach to calculate the partial second derivative in the $x$
 axis:
-$$\frac{\partial^2 f}{\partial x^2}(i, j) = f(i + 1, j) + f(i - 1, j) - 2f(i, j)$$
+$$\frac{\partial^2 f}{\partial x^2}(i, j) \approx f(i + 1, j) + f(i - 1, j) - 2f(i, j)$$
 and similar in the y axis:
-$$\frac{\partial^2 f}{\partial y^2}(i, j) = f(i, j + 1) + f(i, j - 1) - 2f(i, j).$$
+$$\frac{\partial^2 f}{\partial y^2}(i, j) \approx f(i, j + 1) + f(i, j - 1) - 2f(i, j).$$
 Substituting into the prior definition, we get the following approximation:
-$$\nabla^2 f = f(i+1, j) + f(i-1, j) + f(i, j+1) + f(i, j-1) - 4f(i,j).$$
+$$\nabla^2 f \approx f(i+1, j) + f(i-1, j) + f(i, j+1) + f(i, j-1) - 4f(i,j).$$
 To calculate the Laplacian of an image, this formula is applied to every pixel.
 The outer pixels can be dealt with in many ways, but the developed program simply
 ignores them.
@@ -293,7 +293,7 @@ value between two classes (usually the foreground and the background). As such,
 it works well if the image's histogram has a clear bimodal distribution. The
 main idea of this approach is to see the problem of finding the threshold as an
 optimization problem, where the inter-class variance of the two classes is to be
-minimized. More information is available in the paper \cite{otsu1979}.
+minimized. More information is available in \cite{otsu1979}.
 
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
@@ -323,9 +323,9 @@ minimized. More information is available in the paper \cite{otsu1979}.
 
 %todo: Finish
 
-\subsection{Gradient threshold}
+\subsection{Gradient thresholding}
 
-Another useful thresholding method is the gradient threshold algorithm. Unlike
+Another useful thresholding method is the gradient thresholding algorithm. Unlike
 many other thresholding algorithms, it does not purely rely on the analysis of
 the image's histogram; instead, the threshold is calculated as a weighted sum of
 the image's intensities, where the weights are dictated by the magnitude of the
@@ -338,7 +338,7 @@ utilized by using the magnitude as the weight in the summing of intensities.
 This way the background's intensities play lesser role.
 
 Formally the threshold $a$ is defined as:
-$$a = \sum_{u, v} I(u, v) \frac{|\nabla I(u, v)|}{\sum_{i, j} |\nabla(i,j)|}$$
+$$a = \sum_{u, v} I(u, v) \frac{|\nabla I(u, v)|}{\sum_{i, j} |\nabla I(i,j)|}$$
 where $I(i, j)$ stands for the image intensity at the $(i, j)$ position.
 
 \begin{figure}
@@ -613,7 +613,7 @@ on the Laplacian operator in the zero-crossing algorithm.
 
 The watershed algorithm is a widespread technique for image segmentation. The
 fundamental principle of the watershed algorithm is to view the image as a
-topological map, where the intensities indicate the height of the landscape, in
+topographic map, where the intensities indicate the height of the landscape, in
 other words, peaks in the image represent mountains or hills, while low values
 represent valleys.
 
