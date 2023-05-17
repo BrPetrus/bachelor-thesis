@@ -1467,14 +1467,14 @@ of the image, the program is able to properly segment the image.
 \chapter{Conclusion}
 
 The primary goal of this thesis was to develop a pipeline for the automatic
-segmentation of membrane-stained image data from fluorescent microscopy.
+segmentation of membrane-stained and nuclei-stained image data from fluorescence microscopy.
 Creating such tools makes it easier for researchers to analyse the behaviour of
 cells by decreasing the time required to segment them manually. Due to the
 unavailability of annotated data, techniques based on machine learning could not
 be used; therefore, we settled on solving the segmentation using traditional
 image processing techniques. The developed pipeline consists of two main steps.
 In the first step, the Laplacian operator and zero-crossing algorithm is used to
-find a course segmentation of the cells, while in the second step, this is
+find a coarse segmentation of the cells, while in the second step, this is
 further refined using thresholding to find the nuclei-stained cells.
 
 The developed program is fully functional and available as an attachment to the
@@ -1483,8 +1483,8 @@ expert and the already prepared membrane-stained and nuclei-stained data. The
 configuration file is set up to reasonable defaults, which should provide fair
 segmentation on most of the provided images.
 
-The program provides a practical, easy-to-use terminal interface. In Chapter
-\ref{chp:evaluation}, all the available parameters are documented, with tips
+The program provides a practical, easy-to-use terminal interface. In Appendix
+\ref{app:running-the-program}, all the available parameters are documented, with tips
 about which one to change in case of improper segmentation. The included zip
 archive allows the user to test the program out of the box.
 
