@@ -1157,10 +1157,29 @@ zero-crossing algorithm and filling in the individual cells. To accomplish this
 a flood-filling algorithm is used.
 
 \begin{figure}
-    \begin{center}
-        \includegraphics[width=\linewidth]{resources/flood_fill.png}
-    \end{center}
-    \caption{Segmenting cells after zero-crossing algorithm.}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/zc.png}
+        \caption{}
+        \label{fig:fill-map-zc}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/flood\_fill.png}
+        \caption{}
+        \label{fig:fill-map-flood-fill}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/mask-dist.png}
+        \caption{}
+        \label{fig:fill-map-mask}
+    \end{subfigure}
+    \caption{Segmenting cells after zero-crossing algorithm. In
+    (\subref{fig:fill-map-zc}) the result of the zero-crossing algorithm is
+    shown. Then the flood filling mechanism is run
+    (\subref{fig:fill-map-flood-fill}) and finally the mask separating cells and
+    background is shown (\subref{fig:fill-map-mask}).}
     \label{fig:flood_fill}
 \end{figure}
 
@@ -1175,15 +1194,33 @@ After all the iterations are done, we are left with a grayscale
 image with three possible values, $0$ represents the original background, $128$
 represents all the space, which was filled during the last step, and $256$
 indicates the original edges. The program has then managed to separate the interiors of
-the cells and the background as can be seen in the middle panel in Figure %todo: rework ref
-\ref{fig:flood_fill}. Now we can use the newly acquired labelling to create a
-segmentation of cells, as is seen in the last panel in Figure \ref{fig:flood_fill}. %todo: rework ref
+the cells and the background as can be seen in Figure
+\ref{fig:fill-map-flood-fill}. Now we can use the newly acquired labelling to
+create a segmentation of cells, as is seen in the in Figure
+\ref{fig:fill-map-mask}.
 
 \begin{figure}
-    \begin{center}
-        \includegraphics[width=\linewidth]{resources/distance_map.png}
-    \end{center}
-    \caption{Distance map.}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/post-processed-mask.png}
+        \caption{}
+        \label{fig:dist-processed-mask}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/distance-map.png}
+        \caption{}
+        \label{fig:dist-map}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/labeled\_regions.png}
+        \caption{}
+        \label{fig:dist-regions}
+    \end{subfigure}
+    \caption{In (\subref{fig:dist-processed-mask}) the post-processed mask is
+    shown. Then the distance transform is applied (\subref{fig:dist-map}), and
+    finally the watershed algorithm is run (\subref{fig:dist-regions}).}
     \label{fig:distance_map}
 \end{figure}
 
@@ -1191,11 +1228,11 @@ Before this can be applied in the next steps, some of the smaller cells clearly
 outside of the specimen has to be removed. These are caused by the imperfections
 in the denoising parts. Even after the maximum projection and the cell mask are
 applied, in many cases, some residual noise can create small fake cells. To
-remove them, a morphological opening is performed, leading to the left image in
-Figure \ref{fig:distance_map}.
+remove them, a morphological opening is performed, and the result is shown in
+Figure \ref{fig:dist-processed-mask}.
 
 Now that the cells were segmented, the distance map is calculated. This is shown
-as the right image in Figure \ref{fig:distance_map}. The distance map was
+in Figure \ref{fig:dist-map}. The distance map was
 calculated using the \texttt{SciPy} library, and it uses Euclidean distance.
 
 Next, to extract the markers, the peaks inside the distance map were found using
@@ -1206,7 +1243,7 @@ means that peaks with low intensity will be ignored, further improving the
 labelling.
 
 Finally, the watershed algorithm is run on the inverse of the distance map, with the results
-visualised in the 3rd image in Figure \ref{fig:distance_map}.
+visualised in Figure \ref{fig:dist-regions}.
 
 \subsection{Maximum projection} 
 \label{sec:max-proj}
