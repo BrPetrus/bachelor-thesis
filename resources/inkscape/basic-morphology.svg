@@ -28,8 +28,8 @@
      inkscape:document-units="mm"
      showgrid="true"
      inkscape:zoom="1"
-     inkscape:cx="231.5"
-     inkscape:cy="260.5"
+     inkscape:cx="114.5"
+     inkscape:cy="232.5"
      inkscape:window-width="1920"
      inkscape:window-height="1170"
      inkscape:window-x="0"
@@ -239,6 +239,23 @@
     <text
        xml:space="preserve"
        style="font-size:5.07763px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
+       x="76.382919"
+       y="73.658127"
+       id="text2435-3-7-7"
+       inkscape:transform-center-x="-6.2167143"
+       inkscape:transform-center-y="-0.27726955"
+       transform="scale(1.0004672,0.99953302)"
+       inkscape:export-filename="morphology-reflection.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
+         sodipodi:role="line"
+         id="tspan2433-1-9-9"
+         style="font-size:5.07762px;stroke-width:0;stroke-dasharray:none"
+         x="76.382919"
+         y="73.658127">(A)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.07763px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
        x="106.36891"
        y="220.10278"
        id="text2435-3-4"
@@ -278,11 +295,53 @@
        xml:space="preserve"
        transform="scale(0.26458333)"
        id="text771"
-       style="fill:#000000;stroke-width:0;-inkscape-font-specification:'Noto Serif';font-family:'Noto Serif';font-size:21.33333333px;stroke:#000000;white-space:pre;shape-inside:url(#rect773)" />
+       style="font-size:21.3333px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';white-space:pre;shape-inside:url(#rect773);display:inline;fill:#000000;stroke:#000000;stroke-width:0" />
     <text
        xml:space="preserve"
        transform="scale(0.26458333)"
        id="text855"
-       style="fill:#000000;stroke-width:0;-inkscape-font-specification:'Noto Serif';font-family:'Noto Serif';font-size:21.33333333px;stroke:#000000;white-space:pre;shape-inside:url(#rect857)" />
+       style="font-size:21.3333px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';white-space:pre;shape-inside:url(#rect857);display:inline;fill:#000000;stroke:#000000;stroke-width:0" />
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;stroke:#000000;stroke-width:0"
+       x="90"
+       y="80"
+       id="text530"><tspan
+         sodipodi:role="line"
+         id="tspan528"
+         style="stroke-width:0"
+         x="90"
+         y="80" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;stroke:#000000;stroke-width:0"
+       x="82.912445"
+       y="77.533104"
+       id="text534"><tspan
+         sodipodi:role="line"
+         id="tspan532"
+         style="font-size:4.23333px;stroke-width:0"
+         x="82.912445"
+         y="77.533104">Z</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;stroke:#000000;stroke-width:0"
+       x="88.266212"
+       y="80.734886"
+       id="text581"><tspan
+         sodipodi:role="line"
+         id="tspan579"
+         style="stroke-width:0"></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;font-family:'Noto Serif';-inkscape-font-specification:'Noto Serif';fill:#000000;stroke:#000000;stroke-width:0"
+       x="86.18631"
+       y="-33.810322"
+       id="text585"><tspan
+         sodipodi:role="line"
+         id="tspan583"
+         style="stroke-width:0"
+         x="86.18631"
+         y="-33.810322">s</tspan></text>
   </g>
 </svg>
