@@ -60,14 +60,14 @@
     TeXkeywords = {segmentation, image processing, scikit-image, watershed,
                    thresholding, fluorescence microscopy, zero-crossing},
     abstract    = {%
-        In this thesis, we present a two-stage image analysis pipeline for segmenting membrane-stained and nuclei-stained image data of organoids captured using a fluorescence microscope. In the first stage, a coarse segmentation of individual cells in the membrane channel is obtained by analysing the Laplacian operator's response and watershed-driven tesselation. In the second stage, the coarse segmentation is projected into the nuclear channel, and individual nuclei regions are refined via local gradient thresholding. The performance of the developed pipeline is evaluated using a representative, manually annotated dataset, with the focus on detection and segmentation accuracy and execution time. The developed pipeline is implemented in Python and complemented with a detailed documentation of its usage. 
+    In this thesis, we present a two-stage image analysis pipeline for segmenting membrane-stained and nuclei-stained image data of organoids captured using a fluorescence microscope. In the first stage, a coarse segmentation of individual cells in the membrane channel is obtained by analysing the Laplacian operator's response and watershed-driven tesselation. In the second stage, the coarse segmentation is projected into the nuclear channel, and individual nuclei regions are refined via local gradient thresholding. The performance of the developed pipeline is evaluated using a representative, manually annotated dataset, with a focus on detection and segmentation accuracy and execution time. The developed pipeline is implemented in Python and complemented with a detailed documentation of its usage. 
     },
     thanks      = {%
        I am extremely grateful to my advisor, Assoc. Prof. RNDr. Martin Maška,
-       Ph.D., for his continuous guidance, helpful advice, and feedback. I am
-       also thankful to my family and close friends for their support. Finally,
-       I am grateful to Dr. Zuzana Sumbalová Koledová and Dr. Matea Brezak for providing
-       me with the annotated image data analysed in this thesis.
+        Ph.D., for his continuous guidance, helpful advice, and \mbox{feedback}. I am
+       also thankful to my family and close friends for their support. \mbox{Finally},
+       I am grateful to Dr. Zuzana Sumbalová Koledová and \mbox{Dr. Matea} Brezak for providing
+       me with the annotated image data \mbox{analysed} in this thesis.
     },
     bib         = bibliography.bib,
     %% Remove the following line to use the JVS 2018 faculty logo.
@@ -134,7 +134,7 @@ concepts used in the developed image processing pipeline.
 Our eyesight is undoubtedly one of our most helpful senses, allowing us to
 observe, study and comprehend the world around us. However, the way a computer
 processes visual information is quite different. To enable us to study the world
-using computer, numerous tools and algorithms have been developed. In this
+using computers, numerous tools and algorithms have been developed. In this
 section, I will begin by defining the concept of images in a formalized manner,
 so that mathematics and computer science knowledge can be utilized to analyze
 images.
@@ -145,7 +145,7 @@ while the function value at those coordinates specifies the magnitude or
 intensity of the signal at that point. We can think about images as functions of
 type $f:\R^n \rightarrow \R^m$ where $n$ indicates the number of spatial
 dimensions and $m$ specifies the number of channels. For example, when we are
-talking about two-dimensional greyscale images, $m$ is equal to 1 and $n$ is
+talking about two-dimensional grayscale images, $m$ is equal to 1 and $n$ is
 equal to 2, while a typical coloured photograph has 3 colour channels. Another
 important image type is the binary image, where the function's range is just two
 values.
@@ -173,8 +173,7 @@ hard to define precisely where an edge begins and ends, so the first and the
 second derivative of the image is usually calculated and analysed.
 
 Looking at the second derivate of the image, we can see two distinct spikes,
-which are called zero-crossings, and they will be utilised as the main workhorse
-of the program for finding edges.
+which are called zero-crossings, and they will be utilised by the program for finding edges.
 
 \begin{figure}
     \begin{center}
@@ -216,7 +215,7 @@ Using them, we can reasonably approximate the magnitude of the gradient as:
 $$|\nabla f(i, j)| \approx \frac{1}{2}\sqrt{(f(i+1, j) - f(i-1, j))^2 + (f(i, j+1) - f(i, j-1))^2}.$$
 
 An example of the magnitude of the gradient is visible in Figure
-\ref{fig:demo_grad_thresh} in the second image in the first row.
+\ref{fig:grad-thresh-grad}.
 We can then extract the edges with further processing but since the program
 does not rely on this method, I will skip the details; however, the program uses
 the magnitude of the gradient for calculating the gradient threshold, described later
@@ -226,7 +225,7 @@ in this chapter.
 
 The second common way --- and the one we will use for finding edges --- is using the second derivative, or more
 precisely, using the Laplacian operator. For a 2D function $f(x, y)$ the Laplacian operator is
-defines as \cite{gonzalez2002}:
+defined as \cite{gonzalez2002}:
 
 $$\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}.$$
 
@@ -264,21 +263,21 @@ is applied, the zero-crossing becomes visible.
         \frame{\includegraphics[width=\textwidth]{./resources/filtered_noise.png}}
     \end{subfigure}
     \caption{Demonstration of the effect of noise and filtering on a simple
-    linear increase in intensity. In the second row, the first derivate of the
+    linear increase in signal intensity. In the second row, the first derivate of the
     signal is displayed, and in the third row is the second derivative. On the
     left, an artificial noise has been added to the signal. On the right, a
-    Gaussian smoothing has been applied.}
+    Gaussian smoothing has been applied on top of the noisy signal.}
     \label{fig:filtering-noise}
 \end{figure}
 
-Since the Laplacian is based on second derivatives, it has the property that
-each edge produces a zero crossing. This can be readily utilised to find edges
-inside an image. A simple algorithm is to go through the whole image and check
+After applying the Laplacian operator, we can find the zero-crossings and the edges. 
+A simple algorithm is to go through the whole image and checks
 if a particular pixel at a given position is positive while its neighbours are
 negative. If this condition is true, we set this position to white in the
 resulting image and black otherwise. This creates the following image in
 Subfigure \ref{fig:zc}. Here is another valuable property of the zero-crossing
-algorithm. The produced edges are thin and form closed contours.
+algorithm. The produced edges are thin and form closed contours. This algorithm is
+described in more detail in Section \ref{section:zc}.
 
 \section{Thresholding}
 
@@ -293,7 +292,8 @@ value between two classes (usually the foreground and the background). As such,
 it works well if the image's histogram has a clear bimodal distribution. The
 main idea of this approach is to see the problem of finding the threshold as an
 optimization problem, where the inter-class variance of the two classes is to be
-minimized. More information is available in \cite{otsu1979}.
+minimized. More information is available in \cite{otsu1979}. A demonstration of the
+Otsu thresholding is shown in Figure \ref{fig:otsu-demonstration}.
 
 \begin{figure}
     \begin{subfigure}[t]{0.45\textwidth}
@@ -317,7 +317,7 @@ minimized. More information is available in \cite{otsu1979}.
         \label{fig:otsu-histogram}
         %\caption{}
     \end{subfigure}
-    \caption{Demonstration of the Otsu thresholding method. In (\subref{fig:otsu-orig}) an image from the membrane-stained channel is shown. In (\subref{fig:otsu-thresholded}) the Otsu thresholding is applied. In (\subref{fig:otsu-histogram}) the histogram of the image data shown with a line indicating the threshold.}
+    \caption{Demonstration of the Otsu thresholding method. In (\subref{fig:otsu-orig}) an image from the membrane-stained channel is shown. In (\subref{fig:otsu-thresholded}) the Otsu thresholding is applied. In (\subref{fig:otsu-histogram}) the histogram of the image data is shown with a line indicating the threshold.}
     \label{fig:otsu-demonstration}
 \end{figure}
 
@@ -362,7 +362,7 @@ where $I(i, j)$ stands for the image intensity at the $(i, j)$ position.
     \end{subfigure}
     \caption{Demonstration of the gradient thresholding. Image data from the
     membrane-stained channel (\subref{fig:grad-thresh-orig}) was thresholded
-    (\subref{fig:grad-thresh-grad}) using the gradient thresholding. In
+    (\subref{fig:grad-thresh-final}) using the gradient thresholding. In
     (\subref{fig:grad-thresh-grad}) the magnitude of the gradient is shown.}
     \label{fig:demo_grad_thresh}
 \end{figure}
@@ -375,8 +375,8 @@ cell; hence, it contributes more to the value of the threshold.
 \section{Mathematical morphology}
 
 Mathematical morphology is an area of research studying how to extract valuable
-information and how to filter images. Few examples of what mathematical
-morphology study are edge-detecting algorithms, finding convex hulls, and image
+information and how to filter images. A few examples of what mathematical
+morphology is used for are edge-detecting algorithms, finding convex hulls, and image
 filtering. In the simplest terms, mathematical morphology looks at images as
 sets of numbers and modifies them using structural elements. Those can take many
 forms, but their shape varies based on the task we are trying to achieve. The
@@ -454,7 +454,7 @@ structural element to the resulting set.
 
 For example, this operation can be used to join disconnected segments in an
 image by choosing a large enough structural element. Its size will depend on the
-particular example and does not necessarily have to be of regular size.
+particular example and does not necessarily have to be of regular size \cite{gonzalez2002}.
 
 \begin{figure}
     \begin{center}
@@ -478,7 +478,7 @@ the whole structural element fits inside $A$ as can be seen in Figure
 parts of the bigger square.
 
 As opposed to the dilation, we can use erosion to divide lightly connected
-segments, and to suppress noise and other unwanted disturbances in an image.
+segments, and to suppress noise and other unwanted disturbances in an image.\cite{gonzalez2002}
 
 \begin{figure}
     \begin{center}
@@ -505,7 +505,7 @@ This process in visualised in Figure \ref{fig:opening}, where the square
 structural element is applied on the binary image. Morphological opening
 preserves larger structural components, and removes small objects from the
 image. This means, it is a good candidate for removing noise, small objects or
-thin structures, which may interfere with later processing.
+thin structures, which may interfere with later processing. \cite{soile2004}
 
 \begin{figure}
     \begin{subfigure}[t]{0.4\textwidth}
@@ -742,7 +742,7 @@ analyse the whole data set; therefore, all work was done on smaller data slices.
 The first problem with the data set is the quality. In most places, the noise is
 too strong to try to use in any analysis.
 
-In the membrane channel, two main problems can be seen. To begin, most
+In the membrane-stained channel, two main problems can be seen. To begin, most
 membranes do not form connected segments; instead, a part of the cell's membrane is
 usually missing, or it is joined with the neighbouring cell's membrane, as can be
 seen in Figure \ref{fig:bad_edges}. This complicates the analysis, as different
@@ -753,7 +753,7 @@ background is too smooth for the program to find the divisive line as in Figure
 \ref{fig:bleeding_edges}.
 
 Another issue is that the light gets scattered inside the organoid, as shown
-in Figure \textbf{\ref{fig:scattering}}. That means that it is possible to reliably analyse only the
+in Figure \ref{fig:scattering}. That means that it is possible to reliably analyse only the
 outermost layers of cells of the organoid.
 
 The nuclei-stained channel comes with its own set of problems, some of them different.
@@ -795,7 +795,7 @@ other hand, the nuclei-stained data is always two-dimensional.
 
 This dataset was then manually annotated as follows: Parts that were considered to be background were labelled using $0$.
 Sections which were too complicated or unclear were labelled using $65535$, and
-the rest of the cells were uniquely labelled with numbers starting at $1$. In
+the rest of the cells were uniquely labelled with numbers starting \mbox{at $1$}. In
 Figure \ref{fig:label_ground_truth} the manual segmentation of the corresponding raw image data (Fig \ref{fig:label_membrane_channel}) created by the expert is shown.
 
 \begin{figure}
@@ -811,7 +811,7 @@ Figure \ref{fig:label_ground_truth} the manual segmentation of the corresponding
         \caption{}
         \label{fig:label_ground_truth}
     \end{subfigure}
-    \caption{In (\subref{fig:label_ground_truth}) the labelling created by an expert of the \subref{fig:label_membrane_channel} is shown. White means a complicated area, black is the background, and the rest are the cells.}
+    \caption{In (\subref{fig:label_ground_truth}) the labelling created by an expert of the (\subref{fig:label_membrane_channel}) is shown. White means a complicated area, black is the background, and the rest are the cells.}
 \end{figure}
 
 \clearpage
@@ -894,13 +894,14 @@ to reduce the effect of residual noise further. Since the voxel's dimensions are
 anisotropic, an anisotropic Gaussian smoothing is applied.
 
 \subsection{Zero-crossing algorithm}
+\label{section:zc}
 Applying the zero-crossing algorithm at this stage would result in many
 artificial cells being found in the background due to the presence of noise. To
 remove these visual artefacts, we need to create a mask to differentiate the
 background from the foreground. For this task, the Otsu thresholding method was
 employed due to the bimodal distribution of the image intensities. Sometimes the interface between
 the organoid's contour and the background is unclear, as depicted in Figure
-\ref{fig:cell-mask}. However, it is a considerably smaller issue if part of the
+\ref{fig:max-proj-before}. However, it is a considerably smaller issue if part of the
 the background is categorised as the foreground; hence, this issue can be fixed by
 running morphological erosion with a circular structural element with a diameter similar to the average cell diameter. This final mask then approximately distinguishes between the 
 background and the foreground. This mask is then utilised in the next steps, which
@@ -926,7 +927,7 @@ ignore all background image elements during their calculations.
 
 The zero-crossing algorithm provides a reasonable outline of the cells, as is
 shown in Figure \ref{fig:zc}. The user sometimes has to play around with
-the strength of the Gaussian smoothing (\texttt{zc\_sigma} in later chapters) to improve the quality of the edge detection. When the strength is too low, the program tends to find many small artificial regions; conversely, strong smoothing causes the algorithm to join individual cells together. 
+the strength of the Gaussian smoothing (parameter \texttt{zc\_sigma} described in later chapters) to improve the quality of the edge detection. When the strength is too low, the program tends to find many small artificial regions; conversely, strong smoothing causes the algorithm to join individual cells together. 
 This step is further complicated by the fact that some of the cells are missing parts of
 their membranes; hence, the performance of this step is one of the limiting factors of
 the whole segmentation pipeline.
@@ -1142,7 +1143,7 @@ The zero-crossing algorithm starts by calculating the Laplacian using a function
 included inside the \texttt{scikit-image} library. To
 extract the zero-crossings, the program will iterate over the whole array
 (excluding the 1-pixel border) and check the following condition. Given its position $(i, j)$
-the algorithm checks if $\nabla^2 I(i, j)) < 0$ and its neighbours have
+the algorithm checks if $\nabla^2 I(i, j) < 0$ and its neighbours have
 non-negative Laplacian.  If this condition stands, then there is
 a zero-crossing at position $(i, j)$. In this case, the neighbourhood is
 calculated as 4-connectedness. That means that the neighbourhood of the image element
@@ -1288,7 +1289,7 @@ segment the cell, and in the bottom right, the program missed completely,
 creating a new fictional cell, which was not found by the expert.
 
 To take the analysis further, we need a way how to pair the relevant predictions
-with the real segmentations. In the Figure \ref{fig:evaluation_basic}, I only used two colours
+with the real segmentations. In Figure \ref{fig:evaluation_basic}, I only used two colours
 to denote the predicted and real cells; however, in the real segmentation, each
 cell has a unique label. To complicate things further, similar cells do not
 have to have the same label in the predicted and real segmentation.
@@ -1305,7 +1306,7 @@ two sets containing their pixels. The set containing the pixels of the real cell
 denoted as $R_i$, while the second set containing the pixels of the predicted
 cell is denoted as $P_j$. If the intersection is large enough, these two
 cells are considered to be a pair and are later used in the performance measure. In full, the condition is
-$$|R_i \cap P_i| > \alpha \cdot |R_i| \Leftrightarrow R_i \text{ and } S_i \text{ form a pair}$$
+$$|R_i \cap P_j| > \alpha \cdot |R_i| \Leftrightarrow R_i \text{ and } P_j \text{ form a pair}$$
 for some threshold $\alpha$. By default, this threshold is set to 0.5, ensuring
 that every $R_i$ can have just one pairing member $S_i$.
 
@@ -1317,7 +1318,7 @@ that every $R_i$ can have just one pairing member $S_i$.
     \caption{Segmentation where the program labelled a lot of extra areas.}
     \label{fig:evaluation_imprecise}
 \end{figure}
-The first measure evaluates the accuracy of the predicted segmentation overlap
+The first measure evaluates the accuracy of the predicted segmentation coincides
 with the expert's segmentation. Just checking the size of the intersection is
 not good enough, as if the program just created large blobs as in Figure
 \ref{fig:evaluation_imprecise}, they would technically contain the whole cell;
@@ -1398,8 +1399,8 @@ finds many false positives. Those are cells that the program predicted but were
 not found by the expert. Those are mostly caused by noise in the data.
 
 Looking at the $\overline{J_S}$ scores, it is clear that if the program finds a
-real cell, it segments it reasonably well. In the last row of the table, a
-simple average of all the metrics is shown with the standard deviation. In
+real cell, it segments it reasonably well. In the last row of Table \ref{tab:scores}, a
+simple average of all the metrics are shown with the standard deviation. In
 Figure \ref{fig:comparison-1} and in Figure \ref{fig:comparison-2} the
 comparison between the program's prediction and the expert's labelling is shown.
 In case of the second figure, the program has a lower $\bar{J}$ because several
@@ -1492,7 +1493,7 @@ cells, leading to higher $\bar{J}$.
     \label{table:configurations}
 \end{table}
 
-The last column indicates the average time in seconds taken to run the program --- on my computer with the Ryzen 5700U notebook processor --- on
+The last column in Table \ref{tab:scores} indicates the average time in seconds taken to run the program --- on my computer with the Ryzen 5700U notebook processor --- on
 particular data. This was done using the \texttt{time} module from the standard
 Python library and only the time taken to calculate was considered,
 so the disk speed did not significantly affect the time. This was done over
