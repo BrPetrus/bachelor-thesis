@@ -1093,7 +1093,7 @@ The four main parameters are:
     \item \texttt{maximum\_projection\_from} (integer): From which layer should the maximum projection
     be calculated
     \item \texttt{maximum\_projection\_to} (integer): Along with the previous parameter, specify which layers are used in the maximum projection.
-    \item \texttt{cell\_radius} (float): This number should equal an average radius of a single cell in
+    \item \texttt{cell\_radius} (integer): This number should equal an average radius of a single cell in
     the image data.
 \end{itemize}
 
@@ -1485,7 +1485,7 @@ user might need to tweak to get better segmentation, are:
         program creates several fictional cells inside a single cell, or is performing
         quite poorly in noisy areas, try increasing this number. Typically, there
         is not need to go above 4, and 2 is usually enough.
-    \item \texttt{cell\_radius} (float): This number should equal a roughly
+    \item \texttt{cell\_radius} (integer): This number should equal a roughly
         approximated radius of a single cell. This is mainly used during the
         thresholding in the membrane channel. If part of the specimen is
         classified as a background, try increasing the number.
@@ -1516,7 +1516,7 @@ changing them in the first steps. Those parameters are:
         parameter can help with noise since the gradient threshold is based on the
         derivative of the image, but overall its effect is quite negligible on the
         final result.
-    \item \texttt{segmentation\_postprocess\_radius} (float): The radius of the
+    \item \texttt{segmentation\_postprocess\_radius} (integer): The radius of the
         disk-like structural element used in the post-processing of the
         segmentation. This can help to eliminate small regions which were
         incorrectly found due to noise. If the post-processing is deleting some of 
